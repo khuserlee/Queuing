@@ -1,5 +1,5 @@
 package com.pyeonrimium.queuing;
-// ¼Ò½ºÄÚµå ¼öÁ¤ Å×½ºÆ®
+// UTF-8 í•œê¸€í…ŒìŠ¤íŠ¸
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
