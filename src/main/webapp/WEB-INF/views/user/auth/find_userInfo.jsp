@@ -1,16 +1,21 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find User Information</title>
-    <link rel="stylesheet" href="find-userInfoStyles.css">
+    <%-- <title>필요시 입력</title>--%>
+    <%-- 타이틀, 푸터는 추후에 include로 대체 예정 --%>
+    <link href="<c:url value='/resources/css/find_userInfoStyles.css' />" rel="stylesheet" type="text/css">
+	<%-- css가 왜 적용 안되는지 모르겠음 --%>
+	<jsp:include page="../../../../resources/js/find_userInfoScript_js.jsp" />
+	
 </head>
-<body>
     <div class="container">
         <div class="section" id="find-ID">
             <h2>아이디 찾기</h2>
-            <form id="findIDForm">
+            <form id="findIDForm" action="<%=request.getContextPath()%>/findID" method="post">
                 <div class="input-group">
                     <label for="name">이름</label>
                     <input type="text" id="name" name="name" required>
@@ -26,7 +31,7 @@
 
         <div class="section" id="find-password">
             <h2>비밀번호 찾기</h2>
-            <form id="findPasswordForm">
+            <form id="findPasswordForm" action="<%=request.getContextPath()%>/findPassword" method="post">
                 <div class="input-group">
                     <label for="findName">이름</label>
                     <input type="text" id="findName" name="findName" required>
@@ -45,6 +50,6 @@
         </div>
     </div>
 
-    <script src="find-userInfoScript.js"></script>
+    <script src="<%=request.getContextPath()%>/resources/js/find-userInfoScript.js"></script>
 </body>
 </html>

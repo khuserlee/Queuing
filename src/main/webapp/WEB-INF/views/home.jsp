@@ -2,13 +2,19 @@
 <%@ page session="false" %>
 <html>
 <head>
-	<title>Home</title>
+    <title>Home</title>
 </head>
 <body>
 <h1>
-	Hello world!  
+    Hello world!
 </h1>
 
-<P>  The time on the server is ${serverTime}. </P>
+<p>The time on the server is ${serverTime}.</p>
+
+<!-- Spring MVC Controller를 통해 /login URL로 이동 -->
+<form action="${pageContext.request.contextPath}/login" method="get">
+    <button type="submit">Login</button>
+</form>
+
 </body>
 </html>
