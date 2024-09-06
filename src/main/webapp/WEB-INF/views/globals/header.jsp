@@ -10,15 +10,46 @@
 		<div class="title">
 			<h3>큐잉(Queuing) - 식당 예약/웨이팅 웹 서비스</h3>
 		</div>
-		<div class="menu">
-			<ul>
-				<li>
-					<a href="<c:url value='#' />">로그인</a>
-				</li>
-				<li>
-					<a href="<c:url value='#' />">회원가입</a>
-				</li>
-			</ul>
-		</div>
+		<nav class="menu">
+			<%
+// 			LoginMemberDTO loginMemberDTO
+// 				= (LoginMemberDTO) session.getAttribute("loginMemberDTO");
+			
+			Object loginMemberDTO = null;
+		
+			if (loginMemberDTO == null) {
+			%>
+			
+			<a class="header_nav_menu" href="<c:url value='/login' />">
+				<span>로그인</span>
+			</a>
+			<a class="header_nav_menu" href="<c:url value='signup' />">
+				<span>회원가입</span>
+			</a>
+			
+			<%
+			} else {
+			%>
+			
+			<a class="header_nav_menu" href="<c:url value='/logout' />">
+				<span>로그아웃</span>
+			</a>
+			<a class="header_nav_menu" href="<c:url value='/mypage' />">
+				<span>마이페이지</span>
+			</a>
+			<a class="header_nav_menu" href="<c:url value='/store' />">
+				<span>내 매장 관리</span>
+			</a>
+			<a class="header_nav_menu" href="<c:url value='/reservations' />">
+				<span>예약 관리</span>
+			</a>
+			<a class="header_nav_menu" href="<c:url value='/waitings' />">
+				<span>웨이팅 관리</span>
+			</a>
+			
+			<%
+			}
+			%>
+		</nav>
 	</div>
 </header>

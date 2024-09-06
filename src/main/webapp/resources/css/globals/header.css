@@ -1,12 +1,17 @@
 @charset "UTF-8";
 
-header {
-    background-color: #f0f0f0;
-    border-bottom: 1px solid #d9d9d9;
+* {
+    box-sizing: border-box;
 }
 
-#header_wrap {
-    margin: 0 auto;
+header {
+    background-color: #f0f0f0;
+}
+
+#header_wrap .title {
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
 }
 
 #header_wrap h3 {
@@ -17,22 +22,30 @@ header {
     height: 40px;
     line-height: 30px;
     border-top: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+    display: flex;
+    justify-content: flex-end;
 }
 
-#header_wrap .menu ul {
-    overflow: hidden;
-    list-style: none;
-    margin: 5px 0;
+#header_wrap .menu a {
+	text-decoration: none;
+	color: black;
 }
 
-#header_wrap .menu ul li {
-    float: right;
-    margin-right: 5px;
-    margin-left: 25px;
+.header_nav_menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 110px;
+    margin-left: 5px;
+    font-size: 1rem;
+    background-color: #F0F0F0;
 }
 
-#header_wrap .title {
-    height: 80px;
-    line-height: 80px;
-    text-align: center;
+.header_nav_menu:hover {
+    background-color: #D9D9D9;
+}
+
+.header_nav_menu:active {
+    background-color: #BFBFBF;
 }
