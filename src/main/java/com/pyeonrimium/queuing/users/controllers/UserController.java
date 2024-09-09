@@ -10,7 +10,7 @@ public class UserController {
     @GetMapping("/user")
     public String signup() {
         System.out.println("[UserController] signup()");
-        return "user/auth/login";  // login.jsp로 이동
+        return "user/auth/signup";  // login.jsp로 이동
     }
 
     // ID/PW 찾기 페이지 매핑

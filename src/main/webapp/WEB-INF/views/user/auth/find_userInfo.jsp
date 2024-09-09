@@ -8,7 +8,6 @@
     <%-- <title>필요시 입력</title>--%>
     <%-- 타이틀, 푸터는 추후에 include로 대체 예정 --%>
     <link href="<c:url value='/resources/css/find_userInfoStyles.css' />" rel="stylesheet" type="text/css">
-	<%-- css가 왜 적용 안되는지 모르겠음 --%>
 	<jsp:include page="../../../../resources/js/find_userInfoScript_js.jsp" />
 	
 </head>

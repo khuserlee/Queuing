@@ -8,7 +8,6 @@
     <title>Login Page</title>
     <%-- 타이틀, 푸터는 추후에 include로 대체 예정 --%>
     <link href="<c:url value='/resources/css/loginStyles.css' />" rel="stylesheet" type="text/css">
-	<%-- css가 왜 적용 안되는지 모르겠음 --%>
 	<jsp:include page="../../../../resources/js/loginScript_js.jsp" />
 	
 </head>
