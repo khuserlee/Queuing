@@ -28,7 +28,7 @@
        
         <!-- ID/PW 찾기 링크 -->
         <div class="links">
-            <a href="<c:url value='/user/auth/find_userInfo' />">ID/PW 찾기</a>
+            <a href="<c:url value='find_userInfo' />">ID/PW 찾기</a>
         </div>
     </div>
 </body>
