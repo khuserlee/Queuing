@@ -10,35 +10,35 @@ public class UserDao {
 	@Autowired
 	JdbcTemplate jdbcTemplate;	
 	
-	public boolean isUserMember(String u_m_id) {
+	public boolean isUserMember(String id) {
 		System.out.println("[UserDao] isUserMember()");
 		
-		String sql = "SELECT COUNT(*) FROM tbl_user_member "
-				+ "WHERE u_m_id = ?";
+		String sql = "SELECT COUNT(*) FROM users "
+				+ "WHERE id = ?";
 	// 테이블 이름 확인 필요
 		
-		int result = jdbcTemplate.queryForObject(sql, Integer.class, u_m_id);
+		int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
 		
 		return result > 0 ? true : false; 
 	}
 	
-	public int insertUserAccount(SignupRequestDTO signupRequestDTO) {
+	public int insertUserAccount(SignupRequestModel signupRequestModel) {
 		System.out.println("[UserDao] insertUserAccount()");
-		String sql = "INSERT INTO tbl_user_member(u_m_id, "
-												+ "u_m_pw, "
-												+ "u_m_name, "
-												+ "u_m_address, "
-												+ "u_m_phone, ";
+		String sql = "INSERT INTO users(id, "
+											+ "password, "
+											+ "name, "
+											+ "address, "
+											+ "phone, ";
 		int result = -1;
 		
 		try {
 			result = jdbcTemplate.update(sql,
-					signupRequestDTO.getId(),
-					signupRequestDTO.getPassword(),
+					signupRequestModel.getId(),
+					signupRequestModel.getPassword(),
 					// passwordencoder 필요한지?
-					signupRequestDTO.getName(),
-					signupRequestDTO.getAddress(),
-					signupRequestDTO.getPhone());
+					signupRequestModel.getName(),
+					signupRequestModel.getAddress(),
+					signupRequestModel.getPhone());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

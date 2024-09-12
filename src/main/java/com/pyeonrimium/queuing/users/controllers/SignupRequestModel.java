@@ -5,10 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SignupRequestDTO {
+public class SignupRequestModel {
 	
-	private int user_id;
-	// 회원고유번호도 필요하지 않은지?
 	private String id;
 	private String password;
 	private String name;

@@ -13,13 +13,13 @@ public class UserService {
 	@Autowired
 	UserDao userDao;
 	
-	public int signupConfirm(SignupRequestDTO signupRequestDTO) {
+	public int signupConfirm(SignupRequestModel signupRequestModel) {
 		System.out.println("[UserService] signupConfirm()");
 		
-		boolean isMember = userDao.isUserMember(signupRequestDTO.getId());
+		boolean isMember = userDao.isUserMember(signupRequestModel.getId());
 		
 		if(!isMember) {
-			int result = userDao.insertUserAccount(signupRequestDTO);
+			int result = userDao.insertUserAccount(signupRequestModel);
 			
 			if(result > 0)
 				return USER_SIGNUP_SUCCESS;

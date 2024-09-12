@@ -14,30 +14,30 @@
 <body>
     <div class="signup-container">
         <h2>회원가입</h2>
-        <form action="<c:url value='/user/auth/signup' />" name="signup" method="post">
+        <form action="<c:url value='/user/auth/signupConfirm' />" name="signup" method="post">
             <div class="input-group">
                 <label for="id">아이디</label>
-                <input type="text" id="id" name="u_m_id" required>
+                <input type="text" id="id" name="id" required>
             </div>
             <div class="input-group">
                 <label for="password">비밀번호</label>
-                <input type="password" id="password" name="u_m_pw" required>
+                <input type="password" id="password" name="password" required>
             </div>
             <div class="input-group">
                 <label for="confirmPassword">비밀번호 확인</label>
-                <input type="password" id="passwordConfirm" name="u_m_pw_confirm" required>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
             </div>
 			<div class="input-group">
                 <label for="name">이름</label>
-                <input type="text" id="name" name="u_m_name" required>
+                <input type="text" id="name" name="name" required>
             </div>
             <div class="input-group">
                 <label for="address">주소</label>
-                <input type="text" id="address" name="u_m_address" required>
+                <input type="text" id="address" name="address" required>
             </div>
             <div class="input-group">
                 <label for="phone">전화번호</label>
-                <input type="text" id="phone" name="u_m_phone" required>
+                <input type="text" id="phone" name="phone" required>
             </div>
             <button type="submit">회원가입</button>
             <p id="signup_errorMessage" class="error-message">
@@ -46,6 +46,6 @@
         </form>
     </div>
 
-    <script src="<%=request.getContextPath()%>/resources/js/signupScript.js"></script>
+    <%-- <script src="<%=request.getContextPath()%>/resources/js/signupScript.js"></script> --%>
 </body>
 </html>

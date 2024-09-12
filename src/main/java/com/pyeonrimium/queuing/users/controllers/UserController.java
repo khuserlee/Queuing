@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class UserController {
@@ -11,7 +12,7 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	// 회원가입 페이지 매핑
+	// 회원가입 화면
 	@GetMapping("/signup")
 	public String signupForm() {
 		System.out.println("[UserController] signupForm() called");
@@ -20,12 +21,12 @@ public class UserController {
 	}
 	
 	// 회원가입 확인
-	@PostMapping("/signupConfirm")
-	public String signupConfirm(SignupRequestDTO signupRequestDTO) {
+	@PostMapping("/user/auth/signupConfirm")
+	public String signupConfirm(SignupRequestModel signupRequestModel) {
 		System.out.println("[UserController] signupConfirm()");
 		String nextPage = "user/auth/signup_ok";
 		
-		int result = userService.signupConfirm(signupRequestDTO);
+		int result = userService.signupConfirm(signupRequestModel);
 		if(result <= 0)
 		nextPage = "user/auth/signup_ng";
 		return nextPage;

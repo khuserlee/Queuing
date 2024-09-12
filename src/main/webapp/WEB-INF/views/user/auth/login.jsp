@@ -17,7 +17,7 @@
         <form id="loginForm">
             <div class="input-group">
                 <label for="ID">아이디 :</label>
-                <input type="text" id="ID" name="ID" required>
+                <input type="text" id="id" name="id" required>
             </div>
             <div class="input-group">
                 <label for="password">비밀번호 :</label>
