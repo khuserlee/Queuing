@@ -1,5 +1,8 @@
 package com.pyeonrimium.queuing.users.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -24,11 +27,7 @@ public class UserDao {
 	
 	public int insertUserAccount(SignupRequestModel signupRequestModel) {
 		System.out.println("[UserDao] insertUserAccount()");
-		String sql = "INSERT INTO users(id, "
-											+ "password, "
-											+ "name, "
-											+ "address, "
-											+ "phone, ";
+		String sql = "INSERT INTO users (id, password, name, address, phone) VALUES (?, ?, ?, ?, ?)";;
 		int result = -1;
 		
 		try {
@@ -43,5 +42,14 @@ public class UserDao {
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	public LoginRequest selectUser(LoginRequest loginRequest) {
+		System.out.println("[UserrDao] selectUser()");
+		
+		String sql = "SELECT * FROM users WHERE id = ?";
+		
+		List<LoginRequest> loginRequests = new ArrayList<LoginRequest>();
+		
 	}
 }

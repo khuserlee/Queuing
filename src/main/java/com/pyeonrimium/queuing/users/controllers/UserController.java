@@ -1,10 +1,11 @@
 package com.pyeonrimium.queuing.users.controllers;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class UserController {
@@ -12,7 +13,10 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	// 회원가입 화면
+	/**
+	 * 회원가입 화면
+	 * @return 회원가입 화면 표시
+	 */
 	@GetMapping("/signup")
 	public String signupForm() {
 		System.out.println("[UserController] signupForm() called");
@@ -20,7 +24,11 @@ public class UserController {
 		return nextPage;
 	}
 	
-	// 회원가입 확인
+	/**
+	 * 회원가입 확인
+	 * @param signupRequestModel
+	 * @return 회원가입 성공 여부
+	 */
 	@PostMapping("/user/auth/signupConfirm")
 	public String signupConfirm(SignupRequestModel signupRequestModel) {
 		System.out.println("[UserController] signupConfirm()");
@@ -28,11 +36,14 @@ public class UserController {
 		
 		int result = userService.signupConfirm(signupRequestModel);
 		if(result <= 0)
-		nextPage = "user/auth/signup_ng";
+			nextPage = "user/auth/signup_ng";
 		return nextPage;
 	}
 	
-	// 로그인
+	/**
+	 * 로그인 화면
+	 * @return 로그인 화면 표시
+	 */
 	@GetMapping("/login")
 	public String loginForm() {
 		System.out.println("[UserController] loginForm()");
@@ -40,7 +51,25 @@ public class UserController {
 		return nextPage;
 	}
 	
-	// 로그인 확인
+	/**
+	 * 로그인 확인
+	 * @param
+	 * @return
+	 */
+	@PostMapping("/user/auth/loginConfirm")
+	public String loginConfirm(LoginRequest loginRequest, HttpSession session) {
+		System.out.println("[UserController] loginConfirm()");
+		String nextPage = "user/member/login_ok";
+		LoginRequest loginedRequest = userService.loginConfirm(loginRequest);
+		
+		if(loginedRequest == null) {
+			nextPage = "user/member/login_ng";
+		} else {
+			session.setAttribute("loginedRequest", loginedRequest);
+			session.setMaxInactiveInterval(60*30);
+		}
+		return nextPage
+	}
 	
 	// 회원정보 찾기
 	@GetMapping("/find_userInfo")

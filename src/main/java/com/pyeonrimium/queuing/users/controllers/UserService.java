@@ -13,6 +13,11 @@ public class UserService {
 	@Autowired
 	UserDao userDao;
 	
+	/**
+	 * 회원가입
+	 * @param signupRequestModel 회원가입 양식
+	 * @return 회원가입 성공 여부
+	 */
 	public int signupConfirm(SignupRequestModel signupRequestModel) {
 		System.out.println("[UserService] signupConfirm()");
 		
@@ -28,5 +33,19 @@ public class UserService {
 		} else {
 			return USER_ACCOUNT_ALREADY_EXIST;
 		}
+	}
+	
+	public LoginRequest logininConfirm(LoginRequest loginRequest) {
+		System.out.println("[UserService] loginConfirm()");
+		
+		LoginRequest loginedRequest = userDao.selectUser(loginRequest);
+		
+		if (loginedRequest != null)
+			System.out.println("[UserMemberService] USER MEMBER LOGIN SUCCESS!!");
+		else
+			System.out.println("[UserMemberService] USER MEMBER LOGIN FAIL!!");
+		
+		return loginedRequest;
+		
 	}
 }
