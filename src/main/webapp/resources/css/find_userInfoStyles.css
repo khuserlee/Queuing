@@ -1,0 +1,73 @@
+/* 기본 스타일 적용 */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 80vh;
+}
+
+.section {
+  width: 50%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+#find-ID {
+  border-right: 1px solid #ddd;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 24px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  display: none;
+  margin-top: 10px;
+}
