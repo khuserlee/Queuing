@@ -26,15 +26,16 @@ public class UserController {
 	
 	/**
 	 * 회원가입 확인
-	 * @param signupRequestModel
-	 * @return 회원가입 성공 여부
+	 * @param signupRequest
+	 * @return 회원가입 성공 시 : signup_ok
+	 * 				회원가입 실패 시 : signup_ng
 	 */
 	@PostMapping("/user/auth/signupConfirm")
-	public String signupConfirm(SignupRequestModel signupRequestModel) {
+	public String signupConfirm(SignupRequest signupRequest) {
 		System.out.println("[UserController] signupConfirm()");
 		String nextPage = "user/auth/signup_ok";
 		
-		int result = userService.signupConfirm(signupRequestModel);
+		int result = userService.signupConfirm(signupRequest);
 		if(result <= 0)
 			nextPage = "user/auth/signup_ng";
 		return nextPage;
@@ -52,23 +53,25 @@ public class UserController {
 	}
 	
 	/**
-	 * 로그인 확인
-	 * @param
-	 * @return
+	 * 로그인 화면
+	 * @param loginRequest
+	 * @param session
+	 * @return 로그인 성공 시 : login_ok
+	 * 로그인 실패시 : login_ng
 	 */
 	@PostMapping("/user/auth/loginConfirm")
 	public String loginConfirm(LoginRequest loginRequest, HttpSession session) {
 		System.out.println("[UserController] loginConfirm()");
-		String nextPage = "user/member/login_ok";
+		String nextPage = "user/auth/login_ok";
 		LoginRequest loginedRequest = userService.loginConfirm(loginRequest);
 		
 		if(loginedRequest == null) {
-			nextPage = "user/member/login_ng";
+			nextPage = "user/auth/login_ng";
 		} else {
 			session.setAttribute("loginedRequest", loginedRequest);
 			session.setMaxInactiveInterval(60*30);
 		}
-		return nextPage
+		return nextPage;
 	}
 	
 	// 회원정보 찾기

@@ -15,16 +15,16 @@ public class UserService {
 	
 	/**
 	 * 회원가입
-	 * @param signupRequestModel 회원가입 양식
+	 * @param signupRequest 회원가입 양식
 	 * @return 회원가입 성공 여부
 	 */
-	public int signupConfirm(SignupRequestModel signupRequestModel) {
+	public int signupConfirm(SignupRequest signupRequest) {
 		System.out.println("[UserService] signupConfirm()");
 		
-		boolean isMember = userDao.isUserMember(signupRequestModel.getId());
+		boolean isMember = userDao.isUserMember(signupRequest.getId());
 		
 		if(!isMember) {
-			int result = userDao.insertUserAccount(signupRequestModel);
+			int result = userDao.insertUserAccount(signupRequest);
 			
 			if(result > 0)
 				return USER_SIGNUP_SUCCESS;
@@ -35,7 +35,8 @@ public class UserService {
 		}
 	}
 	
-	public LoginRequest logininConfirm(LoginRequest loginRequest) {
+	// 로그인 확인
+	public LoginRequest loginConfirm(LoginRequest loginRequest) {
 		System.out.println("[UserService] loginConfirm()");
 		
 		LoginRequest loginedRequest = userDao.selectUser(loginRequest);

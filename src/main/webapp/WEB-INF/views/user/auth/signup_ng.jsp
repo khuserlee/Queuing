@@ -1,40 +1,22 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-
-
-
-<link href="<c:url value='/resources/css/user/create_account_result.css' />" rel="stylesheet" type="text/css">
-
+    <meta charset="UTF-8">
+    <title>회원가입 실패</title>
+    <link href="<c:url value='/resources/css/signup_okStyles.css' />" rel="stylesheet" type="text/css">
+	<%-- 나중에 singupStyles로 통합할 것 --%>
 </head>
 <body>
-
-	<section>
-		
-		<div id="section_wrap">
-		
-			<div class="word">
-			
-				<h3>CREATE ACCOUNT FAIL!!</h3>
-				
-			</div>
-			
-			<div class="others">
-				
-				<a href="<c:url value='/user/member/createAccountForm' />">create account</a>
-				<a href="<c:url value='/user/member/loginForm' />">login</a>
-				
-			</div>
-		
-		</div>
-		
-	</section>
-
-	
+    <div class="success-container">
+        <h2>회원가입에 실패했습니다.</h2>
+        <div class="buttons">
+			<button onclick="window.location.href='<c:url value="/home"/>'">홈으로 이동</button>
+			<%-- 홈화면 연결 필요 --%>
+			<button onclick="window.location.href='<c:url value="/signup"/>'">회원가입으로 이동</button>
+        </div>
+    </div>
 </body>
 </html>
