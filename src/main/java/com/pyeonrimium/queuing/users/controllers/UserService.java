@@ -1,5 +1,7 @@
 package com.pyeonrimium.queuing.users.controllers;
 
+import java.security.SecureRandom;
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ public class UserService {
 	
 	@Autowired
 	UserDao userDao;
+	
 	
 	/**
 	 * 회원가입
@@ -47,6 +50,56 @@ public class UserService {
 			System.out.println("[UserMemberService] USER MEMBER LOGIN FAIL!!");
 		
 		return loginedRequest;
+		
+	}
+	
+	// 비밀번호 찾기 확인
+	public int findPasswordConfirm(Find_passwordRequest find_passwordRequest) {
+		System.out.println("[UserService] findPasswordConfirm()");
+		
+		Find_passwordRequest selectedFind_passwordRequest = userDao.selectUser(find_passwordRequest.getId(), find_passwordRequest.getName(), find_passwordRequest.getPhone());
+		
+		int result = 0;
+		
+		if (selectedFind_passwordRequest != null) {
+			String newPassword = createNewPassword();
+			result = userDao.updatePassword(find_passwordRequest.getId(), newPassword);
+			/*
+			if (result > 0)
+				sendNewPasswordByMail(find_passwordRequest.getPhone(), newPassword);
+		*/}
+		return result;
+	}
+	
+	private String createNewPassword() {
+		System.out.println("[AdminService] createNewPassword()");
+		
+		char[] chars = new char[] {
+				'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+				'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 
+				'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 
+				'u', 'v', 'w', 'x', 'y', 'z'
+				};
+		
+		StringBuffer stringBuffer = new StringBuffer();
+		SecureRandom secureRandom = new SecureRandom();
+		secureRandom.setSeed(new Date().getTime());
+		
+		int index = 0;
+		int length = chars.length;
+		for (int i = 0; i < 8; i++) {
+			index = secureRandom.nextInt(length);
+		
+			if (index % 2 == 0) 
+				stringBuffer.append(String.valueOf(chars[index]).toUpperCase());
+			else
+				stringBuffer.append(String.valueOf(chars[index]).toLowerCase());
+		
+		}
+		
+		System.out.println("[AdminMemberService] NEW PASSWORD: " + stringBuffer.toString());
+		
+		return stringBuffer.toString();
 		
 	}
 }

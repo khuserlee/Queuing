@@ -30,7 +30,7 @@
 
         <div class="section" id="find-password">
             <h2>비밀번호 찾기</h2>
-            <form id="findPasswordForm" action="<%=request.getContextPath()%>/findPassword" method="post">
+            <form id="findPasswordForm" action="<c:url value='/user/auth/find_passwordConfirm' />" method="post">
                 <div class="input-group">
                     <label for="findName">이름</label>
                     <input type="text" id="findName" name="findName" required>

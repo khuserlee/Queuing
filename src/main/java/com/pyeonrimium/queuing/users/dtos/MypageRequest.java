@@ -1,11 +1,12 @@
-package com.pyeonrimium.queuing.users.controllers;
+package com.pyeonrimium.queuing.users.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class SignupRequest {
+	
+public class MypageRequest {
 	
 	private String id;
 	private String password;
@@ -13,3 +14,4 @@ public class SignupRequest {
 	private String address;
 	private String phone;
 }
+

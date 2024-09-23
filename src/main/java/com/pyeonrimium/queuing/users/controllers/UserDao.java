@@ -63,4 +63,41 @@ public class UserDao {
 	}
 	return loginRequests.size() > 0 ? loginRequests.get(0) : null;
 	}
+	
+	// 비밀번호 찾기
+	public Find_passwordRequest selectUser(String id, String name, String phone) {
+		System.out.println("[UserDao] selectUser()");
+		
+		String sql = "SELECT * FROM users WHERE id = ? AND name = ? AND phone = ?";
+		
+		List<Find_passwordRequest> find_passwordRequests = new ArrayList<Find_passwordRequest>();
+		
+		try {
+			RowMapper<Find_passwordRequest> rowMapper = BeanPropertyRowMapper.newInstance(Find_passwordRequest.class);
+			find_passwordRequests = jdbcTemplate.query(sql, rowMapper, id, name, phone);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return find_passwordRequests.size() > 0 ? find_passwordRequests.get(0) : null;
+	}
+	
+	public int updatePassword(String id, String newPassword) {
+		System.out.println("[UserDao] updatePassword()");
+		
+		String sql = "UPDATE users SET password = ? WHERE id = ?";
+		
+		int result = -1;
+		
+		try {
+			result = jdbcTemplate.update(sql, newPassword, id);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("id:" + id);
+		System.out.println("newPassword: " + newPassword);
+		System.out.println("result: " + result);
+		
+		return result;
+	}
+
 }

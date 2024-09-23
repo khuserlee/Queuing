@@ -53,7 +53,7 @@ public class UserController {
 	}
 	
 	/**
-	 * 로그인 화면
+	 * 로그인 확인
 	 * @param loginRequest
 	 * @param session
 	 * @return 로그인 성공 시 : login_ok
@@ -63,18 +63,22 @@ public class UserController {
 	public String loginConfirm(LoginRequest loginRequest, HttpSession session) {
 		System.out.println("[UserController] loginConfirm()");
 		String nextPage = "user/auth/login_ok";
+		
 		LoginRequest loginedRequest = userService.loginConfirm(loginRequest);
 		
 		if(loginedRequest == null) {
 			nextPage = "user/auth/login_ng";
 		} else {
 			session.setAttribute("loginedRequest", loginedRequest);
-			session.setMaxInactiveInterval(60*30);
+			session.setMaxInactiveInterval(60 * 10);
 		}
 		return nextPage;
 	}
 	
-	// 회원정보 찾기
+	/**
+	 * 회원정보 찾기 화면
+	 * @return 회원정보 찾기 화면 표시
+	 */
 	@GetMapping("/find_userInfo")
 	public String findUserInfoForm() {
 		System.out.println("[UserController] findUserInfoForm");
@@ -85,11 +89,47 @@ public class UserController {
 	// 아이디 찾기 처리
 	
 	// 비밀번호 찾기 처리
+	@PostMapping("/user/auth/find_passwordConfirm")
+	public String find_passwordConfirm(Find_passwordRequest find_passwordRequest) {
+		System.out.println("[UserController] find_passwordConfirm()");
+		
+		String nextPage = "user/auth/find_password_ok";
+		
+		int result = userService.findPasswordConfirm(find_passwordRequest);
+		
+		// ok만 나오는거 보니까 이부분이 제대로 작동 안하는중
+		if (result <= 0)
+			nextPage = "user/auth/find_password_ng";
+		return nextPage;
+	}
 	
 	// 회원정보 수정
 	
 	// 회원정보 수정 확인
 	
-	// 로그아웃 확인
-
+	/**
+	 * 로그아웃 확인
+	 * @param session
+	 * @return 로그아웃 시 초기화면 반환 (아마 home?)
+	 */
+	@GetMapping("/user/auth/logoutConfirm")
+	public String logoutConfirm(HttpSession session) {
+		System.out.println("[UserController] logoutConfirm()");
+		
+		String nextPage = "redirect:/";
+		
+		session.invalidate();
+		
+		return nextPage;
+	}
+	
+	@GetMapping("/mypage")
+	public String mypageform(HttpSession session) {
+		System.out.println("[UserController] mypageform() called");
+		LoginRequest loginedRequest = (LoginRequest) session.getAttribute("loginedRequest");
+		if(loginedRequest == null) {
+			return "redirect:/login";
+		}
+		return "user/auth/mypage";
+		}
 }
