@@ -112,7 +112,7 @@ public class UserController {
 	 * @param session
 	 * @return 로그아웃 시 초기화면 반환 (아마 home?)
 	 */
-	@GetMapping("/user/auth/logoutConfirm")
+	@PostMapping("/logoutConfirm")
 	public String logoutConfirm(HttpSession session) {
 		System.out.println("[UserController] logoutConfirm()");
 		
@@ -131,5 +131,5 @@ public class UserController {
 			return "redirect:/login";
 		}
 		return "user/auth/mypage";
-		}
+	}
 }

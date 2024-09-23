@@ -12,6 +12,9 @@
 <body>
     <div class="success-container">
         <h2>마이페이지 제작중</h2>
+		<form action="<c:url value='/logoutConfirm' />" method="post">
+            <button type="submit" class="logout-button">로그아웃</button>
+        </form>
     </div>
 </body>
 </html>
