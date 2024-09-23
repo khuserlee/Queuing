@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 //예약화면 홈
 public class ReservationController {
-	
 	@Autowired
 	ReservationService reservationService;
 	
@@ -22,6 +21,7 @@ public class ReservationController {
 	}
 	
 	// TODO: 예약 신청(C)
+
 	@PostMapping("/reservation/ReservationConfirm")
 	public String createReservation(ReservationVo reservationVo, Model model) {
 		
@@ -35,6 +35,7 @@ public class ReservationController {
 			model.addAttribute("result", result);
 		}
 		
+
 		return nextPage;
 	}
 }

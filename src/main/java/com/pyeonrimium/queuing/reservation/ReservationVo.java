@@ -11,13 +11,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ReservationVo {
+
 	private int storeId;
+	private int partySize;
+	private String request;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate reservationDate;
 
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime reservationTime;
-	private int partySize;
-	private String request;
+	
 }
