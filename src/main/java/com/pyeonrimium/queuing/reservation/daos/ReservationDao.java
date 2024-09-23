@@ -1,10 +1,13 @@
-package com.pyeonrimium.queuing.reservation;
+package com.pyeonrimium.queuing.reservation.daos;
 
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
+import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
 
 @Component
 public class ReservationDao {

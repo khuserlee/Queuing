@@ -1,9 +1,15 @@
-package com.pyeonrimium.queuing.reservation;
+package com.pyeonrimium.queuing.reservation.Service;
 
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.pyeonrimium.queuing.reservation.daos.ReservationDao;
+import com.pyeonrimium.queuing.reservation.domains.ReservationDTO;
+import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
+import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
+import com.pyeonrimium.queuing.reservation.domains.ReservationVo;
 
 
 

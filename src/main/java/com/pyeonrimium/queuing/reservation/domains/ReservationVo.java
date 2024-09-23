@@ -1,4 +1,4 @@
-package com.pyeonrimium.queuing.reservation;
+package com.pyeonrimium.queuing.reservation.domains;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,10 +1,14 @@
-package com.pyeonrimium.queuing.reservation;
+package com.pyeonrimium.queuing.reservation.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import com.pyeonrimium.queuing.reservation.Service.ReservationService;
+import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
+import com.pyeonrimium.queuing.reservation.domains.ReservationVo;
 
 @Controller
 //예약화면 홈
