@@ -8,6 +8,7 @@ import lombok.Setter;
 
 public class Find_idRequest {
 	
+	private String id;
 	private String name;
 	private String phone;
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 
 @Controller
@@ -90,6 +89,18 @@ public class UserController {
 	}
 	
 	// 아이디 찾기 처리
+	@PostMapping("/user/auth/find_idConfirm")
+	public String find_idConfirm(Find_idRequest find_idRequest, Model model) {
+		System.out.println("[UserController] find_idConfirm()");
+		
+		String foundId = userService.findIdConfirm(find_idRequest);
+		
+		if(foundId == null) {
+			return "user/auth/find_id_ng";
+		}
+		model.addAttribute("foundId", foundId);
+		return "user/auth/find_id_ok";
+	}
 
 	
 	// 비밀번호 찾기 처리
