@@ -4,76 +4,83 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
+import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
+
 @Controller
 public class UserController {
-	
+
 	@Autowired
 	UserService userService;
-	
+
 	/**
 	 * 회원가입 화면
 	 * @return 회원가입 화면 표시
 	 */
-	@GetMapping("/signup")
+	@GetMapping("/signup/form")
 	public String signupForm() {
 		System.out.println("[UserController] signupForm() called");
-		String nextPage = "user/auth/signup";
-		return nextPage;
+
+		return "user/auth/signup";
 	}
-	
+
 	/**
 	 * 회원가입 확인
-	 * @param signupRequest
-	 * @return 회원가입 성공 시 : signup_ok
-	 * 				회원가입 실패 시 : signup_ng
+	 * @param signupRequest 회원가입 양식
+	 * @param model
+	 * @return 회원가입 결과 화면
 	 */
-	@PostMapping("/user/auth/signupConfirm")
-	public String signupConfirm(SignupRequest signupRequest) {
+	@PostMapping("/signup")
+	public String signup(SignupRequest signupRequest, Model model) {
 		System.out.println("[UserController] signupConfirm()");
-		String nextPage = "user/auth/signup_ok";
-		
-		int result = userService.signupConfirm(signupRequest);
-		if(result <= 0)
-			nextPage = "user/auth/signup_ng";
-		return nextPage;
+
+		SignupResponse signupResponse = userService.signup(signupRequest);
+		model.addAttribute("signupResponse", signupResponse);
+
+		return "user/auth/signup_result";
 	}
-	
+
 	/**
 	 * 로그인 화면
 	 * @return 로그인 화면 표시
 	 */
-	@GetMapping("/login")
+	@GetMapping("/login/form")
 	public String loginForm() {
 		System.out.println("[UserController] loginForm()");
-		String nextPage = "/user/auth/login";
-		return nextPage;
+		
+		return "/user/auth/login";
 	}
-	
+
 	/**
 	 * 로그인 화면
-	 * @param loginRequest
+	 * @param loginRequest 로그인 양식
+	 * @param model
 	 * @param session
-	 * @return 로그인 성공 시 : login_ok
-	 * 로그인 실패시 : login_ng
+	 * @return 로그인 결과 화면
 	 */
-	@PostMapping("/user/auth/loginConfirm")
-	public String loginConfirm(LoginRequest loginRequest, HttpSession session) {
+	@PostMapping("/login")
+	public String login(LoginRequest loginRequest, Model model, HttpSession session) {
 		System.out.println("[UserController] loginConfirm()");
-		String nextPage = "user/auth/login_ok";
-		LoginRequest loginedRequest = userService.loginConfirm(loginRequest);
 		
-		if(loginedRequest == null) {
-			nextPage = "user/auth/login_ng";
-		} else {
-			session.setAttribute("loginedRequest", loginedRequest);
-			session.setMaxInactiveInterval(60*30);
+		LoginResponse loginResponse = userService.login(loginRequest);
+		model.addAttribute("loginResponse", loginResponse);
+		
+		// 세션 정보 입력
+		if (loginResponse.isSuccess()) {
+			session.setAttribute("user_id", loginResponse.getUserId());
+			session.setAttribute("role", loginResponse.getRole());
+			
+			// 유효기간 설정
+			session.setMaxInactiveInterval(60 * 30);
 		}
-		return nextPage;
+		
+		return "user/auth/login_result";
 	}
-	
+
 	// 회원정보 찾기
 	@GetMapping("/find_userInfo")
 	public String findUserInfoForm() {
@@ -81,15 +88,15 @@ public class UserController {
 		String nextPage = "/user/auth/find_userInfo";
 		return nextPage;
 	}
-	
+
 	// 아이디 찾기 처리
-	
+
 	// 비밀번호 찾기 처리
-	
+
 	// 회원정보 수정
-	
+
 	// 회원정보 수정 확인
-	
+
 	// 로그아웃 확인
 
 }

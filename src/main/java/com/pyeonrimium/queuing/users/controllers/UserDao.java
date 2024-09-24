@@ -4,16 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
+
 @Component
 public class UserDao {
 	
 	@Autowired
-	JdbcTemplate jdbcTemplate;	
+	private JdbcTemplate jdbcTemplate;	
 	
 	public boolean isUserMember(String id) {
 		System.out.println("[UserDao] isUserMember()");
@@ -62,5 +65,46 @@ public class UserDao {
 		e.printStackTrace();
 	}
 	return loginRequests.size() > 0 ? loginRequests.get(0) : null;
+	}
+
+	/**
+	 * id로 유저 조회
+	 * @param id 사용자 ID
+	 * @return 조회된 유저
+	 */
+	public UserEntity findUserById(String id) {
+		String sql = "SELECT * FROM users WHERE id = ?";
+		UserEntity userEntity = null;
+		
+		try {
+			userEntity = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(UserEntity.class), id);
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return userEntity;
+	}
+
+	/**
+	 * 유저가 점주인지 확인
+	 * @param userId 유저 고유 ID
+	 * @return 점주 유무
+	 */
+	public boolean checkUserIsManager(long userId) {
+		String sql = "SELECT COUNT(*) FROM managers WHERE user_id = ?";
+		boolean isManager = false;
+		
+		try {
+			int result = jdbcTemplate.queryForObject(sql, Integer.class, userId);
+			isManager = result > 0;
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return isManager;
 	}
 }

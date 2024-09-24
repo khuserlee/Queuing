@@ -14,7 +14,7 @@
 <body>
     <!-- 로그인 폼 시작 -->
     <div class="login-container">
-        <form action="<c:url value='/user/auth/loginConfirm' />" name="login" method="post">
+        <form action="<c:url value='/login' />" name="login" method="POST">
             <div class="input-group">
                 <label for="ID">아이디 :</label>
                 <input type="text" id="id" name="id" required>

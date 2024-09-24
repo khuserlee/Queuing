@@ -5,16 +5,14 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <%-- <title>필요시 입력</title>--%>
-    <%-- 타이틀, 푸터는 추후에 include로 대체 예정 --%>
+    <title>회원가</title>
     <link href="<c:url value='/resources/css/signupStyles.css' />" rel="stylesheet" type="text/css">
-	<jsp:include page="../../../../resources/js/loginScript_js.jsp" />
-	
+	<jsp:include page="/resources/js/loginScript_js.jsp" />
 </head>
 <body>
     <div class="signup-container">
         <h2>회원가입</h2>
-        <form action="<c:url value='/user/auth/signupConfirm' />" name="signup" method="post">
+        <form action="<c:url value='/signup' />" name="signup" method="post">
             <div class="input-group">
                 <label for="id">아이디</label>
                 <input type="text" id="id" name="id" required>

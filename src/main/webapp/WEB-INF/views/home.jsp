@@ -12,7 +12,7 @@
 <p>The time on the server is ${serverTime}.</p>
 
 <!-- Spring MVC Controller를 통해 /login URL로 이동 -->
-<form action="${pageContext.request.contextPath}/login" method="get">
+<form action="${pageContext.request.contextPath}/login/form" method="get">
     <button type="submit">Login</button>
 </form>
 
