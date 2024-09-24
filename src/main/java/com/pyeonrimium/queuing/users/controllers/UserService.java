@@ -51,6 +51,19 @@ public class UserService {
 	}
 	
 	// 아이디 찾기 확인
+	public String findIdConfirm(Find_idRequest find_idRequest) {
+		System.out.println("[UserService] findIdConfirm()");
+		
+		Find_idRequest selectedFind_idRequest = userDao.selectUser(find_idRequest.getName(), find_idRequest.getPhone());
+		
+		// 로그로 사용자 정보 확인
+		System.out.println("Seclected User: " + selectedFind_idRequest);
+		
+		if(selectedFind_idRequest != null) {
+			return selectedFind_idRequest.getId();
+		}
+		return null;
+	}
 
 	
 	// 비밀번호 찾기 확인
@@ -72,6 +85,7 @@ public class UserService {
 		return null;
 	}
 	
+	// 임시 비밀번호 생성
 	private String createNewPassword() {
 		System.out.println("[AdminService] createNewPassword()");
 		

@@ -14,7 +14,7 @@
     <div class="container">
         <div class="section" id="find-ID">
             <h2>아이디 찾기</h2>
-            <form id="findIDForm" action="<%=request.getContextPath()%>/findID" method="post">
+            <form id="findIDForm" action="<%=request.getContextPath()%>/user/auth/find_idConfirm" method="post">
                 <div class="input-group">
                     <label for="name">이름</label>
                     <input type="text" id="name" name="name" required>
