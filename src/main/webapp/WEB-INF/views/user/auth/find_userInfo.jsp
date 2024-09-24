@@ -33,15 +33,15 @@
             <form id="findPasswordForm" action="<c:url value='/user/auth/find_passwordConfirm' />" method="post">
                 <div class="input-group">
                     <label for="findName">이름</label>
-                    <input type="text" id="findName" name="findName" required>
+                    <input type="text" name=name required>
                 </div>
                 <div class="input-group">
                     <label for="findPhone">전화번호</label>
-                    <input type="text" id="findPhone" name="findPhone" required>
+                    <input type="text" name="phone" required>
                 </div>
                 <div class="input-group">
                     <label for="findID">아이디</label>
-                    <input type="text" id="findID" name="findID" required>
+                    <input type="text" name="id" required>
                 </div>
                 <button type="submit">비밀번호 찾기</button>
                 <p id="passwordErrorMessage" class="error-message"></p>

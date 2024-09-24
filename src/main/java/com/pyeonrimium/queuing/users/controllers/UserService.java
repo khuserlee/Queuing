@@ -2,8 +2,11 @@ package com.pyeonrimium.queuing.users.controllers;
 
 import java.security.SecureRandom;
 import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 
 @Service
 public class UserService {
@@ -44,31 +47,29 @@ public class UserService {
 		
 		LoginRequest loginedRequest = userDao.selectUser(loginRequest);
 		
-		if (loginedRequest != null)
-			System.out.println("[UserMemberService] USER MEMBER LOGIN SUCCESS!!");
-		else
-			System.out.println("[UserMemberService] USER MEMBER LOGIN FAIL!!");
-		
 		return loginedRequest;
-		
 	}
 	
+	// 아이디 찾기 확인
+
+	
 	// 비밀번호 찾기 확인
-	public int findPasswordConfirm(Find_passwordRequest find_passwordRequest) {
+	public String findPasswordConfirm(Find_passwordRequest find_passwordRequest) {
 		System.out.println("[UserService] findPasswordConfirm()");
 		
-		Find_passwordRequest selectedFind_passwordRequest = userDao.selectUser(find_passwordRequest.getId(), find_passwordRequest.getName(), find_passwordRequest.getPhone());
+		Find_passwordRequest selectedFind_passwordRequest = userDao.selectUser(find_passwordRequest.getName(), find_passwordRequest.getPhone(), find_passwordRequest.getId());
 		
-		int result = 0;
-		
+		// 로그로 사용자 정보 확인
+		System.out.println("Seclected User: " + selectedFind_passwordRequest);
+	
 		if (selectedFind_passwordRequest != null) {
 			String newPassword = createNewPassword();
-			result = userDao.updatePassword(find_passwordRequest.getId(), newPassword);
-			/*
+			int result = userDao.updatePassword(find_passwordRequest.getId(), newPassword);
+	
 			if (result > 0)
-				sendNewPasswordByMail(find_passwordRequest.getPhone(), newPassword);
-		*/}
-		return result;
+				return newPassword;
+		}
+		return null;
 	}
 	
 	private String createNewPassword() {

@@ -4,8 +4,11 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 
 @Controller
 public class UserController {
@@ -87,19 +90,21 @@ public class UserController {
 	}
 	
 	// 아이디 찾기 처리
+
 	
 	// 비밀번호 찾기 처리
 	@PostMapping("/user/auth/find_passwordConfirm")
-	public String find_passwordConfirm(Find_passwordRequest find_passwordRequest) {
+	public String find_passwordConfirm(Find_passwordRequest find_passwordRequest, Model model) {
 		System.out.println("[UserController] find_passwordConfirm()");
 		
+		String newPassword = userService.findPasswordConfirm(find_passwordRequest);
 		String nextPage = "user/auth/find_password_ok";
 		
-		int result = userService.findPasswordConfirm(find_passwordRequest);
-		
-		// ok만 나오는거 보니까 이부분이 제대로 작동 안하는중
-		if (result <= 0)
+		if (newPassword == null) {
 			nextPage = "user/auth/find_password_ng";
+		} else {
+			model.addAttribute("newPassword", newPassword);
+		}
 		return nextPage;
 	}
 	
@@ -123,6 +128,11 @@ public class UserController {
 		return nextPage;
 	}
 	
+	/**
+	 * 마이페이지 화면
+	 * @param session
+	 * @return 로그인 세션 확인 시 마이페이지 화면 표시
+	 */
 	@GetMapping("/mypage")
 	public String mypageform(HttpSession session) {
 		System.out.println("[UserController] mypageform() called");

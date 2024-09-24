@@ -64,8 +64,12 @@ public class UserDao {
 	return loginRequests.size() > 0 ? loginRequests.get(0) : null;
 	}
 	
-	// 비밀번호 찾기
-	public Find_passwordRequest selectUser(String id, String name, String phone) {
+	
+	// SELECT
+	
+	// 비밀번호 찾기 용
+	public Find_passwordRequest selectUser(String name, String phone, String id) {
+		System.out.println("[UserDao] selectUser() - id: " + id + ", name: " + name + ", phone: " + phone);
 		System.out.println("[UserDao] selectUser()");
 		
 		String sql = "SELECT * FROM users WHERE id = ? AND name = ? AND phone = ?";
@@ -81,6 +85,8 @@ public class UserDao {
 		return find_passwordRequests.size() > 0 ? find_passwordRequests.get(0) : null;
 	}
 	
+	
+	// UPDATE
 	public int updatePassword(String id, String newPassword) {
 		System.out.println("[UserDao] updatePassword()");
 		
