@@ -88,6 +88,7 @@ public class UserController {
 		return nextPage;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * 아이디 찾기
 	 * @param find_idRequest
@@ -97,6 +98,12 @@ public class UserController {
 	@PostMapping("/users/find/id")
 	public String find_idConfirm(Find_idRequest find_idRequest, Model model) {
 		System.out.println("[UserController] findId()");
+=======
+	// 아이디 찾기 처리
+	@PostMapping("/user/auth/find_idConfirm")
+	public String find_idConfirm(Find_idRequest find_idRequest, Model model) {
+		System.out.println("[UserController] find_idConfirm()");
+>>>>>>> 6e77df042bead517fd1d3cfc90bd9cc7870fa0a4
 		
 		String foundId = userService.findIdConfirm(find_idRequest);
 		
