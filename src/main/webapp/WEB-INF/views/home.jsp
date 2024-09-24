@@ -12,8 +12,8 @@
 
 <p>The time on the server is ${serverTime}.</p>
 
-<a href="<c:url value='/login' />">로그인</a>
-<a href="<c:url value='/mypage' />">마이페이지</a>
+<a href="<c:url value='/login/form' />">로그인</a>
+<a href="<c:url value='/users/profile' />">프로필</a>
 
 </body>
 </html>

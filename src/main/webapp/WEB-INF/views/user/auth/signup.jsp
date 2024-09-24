@@ -8,13 +8,13 @@
     <%-- <title>필요시 입력</title>--%>
     <%-- 타이틀, 푸터는 추후에 include로 대체 예정 --%>
     <link href="<c:url value='/resources/css/signupStyles.css' />" rel="stylesheet" type="text/css">
-	<jsp:include page="../../../../resources/js/loginScript_js.jsp" />
+	<jsp:include page="/resources/js/signupScript_js.jsp" />
 	
 </head>
 <body>
     <div class="signup-container">
         <h2>회원가입</h2>
-        <form action="<c:url value='/user/auth/signupConfirm' />" name="signup" method="post">
+        <form action="<c:url value='/signup' />" name="signup" method="post" onsubmit="return signupForm()">
             <div class="input-group">
                 <label for="id">아이디</label>
                 <input type="text" id="id" name="id" required>
@@ -40,12 +40,7 @@
                 <input type="text" id="phone" name="phone" required>
             </div>
             <button type="submit">회원가입</button>
-            <p id="signup_errorMessage" class="error-message">
-                <%= request.getAttribute("signupError") != null ? request.getAttribute("signupError") : "" %>
-            </p>
         </form>
     </div>
-
-    <%-- <script src="<%=request.getContextPath()%>/resources/js/signupScript.js"></script> --%>
 </body>
 </html>

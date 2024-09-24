@@ -8,13 +8,13 @@
     <%-- <title>필요시 입력</title>--%>
     <%-- 타이틀, 푸터는 추후에 include로 대체 예정 --%>
     <link href="<c:url value='/resources/css/find_userInfoStyles.css' />" rel="stylesheet" type="text/css">
-	<jsp:include page="../../../../resources/js/find_userInfoScript_js.jsp" />
+	<jsp:include page="/resources/js/find_userInfoScript_js.jsp" />
 	
 </head>
     <div class="container">
         <div class="section" id="find-ID">
             <h2>아이디 찾기</h2>
-            <form id="findIDForm" action="<%=request.getContextPath()%>/user/auth/find_idConfirm" method="post">
+            <form id="findIDForm" action="<%=request.getContextPath()%>/users/find/id" method="post">
                 <div class="input-group">
                     <label for="name">이름</label>
                     <input type="text" id="name" name="name" required>
@@ -30,7 +30,7 @@
 
         <div class="section" id="find-password">
             <h2>비밀번호 찾기</h2>
-            <form id="findPasswordForm" action="<c:url value='/user/auth/find_passwordConfirm' />" method="post">
+            <form id="findPasswordForm" action="<c:url value='/users/find/password' />" method="post">
                 <div class="input-group">
                     <label for="findName">이름</label>
                     <input type="text" name=name required>

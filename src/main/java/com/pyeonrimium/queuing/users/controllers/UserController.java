@@ -19,22 +19,22 @@ public class UserController {
 	 * 회원가입 화면
 	 * @return 회원가입 화면 표시
 	 */
-	@GetMapping("/signup")
+	@GetMapping("/signup/form")
 	public String signupForm() {
-		System.out.println("[UserController] signupForm() called");
+		System.out.println("[UserController] signupForm()");
 		String nextPage = "user/auth/signup";
 		return nextPage;
 	}
 	
 	/**
-	 * 회원가입 확인
+	 * 회원가입
 	 * @param signupRequest
 	 * @return 회원가입 성공 시 : signup_ok
 	 * 				회원가입 실패 시 : signup_ng
 	 */
-	@PostMapping("/user/auth/signupConfirm")
+	@PostMapping("/signup")
 	public String signupConfirm(SignupRequest signupRequest) {
-		System.out.println("[UserController] signupConfirm()");
+		System.out.println("[UserController] signup()");
 		String nextPage = "user/auth/signup_ok";
 		
 		int result = userService.signupConfirm(signupRequest);
@@ -47,7 +47,7 @@ public class UserController {
 	 * 로그인 화면
 	 * @return 로그인 화면 표시
 	 */
-	@GetMapping("/login")
+	@GetMapping("/login/form")
 	public String loginForm() {
 		System.out.println("[UserController] loginForm()");
 		String nextPage = "/user/auth/login";
@@ -61,7 +61,7 @@ public class UserController {
 	 * @return 로그인 성공 시 : login_ok
 	 * 로그인 실패시 : login_ng
 	 */
-	@PostMapping("/user/auth/loginConfirm")
+	@PostMapping("/login")
 	public String loginConfirm(LoginRequest loginRequest, HttpSession session) {
 		System.out.println("[UserController] loginConfirm()");
 		String nextPage = "user/auth/login_ok";
@@ -78,20 +78,25 @@ public class UserController {
 	}
 	
 	/**
-	 * 회원정보 찾기 화면
+	 * 아이디, 비밀번호 찾기 화면
 	 * @return 회원정보 찾기 화면 표시
 	 */
-	@GetMapping("/find_userInfo")
-	public String findUserInfoForm() {
-		System.out.println("[UserController] findUserInfoForm");
+	@GetMapping("/users/find/form")
+	public String findForm() {
+		System.out.println("[UserController] findForm");
 		String nextPage = "/user/auth/find_userInfo";
 		return nextPage;
 	}
 	
-	// 아이디 찾기 처리
-	@PostMapping("/user/auth/find_idConfirm")
+	/**
+	 * 아이디 찾기
+	 * @param find_idRequest
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/users/find/id")
 	public String find_idConfirm(Find_idRequest find_idRequest, Model model) {
-		System.out.println("[UserController] find_idConfirm()");
+		System.out.println("[UserController] findId()");
 		
 		String foundId = userService.findIdConfirm(find_idRequest);
 		
@@ -103,10 +108,15 @@ public class UserController {
 	}
 
 	
-	// 비밀번호 찾기 처리
-	@PostMapping("/user/auth/find_passwordConfirm")
+	/**
+	 * 비밀번호 찾기
+	 * @param find_passwordRequest
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/users/find/password")
 	public String find_passwordConfirm(Find_passwordRequest find_passwordRequest, Model model) {
-		System.out.println("[UserController] find_passwordConfirm()");
+		System.out.println("[UserController] findPassword()");
 		
 		String newPassword = userService.findPasswordConfirm(find_passwordRequest);
 		String nextPage = "user/auth/find_password_ok";
@@ -128,9 +138,9 @@ public class UserController {
 	 * @param session
 	 * @return 로그아웃 시 초기화면 반환 (아마 home?)
 	 */
-	@PostMapping("/logoutConfirm")
+	@PostMapping("/logout")
 	public String logoutConfirm(HttpSession session) {
-		System.out.println("[UserController] logoutConfirm()");
+		System.out.println("[UserController] logout()");
 		
 		String nextPage = "redirect:/";
 		
@@ -140,17 +150,17 @@ public class UserController {
 	}
 	
 	/**
-	 * 마이페이지 화면
+	 * 회원정보 화면
 	 * @param session
 	 * @return 로그인 세션 확인 시 마이페이지 화면 표시
 	 */
-	@GetMapping("/mypage")
-	public String mypageform(HttpSession session) {
-		System.out.println("[UserController] mypageform() called");
+	@GetMapping("/users/profile")
+	public String profileform(HttpSession session) {
+		System.out.println("[UserController] profileForm()");
 		LoginRequest loginedRequest = (LoginRequest) session.getAttribute("loginedRequest");
 		if(loginedRequest == null) {
-			return "redirect:/login";
+			return "redirect:/login/form";
 		}
-		return "user/auth/mypage";
+		return "user/auth/profile";
 	}
 }
