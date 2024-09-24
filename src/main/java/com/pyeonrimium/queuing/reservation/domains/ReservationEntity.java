@@ -1,6 +1,10 @@
 package com.pyeonrimium.queuing.reservation.domains;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,12 +18,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationEntity {
-	private int userId;
-	private int storeId;
+	private long userId;
+	private long storeId;
 	private String reservationNumber;
-	private LocalDateTime reservationDate;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate reservationDate;
+
+	@DateTimeFormat(pattern = "HH:mm")
+	private LocalTime reservationTime;
+	
 	private int partySize;
-	private String requset;
+	private String request;
 	private String status;
 	private LocalDateTime createdAt;
 	private LocalDateTime modifiedAt;

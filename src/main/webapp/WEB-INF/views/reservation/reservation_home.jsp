@@ -134,7 +134,7 @@
 	<div class="store-name">가게 이름</div>
 	<h1>예약 신청</h1>
 
-    <form id="reservation-form" action="<c:url value='/reservation/ReservationConfirm' />" method="post">
+    <form id="reservation-form" action="<c:url value='/reservations' />" method="post">
         <fieldset name="time">
             <legend>예약 시간 선택</legend>
             <div class="container">

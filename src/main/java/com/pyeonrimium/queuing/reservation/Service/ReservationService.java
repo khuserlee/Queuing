@@ -1,6 +1,8 @@
 package com.pyeonrimium.queuing.reservation.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,52 +13,58 @@ import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationVo;
 
-
-
-
-
 @Service
 public class ReservationService {
 	@Autowired
 	private ReservationDao reservationDao;
 	
 	// TODO: 예약 신청 처리
-	public ReservationResponse createReservation(ReservationVo reservationVo) {
+	public ReservationResponse createReservation(long user_id, ReservationVo reservationVo) {
 		// 요청 데이터 확인
 		System.out.println("[ReservationService] createReservation()");
-//		System.out.println("date: " + reservationVo.getReservationDate());
-//		System.out.println("time: " + reservationVo.getReservationTime());
-//		System.out.println("size: " + reservationVo.getPartySize());
-//		System.out.println("request: " + reservationVo.getRequest());
-		
+		System.out.println("date: " + reservationVo.getReservationDate());
+		System.out.println("time: " + reservationVo.getReservationTime());
+		System.out.println("size: " + reservationVo.getPartySize());
+		System.out.println("request: " + reservationVo.getRequest());
 		
 		// 예약 번호 만들기
-////		var reservationDate = reservation.getReservationDate();
-////		
-////		String temp = reservationDate.toString()
-////				.replace("-", "")
-////				.replace(":", "");
-////		reservation.setReservationNumber(temp);
-//		
-//		String reservationNumber = makeReservationNumber(reservation);
-//		reservation.setReservationNumber(reservationNumber);
-		
-		// TODO: ReservatinEntity(구 Reservation) 생성
+		String reservationNumber = makeReservationNumber(reservationVo);
+		System.out.println("[ReservationService} makeReservationNumber()");
+		System.out.println("makeReservationNumber : " + makeReservationNumber(reservationVo));
+
+		// ReservatinEntity 생성
 		ReservationEntity reservationEntity = new ReservationEntity();
+		reservationEntity.setReservationNumber(reservationNumber);
+		reservationEntity.setUserId(user_id);
+		
+		// TODO: 식당 아이디 확인
+		reservationEntity.setStoreId(1);
 		
 		// DAO 전달 -> DB에 저장
-		ReservationResponse result = reservationDao.addReservation(reservationEntity);
-
+		boolean isSuccess = reservationDao.addReservation(reservationEntity);
 		
 		// 결과 반환
-		return result;
+		if (isSuccess) {
+			return ReservationResponse.builder()
+					.isSuccess(true)
+					.message("예약에 성공했습니다.")
+					.reservationNumber(reservationEntity.getReservationNumber())
+					.partySize(reservationEntity.getPartySize())
+					.request(reservationEntity.getRequest())
+					.build();
+		} else {
+			return ReservationResponse.builder()
+					.isSuccess(false)
+					.message("예약에 실패했습니다.")
+					.build();
+		}
 	}
 	
-
 	private ReservationEntity getReservation(ReservationVo vo) {
 		ReservationEntity reservationEntity = new ReservationEntity();
 		reservationEntity.setReservationNumber("");
-		reservationEntity.setReservationDate(LocalDateTime.now());
+		reservationEntity.setReservationDate(LocalDate.now());
+		reservationEntity.setReservationTime(LocalTime.now());
 		reservationEntity.setPartySize(vo.getPartySize());
 		
 		return reservationEntity;
@@ -65,19 +73,33 @@ public class ReservationService {
 	private ReservationEntity getReservationUsingBuilder(ReservationVo vo) {
 		return ReservationEntity.builder()
 				.reservationNumber("")
-				.reservationDate(LocalDateTime.now())
+				.reservationDate(LocalDate.now())
+				.reservationTime(LocalTime.now())
 				.partySize(vo.getPartySize())
 				.build();
 	}
 	
-	
-	private String makeReservationNumber(ReservationEntity reservation) {
+	private String makeReservationNumber(LocalDate date, LocalTime time) {
+		
+		String strDate = date.toString().replace("-", "");
+		String strTime = time.toString().replace(":", "");
+		
+		String reservationNumber = strDate + strTime;
 
-		var reservationDate = reservation.getReservationDate();
-				
-		String reservationNumber = reservationDate.toString()
-				.replace("-", "")
-				.replace(":", "");
+		return reservationNumber;
+	}
+	
+	/**
+	 * 예약 번호 만들기
+	 * @param reservationVo 예약 신청 양식
+	 * @return 예약 번호
+	 */
+	private String makeReservationNumber(ReservationVo reservationVo) {
+		
+		String strDate = reservationVo.getReservationDate().toString().replace("-", "");
+		String strTime = reservationVo.getReservationTime().toString().replace(":", "");
+		
+		String reservationNumber = strDate + strTime;
 
 		return reservationNumber;
 	}

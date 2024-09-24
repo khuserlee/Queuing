@@ -1,5 +1,7 @@
 package com.pyeonrimium.queuing.reservation.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,20 +26,45 @@ public class ReservationController {
 		return "reservation/reservation_home";
 	}
 	
+	private Long getUserId(HttpSession session) {
+		// user_id 조회
+//		Long userId = (Long)session.getAttribute("user_id");
+//		return userId;
+		
+		Long userId = new Long(1);
+		return userId;
+	}
+	
 	// TODO: 예약 신청(C)
 
-	@PostMapping("/reservation/ReservationConfirm")
-	public String createReservation(ReservationVo reservationVo, Model model) {
+	@PostMapping("/reservations")
+	public String createReservation(ReservationVo reservationVo, Model model, HttpSession session) {
+		Long userId = getUserId(session);
 		
-		ReservationResponse result = reservationService.createReservation(reservationVo);
+		// 로그인이 안됐을 경우
+		if (userId == null) {
+			// 로그인 페이지로 이동
+			return "redirect:/login/form";
+		}
 		
-		if(result == null) {
+		ReservationResponse reservationResponse
+			= reservationService.createReservation(userId, reservationVo);
+		
+		if (reservationResponse.isSuccess()) {
+			nextPage = "/reservation/reservation_success";
+			model.addAttribute("reservationResponse", reservationResponse);
+		} else {
 			// 실패했을 때 경로
 			nextPage = "/reservation/reservation_fail";
-		} else {
-			nextPage = "/reservation/reservation_success";
-			model.addAttribute("result", result);
 		}
+		
+//		if(result == null) {
+//			// 실패했을 때 경로
+//			nextPage = "/reservation/reservation_fail";
+//		} else {
+//			nextPage = "/reservation/reservation_success";
+//			model.addAttribute("result", result);
+//		}
 		
 
 		return nextPage;

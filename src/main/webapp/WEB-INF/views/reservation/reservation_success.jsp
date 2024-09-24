@@ -46,7 +46,7 @@
 
     <div class="details">
         <p>고객님이 선택하신 날짜와 시간:</p>
-        <p id="selected-date-time">2024-09-11 12:00</p> <!-- 예시로 날짜와 시간 설정 -->
+        <p id="selected-date-time">${reservationResponse.getReservationDate()}</p> <!-- 예시로 날짜와 시간 설정 -->
         <p>인원수: <span id="selected-person-count">3명</span></p> <!-- 예시로 인원수 설정 -->
         <p>요청사항: <span id="selected-request">특별 요청 없음</span></p> <!-- 예시로 요청사항 설정 -->
     </div>
