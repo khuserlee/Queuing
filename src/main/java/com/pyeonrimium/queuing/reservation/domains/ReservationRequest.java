@@ -10,9 +10,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReservationVo {
+public class ReservationRequest {
 
 	private int storeId;
+	private String storeName = "가게 이름";
 	private int partySize;
 	private String request;
 	

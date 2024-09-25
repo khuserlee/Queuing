@@ -11,7 +11,7 @@ import com.pyeonrimium.queuing.reservation.daos.ReservationDao;
 import com.pyeonrimium.queuing.reservation.domains.ReservationDTO;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
-import com.pyeonrimium.queuing.reservation.domains.ReservationVo;
+import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 
 @Service
 public class ReservationService {
@@ -19,48 +19,48 @@ public class ReservationService {
 	private ReservationDao reservationDao;
 	
 	// TODO: 예약 신청 처리
-	public ReservationResponse createReservation(long user_id, ReservationVo reservationVo) {
-		// 요청 데이터 확인
-		System.out.println("[ReservationService] createReservation()");
-		System.out.println("date: " + reservationVo.getReservationDate());
-		System.out.println("time: " + reservationVo.getReservationTime());
-		System.out.println("size: " + reservationVo.getPartySize());
-		System.out.println("request: " + reservationVo.getRequest());
-		
+	public ReservationResponse createReservation(long userId, ReservationRequest reservationRequest) {
 		// 예약 번호 만들기
-		String reservationNumber = makeReservationNumber(reservationVo);
-		System.out.println("[ReservationService} makeReservationNumber()");
-		System.out.println("makeReservationNumber : " + makeReservationNumber(reservationVo));
-
-		// ReservatinEntity 생성
-		ReservationEntity reservationEntity = new ReservationEntity();
-		reservationEntity.setReservationNumber(reservationNumber);
-		reservationEntity.setUserId(user_id);
+		String reservationNumber = makeReservationNumber(reservationRequest);
 		
 		// TODO: 식당 아이디 확인
-		reservationEntity.setStoreId(1);
+		long storeId = 1;
+		
+		// ReservatinEntity 생성
+		ReservationEntity reservationEntity = ReservationEntity.builder()
+				.userId(userId)
+				.storeId(storeId)
+				.reservationNumber(reservationNumber)
+				.reservationDate(reservationRequest.getReservationDate())
+				.reservationTime(reservationRequest.getReservationTime())
+				.partySize(reservationRequest.getPartySize())
+				.request(reservationRequest.getRequest())
+				.createdAt(LocalDateTime.now())
+				.build();
 		
 		// DAO 전달 -> DB에 저장
 		boolean isSuccess = reservationDao.addReservation(reservationEntity);
 		
 		// 결과 반환
-		if (isSuccess) {
-			return ReservationResponse.builder()
-					.isSuccess(true)
-					.message("예약에 성공했습니다.")
-					.reservationNumber(reservationEntity.getReservationNumber())
-					.partySize(reservationEntity.getPartySize())
-					.request(reservationEntity.getRequest())
-					.build();
-		} else {
+		if (!isSuccess) {
 			return ReservationResponse.builder()
 					.isSuccess(false)
 					.message("예약에 실패했습니다.")
 					.build();
 		}
+		
+		return ReservationResponse.builder()
+				.isSuccess(true)
+				.message("예약에 성공했습니다.")
+				.reservationNumber(reservationEntity.getReservationNumber())
+				.reservationDate(reservationEntity.getReservationDate())
+				.reservationTime(reservationEntity.getReservationTime())
+				.partySize(reservationEntity.getPartySize())
+				.request(reservationEntity.getRequest())
+				.build();
 	}
 	
-	private ReservationEntity getReservation(ReservationVo vo) {
+	private ReservationEntity getReservation(ReservationRequest vo) {
 		ReservationEntity reservationEntity = new ReservationEntity();
 		reservationEntity.setReservationNumber("");
 		reservationEntity.setReservationDate(LocalDate.now());
@@ -70,7 +70,7 @@ public class ReservationService {
 		return reservationEntity;
 	}
 	
-	private ReservationEntity getReservationUsingBuilder(ReservationVo vo) {
+	private ReservationEntity getReservationUsingBuilder(ReservationRequest vo) {
 		return ReservationEntity.builder()
 				.reservationNumber("")
 				.reservationDate(LocalDate.now())
@@ -91,13 +91,13 @@ public class ReservationService {
 	
 	/**
 	 * 예약 번호 만들기
-	 * @param reservationVo 예약 신청 양식
+	 * @param reservationRequest 예약 신청 양식
 	 * @return 예약 번호
 	 */
-	private String makeReservationNumber(ReservationVo reservationVo) {
+	private String makeReservationNumber(ReservationRequest reservationRequest) {
 		
-		String strDate = reservationVo.getReservationDate().toString().replace("-", "");
-		String strTime = reservationVo.getReservationTime().toString().replace(":", "");
+		String strDate = reservationRequest.getReservationDate().toString().replace("-", "");
+		String strTime = reservationRequest.getReservationTime().toString().replace(":", "");
 		
 		String reservationNumber = strDate + strTime;
 
@@ -116,7 +116,7 @@ public class ReservationService {
 	// TODO: 예약 수정(U)
 	
 	// TODO: 예약 삭제(D)
-//	public List<ReservationVos> listupRes(){
+//	public List<reservationRequest> listupRes(){
 //		System.out.println("[ReservationService] listipRes()");
 //		
 //		return ReservationDao.selectRes();

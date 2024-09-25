@@ -131,7 +131,7 @@
 	<div class="title">
 		<h3>큐잉(Queuing) - 식당 예약/웨이팅 웹 서비스</h3>
 	</div>
-	<div class="store-name">가게 이름</div>
+	<div class="store-name">${reservationRequest.getStoreName()}</div>
 	<h1>예약 신청</h1>
 
     <form id="reservation-form" action="<c:url value='/reservations' />" method="post">

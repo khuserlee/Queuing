@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.pyeonrimium.queuing.reservation.Service.ReservationService;
+import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
-import com.pyeonrimium.queuing.reservation.domains.ReservationVo;
 
 @Controller
 //예약화면 홈
@@ -19,10 +19,13 @@ public class ReservationController {
 	ReservationService reservationService;
 	
 	private String nextPage;
-
+	
+	
 	@GetMapping("/reservations/form") // 예약 신청 화면 불러오기
-	public String reservationHome() {
+	public String reservationHome(ReservationRequest reservationRequest, Model model) {
 		System.out.println("[ReservationController] reservationHome()");
+		model.addAttribute("reservationRequest", reservationRequest);
+		System.out.println("input storeName : " + reservationRequest.getStoreName());
 		return "reservation/reservation_home";
 	}
 	
@@ -38,7 +41,7 @@ public class ReservationController {
 	// TODO: 예약 신청(C)
 
 	@PostMapping("/reservations")
-	public String createReservation(ReservationVo reservationVo, Model model, HttpSession session) {
+	public String createReservation(ReservationRequest reservationRequest, Model model, HttpSession session) {
 		Long userId = getUserId(session);
 		
 		// 로그인이 안됐을 경우
@@ -48,7 +51,7 @@ public class ReservationController {
 		}
 		
 		ReservationResponse reservationResponse
-			= reservationService.createReservation(userId, reservationVo);
+			= reservationService.createReservation(userId, reservationRequest);
 		
 		if (reservationResponse.isSuccess()) {
 			nextPage = "/reservation/reservation_success";
@@ -65,11 +68,11 @@ public class ReservationController {
 //			nextPage = "/reservation/reservation_success";
 //			model.addAttribute("result", result);
 //		}
-		
-
 		return nextPage;
 	}
+	
 }
+
 //		// TODO: 유저 정보 확인
 //		if (session == null) {
 //			return nextPage; // 실패했을 때 경로
