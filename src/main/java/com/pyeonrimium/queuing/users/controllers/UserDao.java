@@ -30,7 +30,7 @@ public class UserDao {
 	
 	public int insertUserAccount(SignupRequest signupRequest) {
 		System.out.println("[UserDao] insertUserAccount()");
-		String sql = "INSERT INTO users (id, password, name, address, phone) VALUES (?, ?, ?, ?, ?)";;
+		String sql = "INSERT INTO users (id, password, name, address, phone) VALUES (?, ?, ?, ?, ?);";
 		int result = -1;
 		
 		try {
@@ -79,7 +79,7 @@ public class UserDao {
 		try {
 			userEntity = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(UserEntity.class), id);
 		} catch (DataAccessException e) {
-			e.printStackTrace();
+			System.out.println("[UserDao] 가입되지 않은 ID입니다. id: " + id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

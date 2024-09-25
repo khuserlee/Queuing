@@ -13,8 +13,4 @@
 	<util:properties id="db_dev"
 		location="/WEB-INF/spring/properties/secret/db_dev.properties" />
 
-<<<<<<< HEAD
 </beans>
-=======
-</beans>
->>>>>>> fix/member-auth

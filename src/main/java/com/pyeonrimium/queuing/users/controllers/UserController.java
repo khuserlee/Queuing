@@ -23,8 +23,6 @@ public class UserController {
 	 */
 	@GetMapping("/signup/form")
 	public String signupForm() {
-		System.out.println("[UserController] signupForm() called");
-
 		return "user/auth/signup";
 	}
 
@@ -36,8 +34,6 @@ public class UserController {
 	 */
 	@PostMapping("/signup")
 	public String signup(SignupRequest signupRequest, Model model) {
-		System.out.println("[UserController] signupConfirm()");
-
 		SignupResponse signupResponse = userService.signup(signupRequest);
 		model.addAttribute("signupResponse", signupResponse);
 
@@ -50,8 +46,6 @@ public class UserController {
 	 */
 	@GetMapping("/login/form")
 	public String loginForm() {
-		System.out.println("[UserController] loginForm()");
-		
 		return "/user/auth/login";
 	}
 
@@ -64,8 +58,6 @@ public class UserController {
 	 */
 	@PostMapping("/login")
 	public String login(LoginRequest loginRequest, Model model, HttpSession session) {
-		System.out.println("[UserController] loginConfirm()");
-		
 		LoginResponse loginResponse = userService.login(loginRequest);
 		model.addAttribute("loginResponse", loginResponse);
 		
