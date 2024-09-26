@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.pyeonrimium.queuing.menus.daos.MenuListMenuFindByStoreIdDao;
+import com.pyeonrimium.queuing.menus.daos.MenuListDao;
 import com.pyeonrimium.queuing.menus.domains.ForUpdateMenu;
 import com.pyeonrimium.queuing.menus.domains.WillBePostedMenu;
 import com.pyeonrimium.queuing.menus.domains.WillBeUpdatedMenu;
@@ -20,7 +20,7 @@ import com.pyeonrimium.queuing.menus.services.LatestMenuDeleteService;
 import com.pyeonrimium.queuing.menus.services.LatestMenuPostService;
 import com.pyeonrimium.queuing.menus.services.LatestMenuUpdateService;
 
-public class LatestMenuController {
+public class MenuController {
 	
 	@PostMapping("/menu/X")
 	public String handleMenuAction(@RequestParam("action") String action, 
@@ -28,32 +28,55 @@ public class LatestMenuController {
 		 if ("edit".equals(action)) {
 			 String storeId = (String) session.getAttribute("storeId"); // 누군가의 로직에서 가져옴? 
 			 return "redirect:/menu/updateView?selectedMenuId=" + selectedMenuId + "&storeId=" + storeId; }
-		 
-		 
-	
+		
 	else if ("delete".equals(action)) {
-
         return "redirect:/menu/delete"; // selectedMenuId를 /menu/delete로 다시 보내야 할 것 같은데.. 
     } 
 		 
 		 
 	else if ("register".equals(action)) {
-		
         return "MenuPost";
     }
-
+	
+	
     return "redirect:/menu/list";
-
 }
 	
-	@Autowired MenuListMenuFindByStoreIdDao menuListMenuFindByStoreIdDao;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@Autowired MenuListDao menuListDao;
 	@GetMapping("/menu/list")
 	public String listMenus(Model model, HttpSession session) {
+		
 		String storeId = (String) session.getAttribute("storeId");
-        List<Menu> menuList = menuListMenuFindByStoreIdDao.findByStoreId(storeId); //DAo 할래..
+		
+        List<Menu> menuList = menuListDao.findByStoreId(storeId); //DAo 할래..
         model.addAttribute("menu", menuList); //menu인가 menus인가 
+        
         return "MenuList"; // 메뉴 목록 화면 
     }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -63,6 +86,17 @@ public class LatestMenuController {
 		latestMenuDeleteService.deleteMenu(selectedMenuId);
 		return "redirect:/menu/list";
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -82,7 +116,14 @@ try {
 		        return "MenuUpdate" ;
 	}
 	
-//	-----------------------------------------------------------------------------------
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -109,6 +150,14 @@ return "redirect:/menu/list";
 			return "menu/register"; //+ 메뉴등록에 실패했습니다. 
 		}
   }
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

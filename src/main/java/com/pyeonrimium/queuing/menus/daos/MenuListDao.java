@@ -8,7 +8,7 @@ import com.pyeonrimium.queuing.menus.domains.entities.Menu;
 import java.util.List;
 
 @Repository
-public class MenuListMenuFindByStoreIdDao {
+public class MenuListDao {
 	
 @Autowired
 private JdbcTemplate jdbcTemplate;
