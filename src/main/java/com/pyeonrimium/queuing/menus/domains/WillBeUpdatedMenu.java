@@ -1,5 +1,5 @@
 package com.pyeonrimium.queuing.menus.domains;
-
+//사실 이게 VO인데.. 이름을 VO철자를 포함하라는건가..? 
 public class WillBeUpdatedMenu {
 	
 //	입력 필드를 등록이랑 똑같이 해야할까? 수정된곳이 3개 다 일수 있잖아.. 
@@ -43,6 +43,10 @@ public class WillBeUpdatedMenu {
 	 public void setDescription(String description) {
 	        this.description = description;
 	    }
+
+	
+		
+	
 	
 	
 

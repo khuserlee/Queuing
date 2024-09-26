@@ -9,11 +9,11 @@ import com.pyeonrimium.queuing.menus.domains.ForUpdateMenu;
 public class ForUpdatemenuJspService {
 	
 	@Autowired
-	ForUpdateMenuJspDao MenuDao 
+	ForUpdateMenuJspDao MenuDao ;
 	
-	public ForUpdateMenu ForUpdateMenuJspGetThatWantedMenu(String selectedMenuId) {
+	public ForUpdateMenu ForUpdateMenuJspGetThatWantedMenu(String selectedMenuId,String storeId) {
 		
-	MenuDao.ForUpdateMenuJspGetThatWantedMenu(selectedMenuId);
+	return MenuDao.ForUpdateMenuJspGetThatWantedMenu(selectedMenuId,storeId);
 	
  };
  
