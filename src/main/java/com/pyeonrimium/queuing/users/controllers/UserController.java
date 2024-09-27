@@ -131,19 +131,14 @@ public class UserController {
 	// 회원정보 수정 확인
 
 	/**
-	 * 로그아웃 확인
+	 * 로그아웃
 	 * @param session
-	 * @return 로그아웃 시 초기화면 반환 (아마 home?)
+	 * @return 홈 화면
 	 */
 	@PostMapping("/logout")
 	public String logoutConfirm(HttpSession session) {
-		System.out.println("[UserController] logout()");
-		
-		String nextPage = "redirect:/";
-		
 		session.invalidate();
-		
-		return nextPage;
+		return "redirect:/";
 	}
 	
 	/**

@@ -21,7 +21,7 @@
 					</a>
 				</c:when>
 				<c:otherwise>
-					<a class="header_nav_menu" href="<c:url value='/logout' />">
+					<a class="header_nav_menu" href="<c:url value='/logout'/>" id="logoutBtn">
 						<span>로그아웃</span>
 					</a>
 					<a class="header_nav_menu" href="<c:url value='/mypage' />">
@@ -38,6 +38,18 @@
 							<span>웨이팅 관리</span>
 						</a>
 					</c:if>
+					<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+					<script>
+						$(document).ready(function() {
+							$('#logoutBtn').click(function(event) {
+								event.preventDefault();
+								
+								$.post('/queuing/logout', function(response) {
+									document.write(response);
+								});
+							});
+						});
+					</script>
 				</c:otherwise>
 			</c:choose>
 		</nav>
