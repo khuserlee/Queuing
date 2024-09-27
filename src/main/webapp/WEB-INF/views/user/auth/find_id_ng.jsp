@@ -13,8 +13,8 @@
     <div class="success-container">
         <h2>잘못된 계정 정보입니다.</h2>
         <div class="buttons">
-			<button onclick="window.location.href='<c:url value="/signup"/>'">회원가입</button>
-			<button onclick="window.location.href='<c:url value="/find_userInfo"/>'">ID/PW 찾기</button>
+			<button onclick="window.location.href='<c:url value="/signup/form"/>'">회원가입</button>
+			<button onclick="window.location.href='<c:url value="/users/find/form"/>'">ID/PW 찾기</button>
         </div>
     </div>
 </body>

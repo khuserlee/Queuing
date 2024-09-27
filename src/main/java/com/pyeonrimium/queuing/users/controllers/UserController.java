@@ -80,9 +80,7 @@ public class UserController {
 	 */
 	@GetMapping("/users/find/form")
 	public String findForm() {
-		System.out.println("[UserController] findForm");
-		String nextPage = "/user/auth/find_userInfo";
-		return nextPage;
+		return "/user/auth/find_userInfo";
 	}
 	
 	/**
@@ -93,14 +91,15 @@ public class UserController {
 	 */
 	@PostMapping("/users/find/id")
 	public String find_idConfirm(Find_idRequest find_idRequest, Model model) {
-		System.out.println("[UserController] findId()");
-		
+
 		String foundId = userService.findIdConfirm(find_idRequest);
 		
 		if(foundId == null) {
 			return "user/auth/find_id_ng";
 		}
+		
 		model.addAttribute("foundId", foundId);
+		
 		return "user/auth/find_id_ok";
 	}
 
@@ -113,17 +112,16 @@ public class UserController {
 	 */
 	@PostMapping("/users/find/password")
 	public String find_passwordConfirm(Find_passwordRequest find_passwordRequest, Model model) {
-		System.out.println("[UserController] findPassword()");
-		
+
 		String newPassword = userService.findPasswordConfirm(find_passwordRequest);
-		String nextPage = "user/auth/find_password_ok";
 		
 		if (newPassword == null) {
-			nextPage = "user/auth/find_password_ng";
-		} else {
-			model.addAttribute("newPassword", newPassword);
+			return "user/auth/find_password_ng";
 		}
-		return nextPage;
+		
+		model.addAttribute("newPassword", newPassword);
+		
+		return "user/auth/find_password_ok";
 	}
 	
 	// 회원정보 수정
@@ -137,7 +135,10 @@ public class UserController {
 	 */
 	@PostMapping("/logout")
 	public String logoutConfirm(HttpSession session) {
-		session.invalidate();
+		if (session != null) {
+			session.invalidate();
+		}
+		
 		return "redirect:/";
 	}
 	
@@ -146,13 +147,14 @@ public class UserController {
 	 * @param session
 	 * @return 로그인 세션 확인 시 마이페이지 화면 표시
 	 */
-	@GetMapping("/users/profile")
+	@GetMapping("/users/mypage")
 	public String profileform(HttpSession session) {
-		System.out.println("[UserController] profileForm()");
-		LoginRequest loginedRequest = (LoginRequest) session.getAttribute("loginedRequest");
-		if(loginedRequest == null) {
+		Long userId = (Long) session.getAttribute("user_id");
+		
+		if(userId == null) {
 			return "redirect:/login/form";
 		}
+		
 		return "user/auth/profile";
 	}
 }
