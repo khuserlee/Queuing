@@ -13,11 +13,15 @@
 	<script src="resources/js/maps/kakaoMapGenerator.js"></script>
 </head>
 <body>
-	<jsp:include page="../globals/header.jsp" />
-	
-	<div id="map"></div>
-	
-	<jsp:include page="../globals/footer.jsp" />
+	<div class="container">
+		<jsp:include page="../globals/header.jsp" />
+		
+		<main>
+			<div id="map"></div>
+		</main>
+		
+		<jsp:include page="../globals/footer.jsp" />
+	</div>
 	<script>
 		drawMap("${address}");
 	</script>
