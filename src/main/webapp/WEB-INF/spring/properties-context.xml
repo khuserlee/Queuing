@@ -7,10 +7,10 @@
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 
-	<util:properties id="kakao_map"
-		location="WEB-INF/spring/properties/secret/kakao.dev.properties" />
-
 	<util:properties id="db_dev"
 		location="/WEB-INF/spring/properties/secret/db_dev.properties" />
+
+	<util:properties id="kakao_dev"
+		location="WEB-INF/spring/properties/secret/kakao_dev.properties" />
 
 </beans>

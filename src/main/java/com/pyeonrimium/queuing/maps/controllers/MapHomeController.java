@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MapHomeController {
 	
-	@Value("#{kakao_map['kakao.map.api.key']}")
+	@Value("#{kakao_dev['map.api.key']}")
 	private String kakaoMapApiKey;
 	
 	private final String defaultAddress = "서울 강남구 테헤란로14길 6";
