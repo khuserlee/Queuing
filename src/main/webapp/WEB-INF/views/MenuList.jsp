@@ -64,7 +64,7 @@
 
         <button type="submit" name="action" value="register">메뉴 등록</button>
 
-    </form> //****************************
+    </form> <!--  *************************** *  -->
 
 </body>
 
