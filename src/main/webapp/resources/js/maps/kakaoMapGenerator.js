@@ -1,5 +1,8 @@
 function drawMap(address) {
-	var mapContainer = document.getElementById('map'),
+	const mapElement = document.getElementById('map');
+	resizeMap(mapElement);
+	
+	var mapContainer = mapElement,
 		mapOption = {
 			center: new kakao.maps.LatLng(33.450701, 126.570667),
 			level: 3
@@ -18,6 +21,21 @@ function drawMap(address) {
 			});
 			
 			map.setCenter(coords);
+		
+			window.addEventListener('resize', () => resizeMap(mapElement));
 		}
 	});
+}
+
+const headerHeight = 120;
+const footerHeight = 100;
+const mainMargin = 40;
+
+function resizeMap(map) {
+	const innerHeight = window.innerHeight;
+	const height = innerHeight < 600
+		? innerHeight - (headerHeight + mainMargin)
+		: innerHeight - (headerHeight + footerHeight + 2 * mainMargin);
+		
+	map.style.height = `${height}px`;
 }

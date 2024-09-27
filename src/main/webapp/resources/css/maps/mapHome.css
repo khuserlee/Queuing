@@ -16,12 +16,12 @@ body {
 main {
 	flex: 1;
 	margin: 0;
-	display: flex;
+/* 	display: flex; */
 	align-items: center;
 }
 
 #map {
 	margin: 40px 50px;
-	height: 600px;
-	flex: 1;
+	/* height: 600px; */
+	/* flex: 1; */
 }
