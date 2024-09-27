@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>회원가입</title>
     <link href="<c:url value='/resources/css/signupStyles.css' />" rel="stylesheet" type="text/css">
-	<jsp:include page="/resources/js/loginScript_js.jsp" />
+	<jsp:include page="/resources/js/signupScript_js.jsp" />
 </head>
 <body>
 
@@ -17,7 +17,7 @@
 	<main>
 		<div class="signup-container">
 			<h2>회원가입</h2>
-			<form action="<c:url value='/signup' />" name="signup" method="post">
+			<form action="<c:url value='/signup' />" name="signup" method="POST">
 				<div class="input-group">
 					<label for="id">아이디</label>
 					<input type="text" id="id" name="id" required>
@@ -43,9 +43,6 @@
 					<input type="text" id="phone" name="phone" required>
 				</div>
 				<button type="submit">회원가입</button>
-				<p id="signup_errorMessage" class="error-message">
-					<%= request.getAttribute("signupError") != null ? request.getAttribute("signupError") : "" %>
-				</p>
 			</form>
 		</div>
 	</main>

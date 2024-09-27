@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
+import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 
 @Component
 public class UserDao {
@@ -107,4 +108,65 @@ public class UserDao {
 		
 		return isManager;
 	}
+	
+	
+	// SELECT
+	
+	// 아이디 찾기 용
+	public Find_idRequest selectUser(String name, String phone) {
+		
+		System.out.println("[UserDao] selectUser()");
+	    
+	    String sql = "SELECT * FROM users WHERE name = ? AND phone = ?";
+	    
+	    List<Find_idRequest> find_idRequests = new ArrayList<>();
+	    
+	    try {
+	    	RowMapper<Find_idRequest> rowMapper = BeanPropertyRowMapper.newInstance(Find_idRequest.class);
+	    	find_idRequests = jdbcTemplate.query(sql, rowMapper, name, phone);
+	    } catch(Exception e) {
+	    	e.printStackTrace();
+	    }
+	    return find_idRequests.size() > 0 ? find_idRequests.get(0) : null;
+	}
+	
+	// 비밀번호 찾기 용
+	public Find_passwordRequest selectUser(String name, String phone, String id) {
+		System.out.println("[UserDao] selectUser() - id: " + id + ", name: " + name + ", phone: " + phone);
+		System.out.println("[UserDao] selectUser()");
+		
+		String sql = "SELECT * FROM users WHERE id = ? AND name = ? AND phone = ?";
+		
+		List<Find_passwordRequest> find_passwordRequests = new ArrayList<Find_passwordRequest>();
+		
+		try {
+			RowMapper<Find_passwordRequest> rowMapper = BeanPropertyRowMapper.newInstance(Find_passwordRequest.class);
+			find_passwordRequests = jdbcTemplate.query(sql, rowMapper, id, name, phone);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return find_passwordRequests.size() > 0 ? find_passwordRequests.get(0) : null;
+	}
+	
+	
+	// UPDATE
+	public int updatePassword(String id, String newPassword) {
+		System.out.println("[UserDao] updatePassword()");
+		
+		String sql = "UPDATE users SET password = ? WHERE id = ?";
+		
+		int result = -1;
+		
+		try {
+			result = jdbcTemplate.update(sql, newPassword, id);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("id:" + id);
+		System.out.println("newPassword: " + newPassword);
+		System.out.println("result: " + result);
+		
+		return result;
+	}
+
 }

@@ -28,7 +28,7 @@
 			</form>
 			
 			<div class="links">
-				<a href="<c:url value='find_userInfo' />">ID/PW 찾기</a>
+            <a href="<c:url value='/users/find/form'/>">ID/PW 찾기</a>
 			</div>
 		</div>
 	</main>

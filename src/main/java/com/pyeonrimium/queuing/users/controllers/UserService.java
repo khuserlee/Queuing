@@ -1,11 +1,15 @@
 package com.pyeonrimium.queuing.users.controllers;
 
+import java.security.SecureRandom;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
 import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
+import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 
 @Service
 public class UserService {
@@ -19,6 +23,7 @@ public class UserService {
 	
 	@Autowired
 	UserDao userDao;
+	
 	
 	/**
 	 * 회원가입
@@ -112,12 +117,74 @@ public class UserService {
 		
 		LoginRequest loginedRequest = userDao.selectUser(loginRequest);
 		
-		if (loginedRequest != null)
-			System.out.println("[UserMemberService] USER MEMBER LOGIN SUCCESS!!");
-		else
-			System.out.println("[UserMemberService] USER MEMBER LOGIN FAIL!!");
-		
 		return loginedRequest;
+	}
+	
+	// 아이디 찾기 확인
+	public String findIdConfirm(Find_idRequest find_idRequest) {
+		System.out.println("[UserService] findIdConfirm()");
+		
+		Find_idRequest selectedFind_idRequest = userDao.selectUser(find_idRequest.getName(), find_idRequest.getPhone());
+		
+		// 로그로 사용자 정보 확인
+		System.out.println("Seclected User: " + selectedFind_idRequest);
+		
+		if(selectedFind_idRequest != null) {
+			return selectedFind_idRequest.getId();
+		}
+		return null;
+	}
+
+	
+	// 비밀번호 찾기 확인
+	public String findPasswordConfirm(Find_passwordRequest find_passwordRequest) {
+		System.out.println("[UserService] findPasswordConfirm()");
+		
+		Find_passwordRequest selectedFind_passwordRequest = userDao.selectUser(find_passwordRequest.getName(), find_passwordRequest.getPhone(), find_passwordRequest.getId());
+		
+		// 로그로 사용자 정보 확인
+		System.out.println("Seclected User: " + selectedFind_passwordRequest);
+	
+		if (selectedFind_passwordRequest != null) {
+			String newPassword = createNewPassword();
+			int result = userDao.updatePassword(find_passwordRequest.getId(), newPassword);
+	
+			if (result > 0)
+				return newPassword;
+		}
+		return null;
+	}
+	
+	// 임시 비밀번호 생성
+	private String createNewPassword() {
+		System.out.println("[AdminService] createNewPassword()");
+		
+		char[] chars = new char[] {
+				'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+				'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 
+				'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 
+				'u', 'v', 'w', 'x', 'y', 'z'
+				};
+		
+		StringBuffer stringBuffer = new StringBuffer();
+		SecureRandom secureRandom = new SecureRandom();
+		secureRandom.setSeed(new Date().getTime());
+		
+		int index = 0;
+		int length = chars.length;
+		for (int i = 0; i < 8; i++) {
+			index = secureRandom.nextInt(length);
+		
+			if (index % 2 == 0) 
+				stringBuffer.append(String.valueOf(chars[index]).toUpperCase());
+			else
+				stringBuffer.append(String.valueOf(chars[index]).toLowerCase());
+		
+		}
+		
+		System.out.println("[AdminMemberService] NEW PASSWORD: " + stringBuffer.toString());
+		
+		return stringBuffer.toString();
 		
 	}
 }
