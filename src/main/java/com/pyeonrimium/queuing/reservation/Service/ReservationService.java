@@ -8,15 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.reservation.daos.ReservationDao;
-import com.pyeonrimium.queuing.reservation.domains.ReservationDTO;
+import com.pyeonrimium.queuing.reservation.daos.StoreDao;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
-import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
+import com.pyeonrimium.queuing.reservation.domains.ReservationFormResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
+import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
 
 @Service
 public class ReservationService {
 	@Autowired
 	private ReservationDao reservationDao;
+
+    @Autowired
+    private StoreDao storeDao;
 	
 	// TODO: 예약 신청 처리
 	public ReservationResponse createReservation(long userId, ReservationRequest reservationRequest) {
@@ -26,6 +30,16 @@ public class ReservationService {
 		// TODO: 식당 아이디 확인
 		long storeId = 1;
 		
+		String storeName = storeDao.getStoreName(storeId);
+		
+		if (storeName == null) {
+			return ReservationResponse.builder()
+					.isSuccess(false)
+					.message("가게이름을 찾지 못했습니다.")
+					.build();
+		}
+		
+
 		// ReservatinEntity 생성
 		ReservationEntity reservationEntity = ReservationEntity.builder()
 				.userId(userId)
@@ -103,14 +117,17 @@ public class ReservationService {
 
 		return reservationNumber;
 	}
+
 	
 	// TODO : 예약 수정 처리
-	public ReservationResponse modifyReservation(ReservationDTO reservationDTO) {
-		return null;
+	
 		//DB에서 예약 아이디를 대조하여 예약 정보 불러오기
 		//예약 수정
 		//다시 DAO 전달 -> DB에 저장
-	}
+	
+
+	//TODO : 예약화면에 식당 정보 가져오기
+
 	
 	
 	// TODO: 예약 수정(U)

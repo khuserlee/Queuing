@@ -13,7 +13,7 @@ import lombok.Setter;
 public class ReservationRequest {
 
 	private int storeId;
-	private String storeName = "가게 이름";
+	private String storeName;
 	private int partySize;
 	private String request;
 	

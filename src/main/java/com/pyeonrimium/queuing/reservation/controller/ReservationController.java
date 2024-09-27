@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.pyeonrimium.queuing.reservation.Service.ReservationService;
+import com.pyeonrimium.queuing.reservation.domains.ReservationFormResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
+
 
 @Controller
 //예약화면 홈
@@ -20,28 +23,41 @@ public class ReservationController {
 	
 	private String nextPage;
 	
-	
-	@GetMapping("/reservations/form") // 예약 신청 화면 불러오기
-	public String reservationHome(ReservationRequest reservationRequest, Model model) {
+	@GetMapping("/reservations/form/{storeId}") // 예약 신청 화면 불러오기
+	public String reservationHome(@PathVariable long storeId, Model model, String storeName) {
+		System.out.println("StoreName :" + storeName);
 		System.out.println("[ReservationController] reservationHome()");
-		model.addAttribute("reservationRequest", reservationRequest);
-		System.out.println("input storeName : " + reservationRequest.getStoreName());
+		
 		return "reservation/reservation_home";
+	    
+//	    예약 화면에 필요한 정보 불러오기 => 식당 정보
+//	    System.out.println("[ReservationController] getReservationForm");
+//	    model.addAttribute("reservationFormResponse", response); // 올바른 변수명 사용
+
 	}
+
 	
+//	@GetMapping("/reservations/form") // 예약 신청 화면 불러오기
+//	public String reservationHome(ReservationRequest reservationRequest, Model model) {
+//		System.out.println("[ReservationController] reservationHome()");
+//		model.addAttribute("reservationRequest", reservationRequest);
+//		System.out.println("input storeName : " + reservationRequest.getStoreName());
+//		return "reservation/reservation_home";
+//	}
+//	
 	private Long getUserId(HttpSession session) {
-		// user_id 조회
+//		// user_id 조회
 //		Long userId = (Long)session.getAttribute("user_id");
 //		return userId;
-		
+//		
 		Long userId = new Long(1);
 		return userId;
 	}
-	
+//		
 	// TODO: 예약 신청(C)
 
 	@PostMapping("/reservations")
-	public String createReservation(ReservationRequest reservationRequest, Model model, HttpSession session) {
+	public String createReservation(ReservationRequest reservationRequest, Model model,HttpSession session) {
 		Long userId = getUserId(session);
 		
 		// 로그인이 안됐을 경우
@@ -60,17 +76,16 @@ public class ReservationController {
 			// 실패했을 때 경로
 			nextPage = "/reservation/reservation_fail";
 		}
-		
+//		
 //		if(result == null) {
 //			// 실패했을 때 경로
 //			nextPage = "/reservation/reservation_fail";
 //		} else {
 //			nextPage = "/reservation/reservation_success";
-//			model.addAttribute("result", result);
-//		}
-		return nextPage;
+//		model.addAttribute("result", result);
+//	}
+	return nextPage;
 	}
-	
 }
 
 //		// TODO: 유저 정보 확인
