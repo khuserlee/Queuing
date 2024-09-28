@@ -5,14 +5,16 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>로그인 성공</title>
+    <title>임시 비밀번호 발급</title>
     <link href="<c:url value='/resources/css/signup_okStyles.css' />" rel="stylesheet" type="text/css">
+	<%-- 나중에 singupStyles로 통합할 것 --%>
 </head>
 <body>
     <div class="success-container">
-        <h2>로그인 되었습니다!</h2>
+        <h2>새로운 임시 비밀번호</h2>
+           <p><strong>${newPassword}</strong></p>
         <div class="buttons">
-			<button onclick="window.location.href='<c:url value="/"/>'">홈 화면으로 이동</button>
+			<button onclick="window.location.href='<c:url value="/login/form"/>'">로그인</button>
         </div>
     </div>
 </body>

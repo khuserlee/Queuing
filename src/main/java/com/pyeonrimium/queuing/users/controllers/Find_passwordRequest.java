@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-
-public class LoginRequest {
+public class Find_passwordRequest {
 	
 	private String id;
-	private String password;
+	private String name;
+	private String phone;
 }
