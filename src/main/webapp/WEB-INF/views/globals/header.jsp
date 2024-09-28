@@ -11,6 +11,9 @@
 			<h3>큐잉(Queuing) - 식당 예약/웨이팅 웹 서비스</h3>
 		</div>
 		<nav class="menu">
+			<a class="header_nav_menu" href="<c:url value='/home' />">
+				<span>홈으로</span>
+			</a>
 			<c:choose>
 				<c:when test="${user_id == null || user_id == 0}">
 					<a class="header_nav_menu" href="<c:url value='/login/form' />">
