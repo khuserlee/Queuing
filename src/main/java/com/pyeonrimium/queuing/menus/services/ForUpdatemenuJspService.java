@@ -13,7 +13,7 @@ public class ForUpdatemenuJspService {
 	
 	public ForUpdateMenu ForUpdateMenuJspGetThatWantedMenu(String selectedMenuId,String storeId) {
 		
-	return MenuDao.ForUpdateMenuJspGetThatWantedMenu(selectedMenuId,storeId);
+	return MenuDao.ForUpdateMenuJspGetThatWantedMenu(selectedMenuId,storeId); //다른 서비스와는 달리 return이.. 
 	
  };
  

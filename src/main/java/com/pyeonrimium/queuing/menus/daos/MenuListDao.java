@@ -19,7 +19,7 @@ public List<Menu> findByStoreId(String storeId) {
 
        return jdbcTemplate.query(sql, new Object[]{storeId}, (rs, rowNum) -> {
 
-           Menu menu = new Menu();
+            Menu menu = new Menu();
 
             menu.setId(rs.getString("menu_id"));
 

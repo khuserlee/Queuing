@@ -4,7 +4,7 @@ public class WillBeUpdatedMenu {
 	
 //	입력 필드를 등록이랑 똑같이 해야할까? 수정된곳이 3개 다 일수 있잖아.. 
 	
-	private String id;
+	 private String id;
 	 private String name;
 	 private double price;
 	 private String description;

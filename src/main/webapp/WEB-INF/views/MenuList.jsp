@@ -38,7 +38,7 @@
 
             </tr>
 
-            <c:forEach var="menu" items="${menus}">
+            <c:forEach var="menu" items="${menuList}">
 
                 <tr>
 
@@ -48,7 +48,7 @@
 
                     <td>${menu.price}</td>
 
-                    <td>${menu.details}</td>
+                    <td>${menu.description}</td>
 
                     <td><input type="checkbox" name="selectedMenuId" value="${menu.id}" /></td>
 
@@ -64,17 +64,8 @@
 
         <button type="submit" name="action" value="register">메뉴 등록</button>
 
-    </form> <!--  *************************** *  -->
+    </form> 
 
-</body>
-
-</html>
-
-​
-
-​
-
-​
 
 <script>
 
@@ -106,16 +97,20 @@
 
     }
 
-​
+​// ------------------------------------------------------------------------------
 
     document.querySelector('form').onsubmit = function() {
 
         var action = document.querySelector('button[name="action"]').value;
 
         return validateSelection(action);
+      };
+// ----------------------------------------------------------------------------
 
-    };
+
+    validateSelection(action);
+      
 
 </script>
-
-​
+</body>
+</html>
