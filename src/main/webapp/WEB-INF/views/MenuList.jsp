@@ -38,8 +38,7 @@
 
                 <tr>
 
-              <!--  <td><img src="${menu.imageUrl}" alt="Menu Image" /></td> -->
-
+                	<td><img src="" alt="Menu Image" /></td>
                     <td>${menu.name}</td>
 
                     <td>${menu.price}</td>

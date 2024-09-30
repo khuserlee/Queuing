@@ -14,8 +14,6 @@
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
- <!-- 프로퍼티 파일 로드 -->
-    <context:property-placeholder location="classpath:db.properties"/> <!-- 새로 작성한 내용 -->
 
 
 	<!-- MariaDB connection 객체 -->

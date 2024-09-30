@@ -64,12 +64,13 @@ public class MenuController {
 	private MenuListDao menuListDao;
 	@GetMapping("/menu/list")
 	public String listMenus(Model model, HttpSession session) {
-		
 		//int storeId = (int) session.getAttribute("storeId");
 		
         List<Menu> menuList = menuListDao.findByStoreId(5);  //storeId 
                                                              //데이터베이스에 storeId가 5인 얘가 있어야..
-        model.addAttribute("menu", menuList); 
+        
+        System.out.println(menuList.size());
+        model.addAttribute("menuList", menuList); 
         
         return "MenuList"; // 메뉴 목록 화면 
     }

@@ -2,8 +2,11 @@ package com.pyeonrimium.queuing.menus.daos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
 import com.pyeonrimium.queuing.menus.domains.WillBeUpdatedMenu;
 
+@Repository
 public class LatestMenuUpdateDao {
 	
 	@Autowired
