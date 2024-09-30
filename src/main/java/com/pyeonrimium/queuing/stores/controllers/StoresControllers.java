@@ -17,7 +17,13 @@ public class StoresControllers {
 	@Autowired
 	private StoreService storeService;
 
-
+	//TODO: 매장정보등록 화면 불러오기
+	@GetMapping("/stores/form")
+	public String getStoreform() {
+		System.out.println("[storeControllers] getStoreform()");
+		return "/stores/storeRegistration";
+	}
+	
 	// TODO: 매장 정보 저장(Create)
 	@PostMapping("/stores")
 	public String createStore() {
