@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
 import com.pyeonrimium.queuing.stores.services.StoreService;
@@ -12,7 +13,7 @@ import com.pyeonrimium.queuing.stores.services.StoreService;
 @Controller
 public class StoresControllers {
 
-	// StoreService 연결
+	//StoreService 연결
 	@Autowired
 	private StoreService storeService;
 
@@ -26,7 +27,7 @@ public class StoresControllers {
 	
 	
 	// TODO: 매장 정보 조회(Read)
-	@GetMapping("/stores/{storeId}")
+	@GetMapping("/{storeId}")
 	public String findStore(@PathVariable Long storeId) {
 		System.out.println("[StoresControllers] findStore()");
 		
@@ -40,8 +41,12 @@ public class StoresControllers {
 		
 		return "";
 	}
-	
-	
+
 	// TODO: 매장 정보 수정(Update)
+	@PutMapping("/stores/{storeId}")
+	public String updateStore(@PathVariable long storeId) {
+		System.out.println("[StoresControllers] updateStore()");
+		return "";
+	}
 	// TODO: 매장 정보 삭제(Delete)
 }

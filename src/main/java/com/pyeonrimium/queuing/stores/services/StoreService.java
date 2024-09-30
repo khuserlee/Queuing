@@ -9,7 +9,7 @@ import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
 @Service
 public class StoreService {
 	
-	// StoreDao 연결
+	//StoreDao 연결
 	@Autowired
 	private StoreDao storeDao;
 	
@@ -24,4 +24,10 @@ public class StoreService {
 		return storeEntity;
 	}
 	
+	public String updateStore(Long storeId) {
+		System.out.println("[storeService] updateStore()");
+		return null;
+		
+	}
+
 }
