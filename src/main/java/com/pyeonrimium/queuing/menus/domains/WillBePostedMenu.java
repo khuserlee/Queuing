@@ -8,10 +8,10 @@ public class WillBePostedMenu {
 	
 	// private String id;
 	 private String name;
-	 private double price;
+	 private int price;
 	 private String description;
 	 
-	 public void Menu(/*String id*/, String name, double price, String description) {
+	 public void Menu(/*String id*/ String name, int price, String description) {
 	     //   this.id = id;
 	        this.name = name;
 	        this.price = price;
@@ -32,10 +32,10 @@ public class WillBePostedMenu {
 	        this.name = name;
 	    }
 
-	 public double getPrice() {
+	 public int getPrice() {
 	        return price;
 	    }
-	 public void setPrice(double price) {
+	 public void setPrice(int price) {
 	        this.price = price;
 	    }
 

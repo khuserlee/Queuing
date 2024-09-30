@@ -8,7 +8,7 @@ public class LatestMenuDeleteDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-    public void deleteMenu(String selectedmenuId) {
+    public void deleteMenu(int selectedmenuId) {
 
 	String sql = "DELETE FROM menus WHERE menu_id = ?";
 

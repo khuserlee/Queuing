@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,17 +60,16 @@ public class MenuController {
 	
 	
 	
-	
-	
+	@Autowired 
+	private MenuListDao menuListDao;
 	@GetMapping("/menu/list")
 	public String listMenus(Model model, HttpSession session) {
 		
-		String storeId = (String) session.getAttribute("storeId");
+		//int storeId = (int) session.getAttribute("storeId");
 		
-		@Autowired MenuListDao menuListDao;
-		
-        List<Menu> menuList = menuListDao.findByStoreId(storeId); 
-        model.addAttribute("menu", menuList); //menu인가 menus인가 
+        List<Menu> menuList = menuListDao.findByStoreId(5);  //storeId 
+                                                             //데이터베이스에 storeId가 5인 얘가 있어야..
+        model.addAttribute("menu", menuList); 
         
         return "MenuList"; // 메뉴 목록 화면 
     }
@@ -88,7 +88,7 @@ public class MenuController {
 	
 	@Autowired LatestMenuDeleteService latestMenuDeleteService;
 	@PostMapping("/menu/delete")
-	public String deleteMenu(@RequestParam("selectedMenuId") String selectedMenuId) {
+	public String deleteMenu(@RequestParam("selectedMenuId") int selectedMenuId) {
 		latestMenuDeleteService.deleteMenu(selectedMenuId);
 		return "redirect:/menu/list";
 	}
@@ -108,8 +108,8 @@ public class MenuController {
 	
 	@Autowired ForUpdatemenuJspService forUpdatemenuJspService;
 	@PostMapping("/menu/updateView") // post인지 get인지 모르겠음..
-	public String getUpdateView(@RequestParam("selectedMenuId") String selectedMenuId,
-			                    @RequestParam("storeId") String storeId  
+	public String getUpdateView(@RequestParam("selectedMenuId") int selectedMenuId,
+			                    @RequestParam("storeId") int storeId,
 			                            Model model                                    ) {
 		
  ForUpdateMenu menu= null; // 이건 일단은 빨간줄없앤다고 해둔거긴 한데.. 
@@ -137,7 +137,7 @@ try {
 	
 	@Autowired LatestMenuPostService latestMenuPostService ;
 	@PostMapping("/menu/register")
-	 public String registerMenu(//@RequestParam("menuId") String menuId,
+	 public String registerMenu(//@RequestParam("menuId") int menuId,
 
                                 @RequestParam("name") String name,
 
@@ -174,7 +174,7 @@ return "redirect:/menu/list";
 	@Autowired 
     private LatestMenuUpdateService latestMenuUpdateService;
 	@PostMapping("/menu/update")
-	public String updateMenu(@RequestParam("menuId") String menuId, 
+	public String updateMenu(@RequestParam("menuId") int menuId, 
 
 	                         @RequestParam("name") String name,
 
@@ -187,7 +187,7 @@ return "redirect:/menu/list";
 	menu.setId(menuId);
     menu.setName(name);
     menu.setPrice(price);
-    menu. setDescription(details);
+    menu. setDescription(description);
 
 	latestMenuUpdateService.updateMenu(menu); 
 	return "redirect: /menu/list"; } catch(Exception e) {

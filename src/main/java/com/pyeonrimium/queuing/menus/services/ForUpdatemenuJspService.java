@@ -11,7 +11,7 @@ public class ForUpdatemenuJspService {
 	@Autowired
 	ForUpdateMenuJspDao MenuDao ;
 	
-	public ForUpdateMenu ForUpdateMenuJspGetThatWantedMenu(String selectedMenuId,String storeId) {
+	public ForUpdateMenu ForUpdateMenuJspGetThatWantedMenu(int selectedMenuId,int storeId) {
 		
 	return MenuDao.ForUpdateMenuJspGetThatWantedMenu(selectedMenuId,storeId); //다른 서비스와는 달리 return이.. 
 	

@@ -4,22 +4,22 @@ public class WillBeUpdatedMenu {
 	
 //	입력 필드를 등록이랑 똑같이 해야할까? 수정된곳이 3개 다 일수 있잖아.. 
 	
-	 private String id;
+	 private int id;
 	 private String name;
-	 private double price;
+	 private int price;
 	 private String description;
 	 
-	 public void Menu(String id, String name, double price, String description) {
+	 public void Menu(int id, String name, int price, String description) {
 	        this.id = id;
 	        this.name = name;
 	        this.price = price;
 	        this.description = description;
 	    }
 
-	 public String getId() {
+	 public int getId() {
 	        return id;
 	    }
-	 public void setId(String id) {
+	 public void setId(int id) {
 	        this.id = id;
 	    }
 
@@ -30,10 +30,10 @@ public class WillBeUpdatedMenu {
 	        this.name = name;
 	    }
 
-	 public double getPrice() {
+	 public int getPrice() {
 	        return price;
 	    }
-	 public void setPrice(double price) {
+	 public void setPrice(int price) {
 	        this.price = price;
 	    }
 

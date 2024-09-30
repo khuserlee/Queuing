@@ -6,9 +6,9 @@ package com.pyeonrimium.queuing.menus.domains.entities;
 //실제 데이터베이스에 메뉴를 저장하는 로직 으로 엔티티를 작성중인데.. 뭔지도 모르겠네미ㅏ엄나ㅣㅓ
 public class Menu {
 //	@Id
-    private String id;
+    private int id;
     private String name;
-    private double price;
+    private int price;
     private String description;
  //   private String imageUrl; 
 
@@ -16,7 +16,7 @@ public class Menu {
     public Menu() {}
 
     // 모든 필드를 포함한 생성자
-    public Menu(String id, String name, double price, String description, String imageUrl) {
+    public Menu(int id, String name, int price, String description/*, String imageUrl*/) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -25,11 +25,11 @@ public class Menu {
     }
 
     // Getter와 Setter 메서드
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -41,11 +41,11 @@ public class Menu {
         this.name = name;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

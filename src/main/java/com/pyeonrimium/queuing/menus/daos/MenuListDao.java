@@ -13,7 +13,7 @@ public class MenuListDao {
 @Autowired
 private JdbcTemplate jdbcTemplate;
 
-public List<Menu> findByStoreId(String storeId) {
+public List<Menu> findByStoreId(int storeId) {
 
         String sql = "SELECT * FROM menus WHERE store_id = ?";
 
@@ -21,13 +21,13 @@ public List<Menu> findByStoreId(String storeId) {
 
             Menu menu = new Menu();
 
-            menu.setId(rs.getString("menu_id"));
+            menu.setId(rs.getInt("menu_id"));
 
             menu.setName(rs.getString("name"));   
 	
             menu.setDescription(rs.getString("description"));
 
-            menu.setPrice(rs.getDouble("price")); //<< int 인데 double해도되나?
+            menu.setPrice(rs.getInt("price")); //<< int 인데 double해도되나?
 
             return menu;
 

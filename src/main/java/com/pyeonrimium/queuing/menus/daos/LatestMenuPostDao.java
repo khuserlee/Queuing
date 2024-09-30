@@ -18,6 +18,6 @@ public class LatestMenuPostDao {
 
 	        jdbcTemplate.update(sql, menu.getName(), menu.getPrice(), menu.getDescription());
 
-	 }
+	 } // 메뉴 id는 자동 할당? 
 
 }

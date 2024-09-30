@@ -2,11 +2,7 @@
 
     pageEncoding="UTF-8"%>
 
-<!DOCTYPE html>
-
-​
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
 
@@ -42,7 +38,7 @@
 
                 <tr>
 
-                    <td><img src="${menu.imageUrl}" alt="Menu Image" /></td>
+              <!--  <td><img src="${menu.imageUrl}" alt="Menu Image" /></td> -->
 
                     <td>${menu.name}</td>
 
