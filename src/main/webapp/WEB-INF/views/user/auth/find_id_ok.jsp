@@ -16,7 +16,7 @@
         <h2>회원님의 아이디</h2>
         <p>고객님의 아이디는: <strong>${foundId}</strong> 입니다.</p>
         <div class="buttons">
-			<button onclick="window.location.href='<c:url value="/login"/>'">로그인</button>
+			<button onclick="window.location.href='<c:url value="/login/form"/>'">로그인</button>
         </div>
     </div>
 </body>

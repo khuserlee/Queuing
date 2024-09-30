@@ -14,7 +14,7 @@
         <h2>새로운 임시 비밀번호</h2>
            <p><strong>${newPassword}</strong></p>
         <div class="buttons">
-			<button onclick="window.location.href='<c:url value="/login"/>'">로그인</button>
+			<button onclick="window.location.href='<c:url value="/login/form"/>'">로그인</button>
         </div>
     </div>
 </body>
