@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
 
 @Controller
 public class UserController {
@@ -55,7 +59,7 @@ public class UserController {
 	}
 	
 	/**
-	 * 로그인 확인
+	 * 로그인
 	 * @param loginRequest
 	 * @param session
 	 * @return 로그인 성공 시 : login_ok
@@ -129,12 +133,9 @@ public class UserController {
 		return nextPage;
 	}
 	
-	// 회원정보 수정
-	
-	// 회원정보 수정 확인
 	
 	/**
-	 * 로그아웃 확인
+	 * 로그아웃
 	 * @param session
 	 * @return 로그아웃 시 초기화면 반환 (아마 home?)
 	 */
@@ -150,17 +151,51 @@ public class UserController {
 	}
 	
 	/**
-	 * 회원정보 화면
+	 * 프로필(회원정보) 화면
 	 * @param session
 	 * @return 로그인 세션 확인 시 마이페이지 화면 표시
 	 */
 	@GetMapping("/users/profile")
-	public String profileform(HttpSession session) {
+	public String profileform(HttpSession session, Model model) {
+		
 		System.out.println("[UserController] profileForm()");
+		
 		LoginRequest loginedRequest = (LoginRequest) session.getAttribute("loginedRequest");
 		if(loginedRequest == null) {
 			return "redirect:/login/form";
 		}
+		ProfileUpdateRequest profileRequest = userService.getProfileUpdateRequest(loginedRequest.getId());
+	    model.addAttribute("ProfileRequest", profileRequest);
+		
 		return "user/auth/profile";
+	}
+	
+	/**
+	 * 프로필(회원정보) 수정
+	 * @param profileUpdateRequest
+	 * @param session
+	 * @return
+	 */
+	@PatchMapping("/users/profile")
+	public String updateProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest, HttpSession session) {
+	    
+		System.out.println("[UserController] updateProfile()");
+	    
+		String nextPage = "user/auth/updateProfile_ok";
+	    
+		LoginRequest loginedRequest = (LoginRequest) session.getAttribute("loginedRequest");
+	    if (loginedRequest == null) {
+	        return "redirect:/login";
+	    }
+	    profileUpdateRequest.setId(loginedRequest.getId());
+	    int result = userService.updateProfileConfirm(profileUpdateRequest);
+	    if (result > 0) {
+	    	ProfileUpdateRequest updatedProfile = userService.getProfileUpdateRequest(profileUpdateRequest.getId());
+	        session.setAttribute("ProfileRequest", updatedProfile);
+	        session.setMaxInactiveInterval(60 * 30);
+	    } else {
+	        nextPage = "user/auth/updateProfile_ng";
+	    }
+	    return nextPage;
 	}
 }

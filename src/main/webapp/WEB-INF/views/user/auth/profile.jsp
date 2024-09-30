@@ -24,29 +24,29 @@
                 <h2>예약 내역 확인</h2>
                 <p>여기에 예약 내역을 표시합니다.</p>
             </div>
-            <div id="edit-info" class="section" style="display:none;">
-                <h2>회원정보 수정</h2>
-                <form id="updateProfileForm" action="<c:url value='/user/updateProfile' />" method="POST">
-                    <input type="hidden" name="_method" value="PATCH">
-                    <div class="input-group">
-                        <label for="id">아이디</label>
-                        <input type="text" id="id" name="id" value="${sessionScope.ProfileRequest.id}" readonly>
-                    </div>
-                    <div class="input-group">
-                        <label for="name">이름</label>
-                        <input type="text" id="name" name="name" value="${sessionScope.ProfileRequest.name}" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="address">주소</label>
-                        <input type="text" id="address" name="address" value="${sessionScope.ProfileRequest.address}" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="phone">전화번호</label>
-                        <input type="text" id="phone" name="phone" value="${sessionScope.ProfileRequest.phone}" required>
-                    </div>
-                    <button type="submit">수정 완료</button>
-                </form>
-            </div>
+			         <div id="edit-info" class="section" style="display:none;">
+			    <h2>회원정보 수정</h2>
+			    <form id="updateProfileForm" action="<c:url value='/user/updateProfile' />" method="POST">
+			        <input type="hidden" name="_method" value="PATCH">
+			        <div class="input-group">
+			            <label for="id">아이디</label>
+			            <input type="text" id="id" name="id" value="${ProfileRequest.id}" readonly>
+			        </div>
+			        <div class="input-group">
+			            <label for="name">이름</label>
+			            <input type="text" id="name" name="name" value="${ProfileRequest.name}" required>
+			        </div>
+			        <div class="input-group">
+			            <label for="address">주소</label>
+			            <input type="text" id="address" name="address" value="${ProfileRequest.address}" required>
+			        </div>
+			        <div class="input-group">
+			            <label for="phone">전화번호</label>
+			            <input type="text" id="phone" name="phone" value="${ProfileRequest.phone}" required>
+			        </div>
+			        <button type="submit">수정 완료</button>
+			    </form>
+			</div>
             <div id="review-management" class="section" style="display:none;">
                 <h2>리뷰 관리</h2>
                 <p>여기에 리뷰 목록을 표시합니다.</p>

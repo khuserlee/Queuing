@@ -6,10 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class ProfileRequest {
+public class ProfileUpdateRequest {
 	
 	private String id;
-	private String password;
+	// private String password;
 	private String name;
 	private String address;
 	private String phone;
