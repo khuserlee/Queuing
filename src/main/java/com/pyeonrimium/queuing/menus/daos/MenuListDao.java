@@ -19,7 +19,7 @@ private JdbcTemplate jdbcTemplate;
 public List<Menu> findByStoreId(int storeId) {
 
         String sql = "SELECT * FROM menus WHERE store_id = ?";
-		List<Menu> menus = new ArrayList<Menu>();
+		List<Menu> menus = null;
         
         try {
         	menus = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Menu.class), storeId);

@@ -1,5 +1,6 @@
 package com.pyeonrimium.queuing.menus.Controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -30,9 +31,11 @@ public class MenuController {
 		
 		 if ("edit".equals(action)) {
 			 
-			 String storeId = (String) session.getAttribute("storeId"); // 누군가의 로직에서 가져옴? 
+			// /menu/updateView에서 int storeId = (int) session.getAttribute("storeId"); // 누군가의 로직에서 가져옴? 
 			 
-			 return "redirect:/menu/updateView?selectedMenuId=" + selectedMenuId + "&storeId=" + storeId; }
+		// return "redirect:/menu/updateView?selectedMenuId=" + selectedMenuId + "&storeId=" + storeId; }
+		 
+		 return "redirect:/menu/updateView?selectedMenuId=" + selectedMenuId ; }
 		
 	else if ("delete".equals(action)) {
         return "redirect:/menu/delete?selectedMenuiId="+ selectedMenuId;  // 매핑된 주소는 /menu/delete 로 해도 되나?
@@ -110,16 +113,20 @@ public class MenuController {
 	@Autowired ForUpdatemenuJspService forUpdatemenuJspService;
 	@PostMapping("/menu/updateView") // post인지 get인지 모르겠음..
 	public String getUpdateView(@RequestParam("selectedMenuId") int selectedMenuId,
-			                    @RequestParam("storeId") int storeId,
-			                            Model model                                    ) {
+			                    /*@RequestParam("storeId") int storeId,*/
+			                            Model model         
+			                          , HttpSession session               ) {
 		
- ForUpdateMenu menu= null; // 이건 일단은 빨간줄없앤다고 해둔거긴 한데.. 
-try {
-	menu = forUpdatemenuJspService.ForUpdateMenuJspGetThatWantedMenu(selectedMenuId,storeId); //menu가 반환되고 menu에 대입하고 
-} catch (Exception e) {        // 후자 menu 가 밑의 흰 menu랑 동일..한건가? 그리고 보여질 수정화면 폼의 menu(초록색)라는... 매핑..? 
-	
-	e.printStackTrace();
-}
+	int storeId = (int) session.getAttribute("storeId");
+		
+    ForUpdateMenu menu= null; // 이건 일단은 빨간줄없앤다고 해둔거긴 한데.. 창현님이 뭐 알려주신듯.. 
+    //menu/list에선 딱히 다른게 없고 Dao에 적용됐나?
+    //List<Menu> menus = new ArrayList<Menu>(); < 이거임. 이거 이해좀해야함. 
+    //복붙하기엔 메뉴 하나만 조회하는거라서.
+
+	menu = forUpdatemenuJspService.ForUpdateMenuJspGetThatWantedMenu(selectedMenuId,storeId); 
+	// selectedMenuId는 익숙한데 storeId는 왜 생소하지? 로컬 변수.. 호출용 변수..매개변수가, 필드에선언된 변수가..
+
 	             model.addAttribute("menu", menu); 
 	             
 		        return "MenuUpdate" ;
