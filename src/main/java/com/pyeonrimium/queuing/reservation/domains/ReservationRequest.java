@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class ReservationRequest {
 
-	private int storeId;
+	private Long storeId;
 	private String storeName;
 	private int partySize;
 	private String request;

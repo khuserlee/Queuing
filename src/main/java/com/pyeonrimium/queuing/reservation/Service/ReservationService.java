@@ -1,16 +1,17 @@
 package com.pyeonrimium.queuing.reservation.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.List;
+
+import javax.swing.text.html.parser.Entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.reservation.daos.ReservationDao;
 import com.pyeonrimium.queuing.reservation.daos.StoreDao;
+import com.pyeonrimium.queuing.reservation.domains.MyReservationResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
-import com.pyeonrimium.queuing.reservation.domains.ReservationFormResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
 
@@ -21,16 +22,16 @@ public class ReservationService {
 
     @Autowired
     private StoreDao storeDao;
-	
-	// TODO: 예약 신청 처리
+    
+	// 예약 신청 처리
 	public ReservationResponse createReservation(long userId, ReservationRequest reservationRequest) {
 		// 예약 번호 만들기
 		String reservationNumber = makeReservationNumber(reservationRequest);
 		
-		// TODO: 식당 아이디 확인
-		long storeId = 1;
+		// 식당 아이디 확인
+		System.out.println("[ReservationService] storeId: " + reservationRequest.getStoreId());
 		
-		String storeName = storeDao.getStoreName(storeId);
+		String storeName = storeDao.getStoreName(reservationRequest.getStoreId());
 		
 		if (storeName == null) {
 			return ReservationResponse.builder()
@@ -43,7 +44,7 @@ public class ReservationService {
 		// ReservatinEntity 생성
 		ReservationEntity reservationEntity = ReservationEntity.builder()
 				.userId(userId)
-				.storeId(storeId)
+				.storeId(reservationRequest.getStoreId())
 				.reservationNumber(reservationNumber)
 				.reservationDate(reservationRequest.getReservationDate())
 				.reservationTime(reservationRequest.getReservationTime())
@@ -74,34 +75,7 @@ public class ReservationService {
 				.build();
 	}
 	
-	private ReservationEntity getReservation(ReservationRequest vo) {
-		ReservationEntity reservationEntity = new ReservationEntity();
-		reservationEntity.setReservationNumber("");
-		reservationEntity.setReservationDate(LocalDate.now());
-		reservationEntity.setReservationTime(LocalTime.now());
-		reservationEntity.setPartySize(vo.getPartySize());
-		
-		return reservationEntity;
-	}
 	
-	private ReservationEntity getReservationUsingBuilder(ReservationRequest vo) {
-		return ReservationEntity.builder()
-				.reservationNumber("")
-				.reservationDate(LocalDate.now())
-				.reservationTime(LocalTime.now())
-				.partySize(vo.getPartySize())
-				.build();
-	}
-	
-	private String makeReservationNumber(LocalDate date, LocalTime time) {
-		
-		String strDate = date.toString().replace("-", "");
-		String strTime = time.toString().replace(":", "");
-		
-		String reservationNumber = strDate + strTime;
-
-		return reservationNumber;
-	}
 	
 	/**
 	 * 예약 번호 만들기
@@ -118,22 +92,60 @@ public class ReservationService {
 		return reservationNumber;
 	}
 
+	// storeId를 통해서 storeName 가져오기
+	public String getStoreName(long storeId) {
+		return storeDao.getStoreName(storeId);
+	}
 	
-	// TODO : 예약 수정 처리
+	//userId를 통해서 user의 예약 정보 불러오기
+	public List<ReservationEntity> getmyReservation(long userId) {
+		return reservationDao.getReservationsByUserId(userId);
+	}
+	
+	// TODO :예약 정보 열람 신청 처리
+		public MyReservationResponse getMyReservation(Long userId) {
+			
+			// TODO: userId 확인
+//			 List<ReservationEntity> getReservations(Long userId) {
+//				return reservationDao.getReservationsByUserId(userId);
+//			System.out.println("[ReservationService] getMyReservation: " + "");
+//			    }
+			
+			if (userId == null) {
+				return MyReservationResponse.builder()
+						.isSuccess(false)
+						.message("예약을 찾지 못했습니다.")
+						.build();
+			}
+			
+			return null;
+		}
+		
+		/**
+		 * 예약 정보 불러오기
+		 * @param userId 유저 고유 번호
+		 * @return 예약 정보 목록
+		 */
+		public List<ReservationEntity> getReservations(long userId) {
+			return reservationDao.getReservationsByUserId(userId);
+		}
+		
+		// TODO : 예약 수정 처리
 	
 		//DB에서 예약 아이디를 대조하여 예약 정보 불러오기
+
 		//예약 수정
 		//다시 DAO 전달 -> DB에 저장
 	
 
-	//TODO : 예약화면에 식당 정보 가져오기
+		//TODO : 예약화면에 식당 정보 가져오기
 
 	
 	
-	// TODO: 예약 수정(U)
+		// TODO: 예약 수정(U)
 	
-	// TODO: 예약 삭제(D)
-//	public List<reservationRequest> listupRes(){
+		// TODO: 예약 삭제(D)
+//		public List<reservationRequest> listupRes(){
 //		System.out.println("[ReservationService] listipRes()");
 //		
 //		return ReservationDao.selectRes();

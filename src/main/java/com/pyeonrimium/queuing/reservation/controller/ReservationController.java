@@ -1,16 +1,19 @@
 package com.pyeonrimium.queuing.reservation.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.pyeonrimium.queuing.reservation.Service.ReservationService;
-import com.pyeonrimium.queuing.reservation.domains.ReservationFormResponse;
+import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
 import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
 
@@ -23,10 +26,27 @@ public class ReservationController {
 	
 	private String nextPage;
 	
-	@GetMapping("/reservations/form/{storeId}") // 예약 신청 화면 불러오기
-	public String reservationHome(@PathVariable long storeId, Model model, String storeName) {
-		System.out.println("StoreName :" + storeName);
+	/**
+	 * 예약 신청 화면 불러오기
+	 * @param storeId 가게 고유 ID
+	 * @param model
+	 * @return 성공: 예약 페이지, 실패: 실패 안내 페이지
+	 */
+	@GetMapping("/reservations/form/{storeId}")
+	public String reservationHome(@PathVariable long storeId, Model model) {
 		System.out.println("[ReservationController] reservationHome()");
+		
+		// storeId를 통해서 storeName 가져오기
+		String storeName = reservationService.getStoreName(storeId);
+		
+		if (storeName == null) {
+			// TODO: 조회 실패 처리
+			System.out.println("[ReservationController] 가게 이름 조회 실패");
+		}
+		
+		// model에 가게 이름 저장
+		model.addAttribute("storeId", storeId);
+		model.addAttribute("storeName", storeName);
 		
 		return "reservation/reservation_home";
 	    
@@ -35,18 +55,11 @@ public class ReservationController {
 //	    model.addAttribute("reservationFormResponse", response); // 올바른 변수명 사용
 
 	}
-
 	
-//	@GetMapping("/reservations/form") // 예약 신청 화면 불러오기
-//	public String reservationHome(ReservationRequest reservationRequest, Model model) {
-//		System.out.println("[ReservationController] reservationHome()");
-//		model.addAttribute("reservationRequest", reservationRequest);
-//		System.out.println("input storeName : " + reservationRequest.getStoreName());
-//		return "reservation/reservation_home";
-//	}
-//	
+	
+
 	private Long getUserId(HttpSession session) {
-//		// user_id 조회
+//		user_id 조회
 //		Long userId = (Long)session.getAttribute("user_id");
 //		return userId;
 //		
@@ -86,42 +99,41 @@ public class ReservationController {
 //	}
 	return nextPage;
 	}
-}
-
-//		// TODO: 유저 정보 확인
-//		if (session == null) {
-//			return nextPage; // 실패했을 때 경로
-//		}
-
-		// TODO: 예약 정보 저장
-		// service ~
-
-		// TODO: 결과 반환
-//		ReservationResponse result = service.createReservation(reservationDTO);
-//
-//		if (result == null) {
-//			return nextPage;
-//		}
-//
-//		nextPage = "/reservation/reservation_success"; // 성공했을 때 경로
-//		return nextPage;
-//	}
-
-	// TODO: 예약 조회(R)
-//	@GetMapping("/reservations?pageNo={pageNo}")
-//	public String lookUpReservation(HttpSession session) {
-//		String nextPage = ""; // 실패했을 때 경로
-//
-//		// TODO : 유저 예약 정보 조회
-//		if (session == null) {
-//			return nextPage; // 실패했을 때 경로
-//		} else {
-//
-//		}
-//
-//		return nextPage;
-//	}
+//}
+	
+	/**
+	 * 예약 정보 불러오기
+	 * @param pageNo 페이지 번호
+	 * @param model 
+	 * @return 예약 정보 목록 페이지
+	 */
+	@GetMapping("/reservations/pageNo={pageNo}")
+	public String getMyReservations(@PathVariable int pageNo, Model model) {
+		System.out.println("[ReservationController] getMyReservations");
+		
+		// 임의로 userId값 1로 설정 (나중엔 세션에서 받아옴)
+		long userId = 1;
+		
+		// 서비스 클래스에서 예약 정보 가져오기
+		List<ReservationEntity> result = reservationService.getReservations(userId);
+		
+		if(result == null) {
+			return  "reservation_ng";
+		}
+		
+		// Model에 예약 정보 받은것을 JSP파일로 전송
+		model.addAttribute("result", result);
+		return "";
+	}
+	
 	// TODO: 예약 수정(U)
+	@PatchMapping("/reservations")
+	public String changeReservations() {
+		System.out.println("[ReservationController] changeReservations");
+		
+		return "";
+	}
 
+}
 	// TODO: 예약 삭제(D)
 

@@ -1,6 +1,10 @@
 package com.pyeonrimium.queuing.reservation.daos;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -37,5 +41,30 @@ public class ReservationDao {
 		}
 		
 		return result > 0; // 결과가 0보다 크면 true 반환
+	}
+
+	/**
+	 * 예약 정보 조회하기
+	 * @param userId 유저 고유 번호
+	 * @return 조회된 예약 정보 목록
+	 */
+	public List<ReservationEntity> getReservationsByUserId(Long userId) {
+		String sql = "SELECT * FROM reservations WHERE user_id = ?";
+		List<ReservationEntity> reservations = null;
+		
+		// 예외 처리
+		try {
+			reservations = jdbcTemplate.query(
+					sql,
+					BeanPropertyRowMapper.newInstance(ReservationEntity.class),
+					userId);
+		} catch (DataAccessException e) {
+			System.out.println(e.getClass().getSimpleName());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return reservations;
 	}
 }
