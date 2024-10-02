@@ -2,9 +2,13 @@ package com.pyeonrimium.queuing.stores.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
 import com.pyeonrimium.queuing.stores.services.StoreService;
 
@@ -25,7 +29,15 @@ public class StoresControllers {
 	}
 	
 	// TODO: 매장 정보  등록(저장)(Create)
-	
+	@PostMapping("/stores")
+	public String addStore(StoreRegisterationRequest storeRegisterationRequest, Model model) {
+		System.out.println("[storeControllers] addStore()");
+		
+		String result = storeService.addStore(storeRegisterationRequest);
+		model.addAttribute("result", result);
+			
+		return "/storeRegistration"; //jsp파일생성 저장후화면으로 이동
+	}
 	
 	// TODO: 매장 정보 조회(Read)
 	@GetMapping("/{storeId}")

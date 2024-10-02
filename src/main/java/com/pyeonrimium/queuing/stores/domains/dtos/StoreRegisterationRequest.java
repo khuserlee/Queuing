@@ -1,13 +1,16 @@
-package com.pyeonrimium.queuing.stores.domains.entities;
-
+package com.pyeonrimium.queuing.stores.domains.dtos;
 
 import java.time.LocalTime;
 
-
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class StoreEntity {
-	private String name; 
+import lombok.Getter;
+import lombok.Setter;
+//등록위한 클래스
+@Getter
+@Setter
+public class StoreRegisterationRequest {
+	private String name;
 	private String description;
 	private String address;
 	private String phone;
@@ -18,5 +21,4 @@ public class StoreEntity {
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime endTime;
 	private String closedDay;
-	//name address description phone start_time end_time closed_day
 }

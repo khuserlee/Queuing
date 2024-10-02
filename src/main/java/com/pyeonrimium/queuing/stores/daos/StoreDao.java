@@ -12,7 +12,12 @@ public class StoreDao {
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-
+	
+	public StoreEntity addStore(StoreEntity storeEntity) {
+		System.out.println("[StoreDao] addStore()");
+		return null;
+	}
+	
 	public StoreEntity findStore(Long storeId) {
 		System.out.println("[StoreDao] findStore()");
 		
