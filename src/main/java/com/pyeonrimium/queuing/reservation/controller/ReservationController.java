@@ -17,7 +17,6 @@ import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
 import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
 
-
 @Controller
 //예약화면 홈
 public class ReservationController {
@@ -118,21 +117,21 @@ public class ReservationController {
 		List<ReservationEntity> result = reservationService.getReservations(userId);
 		
 		if(result == null) {
-			return  "reservation_ng";
+			return  "reservationFind_ng";
 		}
 		
 		// Model에 예약 정보 받은것을 JSP파일로 전송
 		model.addAttribute("result", result);
-		return "";
+		return "/reservation/reservationFind_ok";
 	}
 	
-	// TODO: 예약 수정(U)
-	@PatchMapping("/reservations")
-	public String changeReservations() {
-		System.out.println("[ReservationController] changeReservations");
-		
-		return "";
-	}
+//	// TODO: 예약 수정(U)
+//	@PatchMapping("/reservations")
+//	public String changeReservations() {
+//		System.out.println("[ReservationController] changeReservations");
+//		
+//		return "";
+//	}
 
 }
 	// TODO: 예약 삭제(D)
