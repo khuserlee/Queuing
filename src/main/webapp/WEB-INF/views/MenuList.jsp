@@ -16,7 +16,7 @@
 
     <h1>메뉴 목록</h1>
 
-    <form action="/menu/X" method="post">
+    <form action=<c:url value='/menu/X' /> method="post">
 
         <table>
 

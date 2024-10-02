@@ -16,15 +16,13 @@
 
     
 
-    <c:if test="${not empty param.menuId}">
-
-        <h2>수정할 메뉴 ID: ${param.menuId}</h2>
+        <h2>수정할 메뉴 ID: ${menu.id}</h2>
 
         
 
-        <!-- 여기서 메뉴 정보를 가져와서 표시합니다. -->
+     
 
-        <form action="${pageContext.request.contextPath}/menu/update" method="post">
+        <form action="/menu/update" method="post">
 
             <input type="hidden" name="menuId" value="${menu.id}"/>
 
@@ -40,23 +38,16 @@
 
             <input type="text" name="price" value="${menu.price}"/><br/>
 
-            <button type="submit">수정완</button>
+            <button type="submit">수정 완료</button>
 
         </form>
 
-    </c:if>
+   
 
     
 
-    <c:if test="${empty param.menuId}">
 
-        <p>유효한 메뉴 ID가 아닙니다.</p>
-
-    </c:if>
-
-    
-
-    <a href="${pageContext.request.contextPath}/menu/list">목록으로 돌아가기</a>
+   
 
 </body>
 

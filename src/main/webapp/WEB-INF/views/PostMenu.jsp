@@ -76,7 +76,7 @@
 
             <label for="name">메뉴 이름</label>
 
-            <form:input path="name" id="name" type="text" placeholder="메뉴 이름을 입력하세요" required />
+            <form:input path="name" id="name" type="text" placeholder="메뉴 이름을 입력하세요" required="required" />
 
         </div>
 
@@ -86,7 +86,7 @@
 
             <label for="price">가격</label>
 
-            <form:input path="price" id="price" type="number" placeholder="가격을 입력하세요" required />
+            <form:input path="price" id="price" type="number" placeholder="가격을 입력하세요" required="required" />
 
         </div>
 
@@ -96,7 +96,7 @@
 
             <label for="description">상세 정보</label>
 
-            <form:textarea path="description" id="description" rows="4" placeholder="메뉴에 대한 상세 정보를 입력하세요" required></form:textarea>
+            <form:textarea path="description" id="description" rows="4" placeholder="메뉴에 대한 상세 정보를 입력하세요" required="required"></form:textarea>
 
         </div>
 
