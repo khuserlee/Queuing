@@ -30,7 +30,7 @@
 					<a class="header_nav_menu" href="<c:url value='/users/mypage' />">
 						<span>마이페이지</span>
 					</a>
-					<c:if test="${role=MANAGER}">
+					<c:if test="${role == 'MANAGER'}">
 						<a class="header_nav_menu" href="<c:url value='/store' />">
 							<span>내 매장 관리</span>
 						</a>

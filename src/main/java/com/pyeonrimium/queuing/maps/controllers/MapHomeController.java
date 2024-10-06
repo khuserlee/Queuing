@@ -1,12 +1,26 @@
 package com.pyeonrimium.queuing.maps.controllers;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.pyeonrimium.queuing.maps.domains.dtos.NearbyStoreResponse;
+import com.pyeonrimium.queuing.maps.services.MapService;
 
 @Controller
 public class MapHomeController {
+	
+	@Autowired
+	private MapService mapService;
 	
 	@Value("#{kakao_dev['map.api.key']}")
 	private String kakaoMapApiKey;
@@ -28,4 +42,21 @@ public class MapHomeController {
 		return "maps/mapHome";
 	}
 	
+	/**
+	 * 주어진 위도, 경도를 기준으로 가까운 가게 검색
+	 * @param latitude 위도
+	 * @param longitude 경도
+	 * @return 조회된 가게 목록
+	 */
+	@GetMapping("/map/stores")
+	@ResponseBody
+	public ResponseEntity<?> getNearbyStores(@RequestParam BigDecimal latitude, @RequestParam BigDecimal longitude) {
+		NearbyStoreResponse nearbyStoreResponse = mapService.getNearbyStores(latitude, longitude);
+		
+		if (nearbyStoreResponse.isSuccess()) {
+			return ResponseEntity.ok(nearbyStoreResponse);
+		} else {
+			return new ResponseEntity<>(nearbyStoreResponse.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }
