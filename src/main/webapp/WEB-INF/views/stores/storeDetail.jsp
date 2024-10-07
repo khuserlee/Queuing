@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page import="com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,29 +15,29 @@
 		
 		<main>
 			<div class="section" id="storeInfo">
-				<h1>${storeFindResponse.name}</h1>
+				<h1>${storeRegistrationResponse.name}</h1>
 				<img class="storeImg" src="">
 				<h2>가게 소개</h2>
 				<p class="description">
-					${storeFindResponse.description}
+					${storeRegistrationResponse.description}
 				</p>
 				<h2>가게 정보</h2>
 				<table class="details">
 					<tr>
 						<th>주소</th>
-						<td>${storeFindResponse.address}</td>
+						<td>${storeRegistrationResponse.address}</td>
 					</tr>
 					<tr>
 						<th>연락처</th>
-						<td>${storeFindResponse.phone}</td>
+						<td>${storeRegistrationResponse.phone}</td>
 					</tr>
 					<tr>
 						<th>영업시간</th>
-						<td>${storeFindResponse.startTime} ~ ${storeFindResponse.endTime}</td>
+						<td>${storeRegistrationResponse.startTime} ~ ${storeRegistrationResponse.endTime}</td>
 					</tr>
 					<tr>
 						<th>휴무일</th>
-						<td>${storeFindResponse.closedDay}</td>
+						<td>${storeRegistrationResponse.closedDay}</td>
 					</tr>
 				</table>
 

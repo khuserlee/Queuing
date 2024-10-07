@@ -1,9 +1,13 @@
 package com.pyeonrimium.queuing.stores.daos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
 
@@ -13,9 +17,49 @@ public class StoreDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
+	@Transactional
 	public StoreEntity addStore(StoreEntity storeEntity) {
 		System.out.println("[StoreDao] addStore()");
-		return null;
+		String sql = "INSERT INTO stores (user_id, name, "
+						+ "address, " + "description, "
+						+ "phone, " + "start_time, "
+						+ "end_time, " + "closed_day) "
+						+ "VALUES(?, ?,?,?,?,?,?,?)";
+		
+		StoreEntity newEntity = null;
+		int result = -1;
+		
+		List<String> args = new ArrayList<String>();
+		args.add(String.valueOf(storeEntity.getUserId()));
+		args.add(storeEntity.getName());
+		args.add(storeEntity.getAddress());
+		args.add(storeEntity.getDescription());
+		args.add(storeEntity.getPhone());
+		args.add(storeEntity.getStartTime().toString());
+		args.add(storeEntity.getEndTime().toString());
+		args.add(storeEntity.getClosedDay());
+		
+		
+		try {
+			result = jdbcTemplate.update(sql, args.toArray());
+			
+			if (result > 0) {
+				sql = "SELECT * FROM stores WHERE user_id = ? AND name = ? AND address = ?";
+				
+				args.clear();
+				args.add(String.valueOf(storeEntity.getUserId()));
+				args.add(storeEntity.getName());
+				args.add(storeEntity.getAddress());
+				
+				newEntity = jdbcTemplate.queryForObject(sql,
+						BeanPropertyRowMapper.newInstance(StoreEntity.class),
+						args.toArray());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return newEntity;
 	}
 	
 	public StoreEntity findStore(Long storeId) {

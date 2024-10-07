@@ -1,5 +1,7 @@
 package com.pyeonrimium.queuing.stores.controllers;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
 import com.pyeonrimium.queuing.stores.services.StoreService;
 
@@ -30,12 +33,19 @@ public class StoresControllers {
 	
 	// TODO: 매장 정보  등록(저장)(Create)
 	@PostMapping("/stores")
-	public String addStore(StoreRegisterationRequest storeRegisterationRequest, Model model) {
+	public String addStore(StoreRegisterationRequest storeRegisterationRequest, HttpSession session, Model model) {
 		System.out.println("[storeControllers] addStore()");
 		
-		String result = storeService.addStore(storeRegisterationRequest);
-		model.addAttribute("result", result);
-			
+		long userId = 1;
+		StoreRegistrationResponse storeRegistrationResponse = storeService.addStore(storeRegisterationRequest, userId);
+		
+		if(storeRegistrationResponse.isSuccess() == true) {
+			model.addAttribute("storeRegistrationResponse", storeRegistrationResponse);
+			return "/stores/storeDetail";
+		} else {
+			// TODO: 실패 페이지 로드
+		}
+		
 		return "/storeRegistration"; //jsp파일생성 저장후화면으로 이동
 	}
 	
