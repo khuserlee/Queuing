@@ -1,11 +1,10 @@
 package com.pyeonrimium.queuing.stores.services;
 
-import org.checkerframework.checker.lock.qual.EnsuresLockHeld;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pyeonrimium.queuing.stores.controllers.StoresControllers;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
@@ -64,13 +63,36 @@ public class StoreService {
 		// 5.StoreRegistrationResponse 반환
 		return storeRegistrationResponse;
 	}
-	public StoreEntity findStore(Long storeId) {
-		System.out.println("[StoreService] findStore()");
+	
+	/**
+	 * 가게 정보 불러오기
+	 * @param storeId 가게 고유 번호
+	 * @return 조회 결과
+	 */
+	public StoreFindResponse findStore(Long storeId) {
+		// storeId로 가게 정보 조회
+		StoreEntity storeEntity = storeDao.findStoreByStoreId(storeId);
 		
-		// storeDao에 가게를 찾아달라고 요청
-		// 결과 받아오기
-		StoreEntity storeEntity = storeDao.findStore(storeId);
-		return storeEntity;
+		// 조회 실패
+		if (storeEntity == null) {
+			return StoreFindResponse.builder()
+					.isSuccess(false)
+					.message("가게 정보를 불러올 수 없습니다.")
+					.build();
+		}
+		
+		// 조회 성공
+		return StoreFindResponse.builder()
+				.isSuccess(true)
+				.storeId(storeEntity.getStoreId())
+				.name(storeEntity.getName())
+				.address(storeEntity.getAddress())
+				.description(storeEntity.getDescription())
+				.phone(storeEntity.getPhone())
+				.startTime(storeEntity.getStartTime())
+				.endTime(storeEntity.getEndTime())
+				.closedDay(storeEntity.getClosedDay())
+				.build();
 	}
 	
 	public String updateStore(Long storeId) {

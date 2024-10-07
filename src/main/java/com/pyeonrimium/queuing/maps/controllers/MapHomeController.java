@@ -50,12 +50,13 @@ public class MapHomeController {
 	@GetMapping("/map/stores")
 	@ResponseBody
 	public ResponseEntity<?> getNearbyStores(@RequestParam BigDecimal latitude, @RequestParam BigDecimal longitude) {
+		// 주변 가게 목록 조회하기
 		NearbyStoreResponse nearbyStoreResponse = mapService.getNearbyStores(latitude, longitude);
 		
-		if (nearbyStoreResponse.isSuccess()) {
-			return ResponseEntity.ok(nearbyStoreResponse);
-		} else {
+		if (!nearbyStoreResponse.isSuccess()) {
 			return new ResponseEntity<>(nearbyStoreResponse.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+
+		return ResponseEntity.ok(nearbyStoreResponse);
 	}
 }

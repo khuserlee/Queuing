@@ -1,7 +1,6 @@
 package com.pyeonrimium.queuing.maps.services;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.maps.domains.dtos.NearbyStore;
 import com.pyeonrimium.queuing.maps.domains.dtos.NearbyStoreResponse;
-import com.pyeonrimium.queuing.secret.StoreDao;
-import com.pyeonrimium.queuing.secret.domains.entities.StoreEntity;
+import com.pyeonrimium.queuing.stores.daos.StoreDao;
+import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
 
 @Service
 public class MapService {

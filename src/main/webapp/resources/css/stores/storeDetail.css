@@ -19,6 +19,26 @@ main {
 	aligh-items: center;
 }
 
+.msg-section {
+	width: 50%;
+	margin: auto 40px;
+	padding: 20px;
+	box-sizing: border-box;
+	background-color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+}
+
+.msg-section h2 {
+	text-align: center;
+}
+
+.msg-section .buttons {
+	display: flex;
+	justify-content: center;
+	aligh-items: center;
+}
+
 .section {
 	width: 50%;
 	height: 650px;

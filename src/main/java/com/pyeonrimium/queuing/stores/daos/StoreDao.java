@@ -1,9 +1,11 @@
 package com.pyeonrimium.queuing.stores.daos;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -62,26 +64,65 @@ public class StoreDao {
 		return newEntity;
 	}
 	
-	public StoreEntity findStore(Long storeId) {
-		System.out.println("[StoreDao] findStore()");
-		
+	/**
+	 * DB에서 가게 정보 불러오기
+	 * @param storeId 가게 고유 번호
+	 * @return 조회된 가게 정보
+	 */
+	public StoreEntity findStoreByStoreId(Long storeId) {
 		String sql = "SELECT * FROM stores WHERE store_id = ?";
 		StoreEntity storeEntity = null;
 
 		try {
-			// DB에서 sql 구문을 실행한 후
-			// 결과를 받아와서
-			// storeEntity에 저장
+			// DB에서 sql 구문을 실행한 후 결과를 받아오기
 			storeEntity = jdbcTemplate.queryForObject(sql,
 					BeanPropertyRowMapper.newInstance(StoreEntity.class),
 					storeId);
-			
-		} catch (Exception e) {
+		} catch (DataAccessException e) {
 			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		// 결과를 반환
 		return storeEntity;
 	}
 
+	public List<StoreEntity> getNearbyStores(BigDecimal latitude, BigDecimal longitude, int radius) {
+		String sql = "SELECT * " +
+					"FROM (" +
+						"SELECT *, " +
+							"(6371000 * " +
+								"acos( " +
+									"cos(radians(?)) * " +
+									"cos(radians(latitude)) * " +
+									"cos(radians(longitude) - radians(?)) + " +
+									"sin(radians(?)) * " +
+									"sin(radians(latitude)) " +
+								") " +
+							") AS distance " +
+						"FROM stores" + 
+					") AS subquery " +
+					"WHERE distance <= ? " +
+					"ORDER BY distance " +
+					"LIMIT 10;";
+
+		List<StoreEntity> nearbyStores = null;
+		
+		List<String> args = new ArrayList<>();
+		args.add(latitude.toString());
+		args.add(longitude.toString());
+		args.add(latitude.toString());
+		args.add(String.valueOf(radius));
+		
+		try {
+			nearbyStores
+				= jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(StoreEntity.class), args.toArray());
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return nearbyStores;
+	}
 }
