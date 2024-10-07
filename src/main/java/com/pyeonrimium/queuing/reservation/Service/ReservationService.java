@@ -14,6 +14,8 @@ import com.pyeonrimium.queuing.reservation.domains.MyReservationResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
 import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
+import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateRequest;
+import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateResponse;
 
 @Service
 public class ReservationService {
@@ -97,6 +99,8 @@ public class ReservationService {
 		return storeDao.getStoreName(storeId);
 	}
 	
+	
+	
 	//userId를 통해서 user의 예약 정보 불러오기
 	public List<ReservationEntity> getmyReservation(long userId) {
 		return reservationDao.getReservationsByUserId(userId);
@@ -132,6 +136,35 @@ public class ReservationService {
 		
 		
 		// TODO : 예약 수정 처리
+		public ReservationUpdateResponse updateReservations(ReservationUpdateRequest request){
+			ReservationEntity reservationEntity = reservationDao.findByReservationNumber(request.getReservationNumber());
+			
+			if (reservationEntity == null) {
+				return ReservationUpdateResponse.builder()
+						.isSuccess(false)
+						.message("예약 수정을 할 수 없습니다.")
+						.build();
+			}
+			
+			// 정보 업데이트
+			reservationEntity.setModifiedAt(LocalDateTime.now());
+			reservationEntity.setPartySize(request.getPartySize());
+			reservationEntity.setRequest(request.getRequest());
+			
+			// DAO에 업데이트 요청
+			boolean isSuccess = reservationDao.updateReservation(request);
+			
+			if (!isSuccess) {
+				return ReservationUpdateResponse.builder()
+						.isSuccess(false)
+						.message("예약 수정을 할 수 없습니다.")
+						.build();
+			}
+			
+			return ReservationUpdateResponse.builder()
+					.isSuccess(true)
+					.build();
+		}
 	
 		//DB에서 예약 아이디를 대조하여 예약 정보 불러오기
 

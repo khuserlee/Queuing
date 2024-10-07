@@ -89,9 +89,12 @@ button:hover {
 							<td>${reservation.storeName}</td>
 							<td>${reservation.partySize}</td>
 							<td>${reservation.reservationTime}</td>
+
 							<td>
-								<button onclick="editReservation(${reservationId})">수정</button>
-								<button onclick="deleteReservation(${reservationId})">삭제</button>
+								<button onclick="location.href='http://localhost:8090/queuing/reservations'">페이지 전환</button>
+
+								<button
+									onclick="deleteReservation(${reservation.reservationNumber})">삭제</button>
 							</td>
 						</tr>
 					</c:forEach>
@@ -104,5 +107,19 @@ button:hover {
 			<button onclick="nextPage()">다음</button>
 		</div>
 	</div>
+	<script>
+	function editReservation(reservationId) {
+		window.location.href("http://localhost:8090/queuing/reservations")
+		}
+		function deleteReservation(reservationId) {
+			
+		}
+
+		function prevPage() {
+		}
+
+		function nextPage() {
+		}
+	</script>
 </body>
 </html>

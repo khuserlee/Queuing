@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.pyeonrimium.queuing.reservation.Service.ReservationService;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
 import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
+import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateRequest;
+import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateResponse;
 
 @Controller
 //예약화면 홈
@@ -124,15 +127,30 @@ public class ReservationController {
 		model.addAttribute("result", result);
 		return "/reservation/reservationFind_ok";
 	}
-	
+//	
 //	// TODO: 예약 수정(U)
 //	@PatchMapping("/reservations")
-//	public String changeReservations() {
-//		System.out.println("[ReservationController] changeReservations");
+//	public String updateReservations(ReservationUpdateReuqest request, Model model) {
+//		System.out.println("[ReservationController] updateReservations");
 //		
-//		return "";
+//		model.addAttribute("request", request);
+//		
+//		return "예약 수정 페이지";
 //	}
-
+	//TODO: 예약 수정
+	@PatchMapping("/reservations")
+	public String updateReservations(ReservationUpdateRequest request) {
+		ReservationUpdateResponse result = reservationService.updateReservations(request);
+		
+		if (result.isSuccess()) {
+			// TODO: 성공 처리
+			return "redirect:/reservations/pageNo=1";
+		} else {
+			// TODO: 실패 처리
+			return "실패 메시지 화면";
+		}
+		
+	}
 }
 	// TODO: 예약 삭제(D)
 
