@@ -42,11 +42,12 @@ public class StoresControllers {
 		if(storeRegistrationResponse.isSuccess() == true) {
 			model.addAttribute("storeRegistrationResponse", storeRegistrationResponse);
 			return "/stores/storeDetail";
-		} else {
-			// TODO: 실패 페이지 로드
-		}
-		
-		return "/storeRegistration"; //jsp파일생성 저장후화면으로 이동
+		} else { 
+			// TODO: 실패 페이지 로드(실패 메시지 나오게)
+			model.addAttribute("errorMessage",storeRegistrationResponse.getMessage());
+			return "store/storefail";
+		}	
+	
 	}
 	
 	// TODO: 매장 정보 조회(Read)
