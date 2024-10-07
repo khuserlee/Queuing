@@ -12,7 +12,7 @@
 
     <title>메뉴 등록</title>
 
-    <style>
+    <%-- <style>
 
         .form-group {
 
@@ -60,7 +60,7 @@
 
         }
 
-    </style>
+    </style> --%>
 
 </head>
 
@@ -70,13 +70,13 @@
 
 ​
 
-    <form:form method="post" action="/menu/register" modelAttribute="menu">
+    <form method="post" action="/queuing/menu/register" >
 
         <div class="form-group">
 
             <label for="name">메뉴 이름</label>
 
-            <form:input path="name" id="name" type="text" placeholder="메뉴 이름을 입력하세요" required="required" />
+            <input  name="name" type="text" />
 
         </div>
 
@@ -86,7 +86,7 @@
 
             <label for="price">가격</label>
 
-            <form:input path="price" id="price" type="number" placeholder="가격을 입력하세요" required="required" />
+            <input  name="price" type="number"  />
 
         </div>
 
@@ -96,7 +96,7 @@
 
             <label for="description">상세 정보</label>
 
-            <form:textarea path="description" id="description" rows="4" placeholder="메뉴에 대한 상세 정보를 입력하세요" required="required"></form:textarea>
+            <input type="text"  name="description" />
 
         </div>
 
@@ -104,7 +104,7 @@
 
         <button type="submit">등록</button>
 
-    </form:form>
+    </form>
 
 ​
 

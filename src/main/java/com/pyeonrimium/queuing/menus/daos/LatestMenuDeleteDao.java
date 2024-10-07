@@ -10,12 +10,12 @@ public class LatestMenuDeleteDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-    public void deleteMenu(int selectedmenuId) {
+    public void deleteMenu(long selectedmenuId) {
 
 	String sql = "DELETE FROM menus WHERE menu_id = ?";
 
-    jdbcTemplate.update(sql, selectedmenuId); 
-
+	int rowsAffected = jdbcTemplate.update(sql, selectedmenuId); 
+	System.out.println("Rows affected: " + rowsAffected);
 	    }
 
 }

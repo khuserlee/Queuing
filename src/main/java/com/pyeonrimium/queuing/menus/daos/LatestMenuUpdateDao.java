@@ -15,7 +15,7 @@ public class LatestMenuUpdateDao {
 	 public void updateMenu(WillBeUpdatedMenu menu) {
 		 
 		 String sql = "UPDATE menus SET name = ?, description = ?, price = ? WHERE menu_id = ?";
-		 jdbcTemplate.update(sql, menu.getName(), menu.getPrice(),  menu.getDescription(), menu.getId());
+		 jdbcTemplate.update(sql, menu.getName(),  menu.getDescription(), menu.getPrice(), menu.getId());
 	 }
 
 }

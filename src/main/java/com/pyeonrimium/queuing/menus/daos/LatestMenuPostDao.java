@@ -14,7 +14,7 @@ public class LatestMenuPostDao {
 	
 	 public void save(WillBePostedMenu menu) {
 		 
-		 String sql = "INSERT INTO menus (name, price, description) VALUES (?, ?, ?)";
+		 String sql = "INSERT INTO menus (name, price, description) VALUES (?, ?, ?)";//values 이거 뭐임? 
 
 	        jdbcTemplate.update(sql, menu.getName(), menu.getPrice(), menu.getDescription());
 

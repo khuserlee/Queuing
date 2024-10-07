@@ -16,13 +16,13 @@
 
     
 
-        <h2>수정할 메뉴 ID: ${menu.id}</h2>
+        <h2>수정할 메뉴 </h2>
 
         
 
      
 
-        <form action="/menu/update" method="post">
+        <form action="/queuing/menu/update" method="post">
 
             <input type="hidden" name="menuId" value="${menu.id}"/>
 

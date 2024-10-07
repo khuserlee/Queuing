@@ -45,7 +45,7 @@
 
                     <td>${menu.description}</td>
 
-                    <td><input type="checkbox" name="selectedMenuId" value="${menu.id}" /></td>
+                    <td><input type="checkbox" name="selectedMenuId" value="${menu.menuId}" /></td>
 
                 </tr>
 

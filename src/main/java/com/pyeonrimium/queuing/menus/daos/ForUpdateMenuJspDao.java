@@ -13,7 +13,7 @@ public class ForUpdateMenuJspDao {
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-public ForUpdateMenu ForUpdateMenuJspGetThatWantedMenu(int selectedMenuId,int storeId) {
+public ForUpdateMenu ForUpdateMenuJspGetThatWantedMenu(long selectedMenuId,int storeId) {
 String sql = "SELECT * FROM menus WHERE store_id = ? AND menu_id = ?";
 //SELECT ID 가 연루된곳 > jsp에서 menu.id 가 있음. SELECT문엔 안쓰는 이유가 menuId로 찾으니까.
 //데이터베이스에 꺼내온 데이터를 담는 ForUpdateMenu  필드에는 id가 없어야함. 근데 jsp에는 있어야함. 

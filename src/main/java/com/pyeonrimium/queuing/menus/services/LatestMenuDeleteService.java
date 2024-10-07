@@ -11,7 +11,7 @@ public class LatestMenuDeleteService {
 	@Autowired
     private LatestMenuDeleteDao menuDAO;
 	
-	public void deleteMenu(int selectedMenuId) {
+	public void deleteMenu(long selectedMenuId) {
 
         menuDAO.deleteMenu(selectedMenuId);
 }
