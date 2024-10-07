@@ -43,15 +43,25 @@ main {
 
 .store-info h3 {
 	margin-top: 0;
-	margin-bottom: 15px;
-	font-size: 1.5rem;
+	margin-bottom: 10px;
+	font-size: 1.4rem;
 }
 
 .store-info p {
-	margin: 10px 0 15px;
+	margin: 10px 0;
 }
 
 .info-buttons {
 	display: flex;
 	justify-content: flex-end;
+}
+
+.info-buttons button {
+	padding: 9px 16px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	cursor: pointer;
+	border-radius: 4px;
+	font-size: 0.9rem;
 }

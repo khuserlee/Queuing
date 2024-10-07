@@ -14,6 +14,8 @@ function resizeMap(map) {
 	map.style.height = `${height}px`;
 }
 
+var markers = [];
+
 function drawMarker(position) {
 	var marker = new kakao.maps.Marker({
 		map: map,
@@ -21,11 +23,20 @@ function drawMarker(position) {
 	});
 	
 	marker.setMap(map);
+	markers.push(marker);
+	
 	return marker;
 }
 
+function clearMarkers() {
+	for (var i = 0; i < markers.length; i++) {
+		markers[i].setMap(null);
+	}
+	markers = [];
+}
+
 function showDetailPage(storeId) {
-	console.log("storeId: " + storeId);
+	location.href = `/queuing/stores/${storeId}`;
 }
 
 function closeCurrentInfoWindow() {
@@ -35,8 +46,7 @@ function closeCurrentInfoWindow() {
 }
 
 function setInfoWindows(nearbyStores) {
-	console.log("시작");
-	console.log(nearbyStores);
+	clearMarkers();
 	
 	nearbyStores.forEach(store => {
 		const position = new kakao.maps.LatLng(store.latitude, store.longitude);
@@ -62,7 +72,7 @@ function setInfoWindows(nearbyStores) {
 		kakao.maps.event.addListener(marker, 'click', function() {
 			closeCurrentInfoWindow();
 			
-			map.setCenter(marker.getPosition());
+			//map.setCenter(marker.getPosition());
 			
 			infowindow.open(map, marker);
 			currentWindow = infowindow;
@@ -112,6 +122,10 @@ function drawMap(address) {
 			searchStores();
 		
 			window.addEventListener('resize', () => resizeMap(mapElement));
+			
+			kakao.maps.event.addListener(map, 'dragend', function() {
+				searchStores();
+			});
 		}
 	});
 }
