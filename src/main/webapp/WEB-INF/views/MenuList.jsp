@@ -38,28 +38,45 @@
 <button onclick="registerMenu()">메뉴 등록</button>
 
 <script>
-function updateMenu() {
-	const selectedMenuIds = [...document.querySelectorAll('input[name="selectedMenuId"]:checked')].map(checkbox => checkbox.value);
-	
-	
-	 // 서버로 전송
-    if (selectedMenuIds.length === 1) {
-        // 필요한 데이터만 서버로 POST 요청
-        fetch('/queuing/menu/updateView', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ selectedMenuId: selectedMenuIds[0] }),
-        }).then(response => {
-            if (response.ok) {
-                window.location.href = '/queuing/menu/updateView'; // 서버가 리다이렉션을 반환하지 않는다면 직접 이동
-            }
-        });
-    } else {
-        alert('하나의 메뉴만 선택해 주세요.');
-    }
-	
+function updateMenu(){
+	window.location.href = '/queuing/menu/updateView/{selectedMenuId}'; 
+	onsubmit 방식 
+<!--	GetMapping("/menu/update/{menuId}")
+	public String updateMenu(@PathVariable Long menuId) {
+		// menuId로 데이터 조회하기
+		// model에 addAttribute로 저장하기
+		
+		return "수정 페이지";
+	}
+
+	@PostMapping("/menu/update")
+	public String updateMenu(@RequestParam Long menuId) {
+		
+	}
+
+	function updateMenu() {
+		const selectedMenuIds = [...document.querySelectorAll('input[name="selectedMenuId"]:checked')].map(checkbox => checkbox.value);
+		
+		
+		 // 서버로 전송
+	    if (selectedMenuIds.length === 1) {
+	        // 필요한 데이터만 서버로 POST 요청
+	        fetch('/queuing/menu/updateView', {
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/json',
+	            },
+	            body: JSON.stringify({ selectedMenuId: selectedMenuIds[0] }),
+	        }).then(response => {
+	            if (response.ok) {
+	                window.location.href = '/queuing/menu/updateView'; // 서버가 리다이렉션을 반환하지 않는다면 직접 이동
+	            }
+	        });
+	    } else {
+	        alert('하나의 메뉴만 선택해 주세요.');
+	    } -->
+		
+}
 	
 	
 	

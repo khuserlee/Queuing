@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -77,8 +78,8 @@ public class MenuController {
 	@Autowired
 	ForUpdatemenuJspService forUpdatemenuJspService;
 
-	@PostMapping("/menu/updateView") // post인지 get인지 모르겠음..
-	public String getUpdateView( @RequestParam("selectedMenuId") long selectedMenuId, 
+	@GetMapping("/menu/updateView/{selectedMenuId}") // post인지 get인지 모르겠음..
+	public String getUpdateView( @PathVariable long selectedMenuId, 
 			/* @RequestParam("storeId") int storeId, */
 			Model model, HttpSession session) {
 
