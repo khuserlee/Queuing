@@ -12,7 +12,7 @@
 
     <title>메뉴 등록</title>
 
-    <%-- <style>
+     <style>
 
         .form-group {
 
@@ -60,7 +60,7 @@
 
         }
 
-    </style> --%>
+    </style> 
 
 </head>
 

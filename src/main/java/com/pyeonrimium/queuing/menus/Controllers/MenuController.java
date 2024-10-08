@@ -25,27 +25,6 @@ import com.pyeonrimium.queuing.menus.services.LatestMenuUpdateService;
 @Controller
 public class MenuController {
 
-	@PostMapping("/menu/X")
-	public String handleMenuAction(@RequestParam("action") String action,
-			@RequestParam("selectedMenuId") long selectedMenuId, HttpSession session) {
-
-		if ("edit".equals(action)) {
-			return "redirect:/menu/updateView?selectedMenuId=" + selectedMenuId  ; 
-			//return "redirect:/menu/updateView"  + selectedMenuId */ ;
-		}
-
-		else if ("delete".equals(action)) {
-			
-			return "redirect:/menu/delete?selectedMenuId=" + selectedMenuId; // 매핑된 주소는 /menu/delete 로 해도 되나?
-		}
-
-		else if ("register".equals(action)) {
-			return "PostMenu";
-		}
-
-		return "redirect:/menu/list";
-	}
-
 	@Autowired
 	private MenuListDao menuListDao;
 
@@ -60,26 +39,49 @@ public class MenuController {
 
 		return "MenuList"; // 메뉴 목록 화면
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Autowired
 	LatestMenuDeleteService latestMenuDeleteService;
 
-	@GetMapping("/menu/delete")
+	@PostMapping("/menu/delete")
 	public String deleteMenu(@RequestParam("selectedMenuId") long selectedMenuId) {
 		
 		latestMenuDeleteService.deleteMenu(selectedMenuId);
 		return "redirect:/menu/list";
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Autowired
 	ForUpdatemenuJspService forUpdatemenuJspService;
 
-	@GetMapping("/menu/updateView") // post인지 get인지 모르겠음..
+	@PostMapping("/menu/updateView") // post인지 get인지 모르겠음..
 	public String getUpdateView( @RequestParam("selectedMenuId") long selectedMenuId, 
 			/* @RequestParam("storeId") int storeId, */
 			Model model, HttpSession session) {
 
-System.out.println(selectedMenuId);
 
 		ForUpdateMenu menu = null; 
 		
@@ -92,6 +94,21 @@ System.out.println(selectedMenuId);
 
 		return "UpdateMenu";
 	}
+	
+	
+	
+	
+	@PostMapping("/menu/registerView")
+	public String registerView() {
+		return "PostMenu";
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	@Autowired
 	LatestMenuPostService latestMenuPostService;
@@ -103,13 +120,17 @@ System.out.println(selectedMenuId);
 
 			@RequestParam("price") int price,
 
-			@RequestParam("description") String description) {
+			@RequestParam("description") String description,
+			
+			HttpSession httpsession) {
+		    
 		try {
 			WillBePostedMenu menu = new WillBePostedMenu();
 			// menu.setId(menuId);
 			menu.setName(name);
 			menu.setPrice(price);
 			menu.setDescription(description);
+			menu.setStoreId(5);
 
 			latestMenuPostService.saveMenu(menu);
 			return "redirect:/menu/list";
@@ -118,6 +139,18 @@ System.out.println(selectedMenuId);
 			return "PostMenu"; // + 메뉴등록에 실패했습니다.
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Autowired
 	private LatestMenuUpdateService latestMenuUpdateService;

@@ -16,7 +16,7 @@
 
     <h1>메뉴 목록</h1>
 
-    <form action=<c:url value='/menu/X' /> method="post">
+    <form  method="post">
 
         <table>
 
@@ -53,11 +53,11 @@
 
         </table>
 
-        <button type="submit" name="action" value="edit">메뉴 수정</button>
+       <button type="submit" formaction="<c:url value='/menu/updateView' />">메뉴 수정</button>
 
-        <button type="submit" name="action" value="delete">메뉴 삭제</button>
+        <button type="submit" formaction="<c:url value='/menu/delete' />">메뉴 삭제</button>
 
-        <button type="submit" name="action" value="register">메뉴 등록</button>
+        <button type="submit" formaction="<c:url value='/menu/registerView' />">메뉴 등록</button>
 
     </form> 
 

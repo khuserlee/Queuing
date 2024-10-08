@@ -10,6 +10,14 @@ public class WillBePostedMenu {
 	 private String name;
 	 private int price;
 	 private String description;
+	 private int storeId;
+	 
+	 public int getStoreId() {
+	        return storeId;
+	    }
+	 public void setStoreId(int storeId) {
+	        this.storeId = storeId;
+	    }
 	 
 	 public void Menu(/*String id*/ String name, int price, String description) {
 	     //   this.id = id;
