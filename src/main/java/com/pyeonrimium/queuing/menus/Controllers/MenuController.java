@@ -98,7 +98,7 @@ public class MenuController {
 	
 	
 	
-	@PostMapping("/menu/registerView")
+	@GetMapping("/menu/registerView")
 	public String registerView() {
 		return "PostMenu";
 	}
