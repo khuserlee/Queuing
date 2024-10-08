@@ -87,6 +87,30 @@ public class StoreDao {
 		return storeEntity;
 	}
 
+	/**
+	 * DB에서 가게 정보 불러오기
+	 * @param userId 유저 고유 번호
+	 * @return 조회된 가게 정보
+	 */
+	public Long findStoreByUserId(Long userId) {
+		// 등록된 정보가 여러 개일 수 있음
+		// LIMIT 으로 반환할 행의 개수를 제한
+		// 여기서는 1개로 제한
+		String sql = "SELECT store_id FROM stores WHERE user_id = ? LIMIT 1;";
+		Long storeId = null;
+		
+		try {
+			// 가게 고유 번호만 조회
+			storeId = jdbcTemplate.queryForObject(sql, new Object[]{userId}, Long.class);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return storeId;
+	}
+
 	public List<StoreEntity> getNearbyStores(BigDecimal latitude, BigDecimal longitude, int radius) {
 		String sql = "SELECT * " +
 					"FROM (" +

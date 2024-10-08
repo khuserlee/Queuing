@@ -22,11 +22,34 @@ public class StoreController {
 	// StoreService 연결
 	@Autowired
 	private StoreService storeService;
+	
+	@GetMapping("/stores")
+	public String getMyStore(HttpSession session) {
+		
+		// 로그인이 안 된 경우
+		if (session == null) {
+			return "redirect:/login/form";
+		}
+		
+		// 일반 유저인 경우
+		if (!session.getAttribute("role").equals("MANAGER")) {
+			return "redirect:/home";
+		}
+		
+		Long userId = (Long) session.getAttribute("user_id");
+		Long storeId = storeService.getMyStoreId(userId);
+		
+		// 등록한 매장이 없는 경우
+		if (storeId == null) {
+			return "redirect:/stores/form";
+		}
+		
+		return "redirect:/stores/" + storeId;
+	}
 
 	// 매장정보등록 화면 불러오기
 	@GetMapping("/stores/form")
 	public String getStoreform() {
-		System.out.println("[storeControllers] getStoreform()");
 		return "/stores/storeRegistration";
 	}
 

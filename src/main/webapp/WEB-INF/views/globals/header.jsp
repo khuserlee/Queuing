@@ -31,7 +31,7 @@
 						<span>마이페이지</span>
 					</a>
 					<c:if test="${role == 'MANAGER'}">
-						<a class="header_nav_menu" href="<c:url value='/store' />">
+						<a class="header_nav_menu" href="<c:url value='/stores' />">
 							<span>내 매장 관리</span>
 						</a>
 						<a class="header_nav_menu" href="<c:url value='/reservations' />">

@@ -95,6 +95,16 @@ public class StoreService {
 				.closedDay(storeEntity.getClosedDay())
 				.build();
 	}
+
+	/**
+	 * 등록한 가게 고유 번호 조회
+	 * @param userId 유저 고유 번호
+	 * @return 가게 고유 번호
+	 */
+	public Long getMyStoreId(Long userId) {
+		Long storeId = storeDao.findStoreByUserId(userId);
+		return storeId;
+	}
 	
 	public String updateStore(Long storeId) {
 		System.out.println("[storeService] updateStore()");
