@@ -1,11 +1,14 @@
 package com.pyeonrimium.queuing.stores.services;
 
-import org.checkerframework.checker.lock.qual.EnsuresLockHeld;
+
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.stores.controllers.StoresControllers;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
@@ -47,30 +50,49 @@ public class StoreService {
 					.build();
 		}
 		
+		System.out.println("storeId: " + result.getStoreId());
+		
 		// 3. StoreRegistrationResponse 생성
 		// 4. 2.의 결과를 StoreRegistrationResponse에 저장
 		StoreRegistrationResponse storeRegistrationResponse = StoreRegistrationResponse.builder()
 				.isSuccess(true)
 				.storeId(result.getStoreId())
-				.name(result.getName())
-				.description(result.getDescription())
-				.address(result.getAddress())
-				.phone(result.getPhone())
-				.startTime(result.getStartTime())
-				.endTime(result.getEndTime())
-				.closedDay(result.getClosedDay())
 				.build();
 		
 		// 5.StoreRegistrationResponse 반환
 		return storeRegistrationResponse;
 	}
-	public StoreEntity findStore(Long storeId) {
+	
+	
+	public StoreFindResponse findStore(Long storeId) {
 		System.out.println("[StoreService] findStore()");
 		
 		// storeDao에 가게를 찾아달라고 요청
 		// 결과 받아오기
-		StoreEntity storeEntity = storeDao.findStore(storeId);
-		return storeEntity;
+		StoreEntity result = storeDao.findStore(storeId);
+		
+		//TODO: storeresponse
+		if(result == null) {
+			return StoreFindResponse.builder()
+					.isSuccess(false)
+					.message("조회 실패")
+					.build();
+		}
+		
+		StoreFindResponse storeFindResponse = StoreFindResponse.builder()
+				.isSuccess(true)
+				.storeId(result.getStoreId())
+				.name(result.getName())
+				.address(result.getAddress())
+				.description(result.getDescription())
+				.phone(result.getPhone())
+				.startTime(result.getStartTime())
+				.endTime( result.getEndTime())
+				.closedDay(result.getClosedDay())
+				.build();
+
+		//StoreFindResponse 반환
+		return storeFindResponse;
 	}
 	
 	public String updateStore(Long storeId) {

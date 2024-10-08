@@ -1,5 +1,4 @@
-package com.pyeonrimium.queuing.stores.domains.entities;
-
+package com.pyeonrimium.queuing.stores.domains.dtos;
 
 import java.time.LocalTime;
 
@@ -16,21 +15,22 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoreEntity {
+public class StoreFindResponse {
+	private boolean isSuccess;
+	private String message;
+	
 	private Long storeId;
-	private Long userId;
-	
-	private String name; 
-	private String description;
+	private String name;
 	private String address;
+	private String description;
 	private String phone;
-	
+
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime startTime;
-	
+
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime endTime;
-	private String closedDay;
-	//name address description phone start_time end_time closed_day
-}
 
+	private String closedDay;
+
+}
