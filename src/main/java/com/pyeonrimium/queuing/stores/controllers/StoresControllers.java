@@ -67,7 +67,7 @@ public class StoresControllers {
 			 return "/stores/storeDetail";
 		 } else {
 			 System.out.println("조회 살패: "  + storeFindResponse.getMessage());
-			 return "";
+			 return "/stores/storefail";
 		 }		
 	}
 

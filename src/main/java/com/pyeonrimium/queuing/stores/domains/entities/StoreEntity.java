@@ -1,6 +1,7 @@
 package com.pyeonrimium.queuing.stores.domains.entities;
 
 
+import java.math.BigDecimal;
 import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,5 +33,8 @@ public class StoreEntity {
 	private LocalTime endTime;
 	private String closedDay;
 	//name address description phone start_time end_time closed_day
+	
+	private BigDecimal longitude;
+	private BigDecimal latitude;
 }
 
