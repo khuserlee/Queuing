@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import com.pyeonrimium.queuing.reservation.Service.ReservationService;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
@@ -25,11 +24,12 @@ import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateResponse;
 public class ReservationController {
 	@Autowired
 	ReservationService reservationService;
-	
+
 	private String nextPage;
-	
+
 	/**
 	 * 예약 신청 화면 불러오기
+	 * 
 	 * @param storeId 가게 고유 ID
 	 * @param model
 	 * @return 성공: 예약 페이지, 실패: 실패 안내 페이지
@@ -37,28 +37,26 @@ public class ReservationController {
 	@GetMapping("/reservations/form/{storeId}")
 	public String reservationHome(@PathVariable long storeId, Model model) {
 		System.out.println("[ReservationController] reservationHome()");
-		
+
 		// storeId를 통해서 storeName 가져오기
 		String storeName = reservationService.getStoreName(storeId);
-		
+
 		if (storeName == null) {
 			// TODO: 조회 실패 처리
 			System.out.println("[ReservationController] 가게 이름 조회 실패");
 		}
-		
+
 		// model에 가게 이름 저장
 		model.addAttribute("storeId", storeId);
 		model.addAttribute("storeName", storeName);
-		
+
 		return "reservation/reservation_home";
-	    
+
 //	    예약 화면에 필요한 정보 불러오기 => 식당 정보
 //	    System.out.println("[ReservationController] getReservationForm");
 //	    model.addAttribute("reservationFormResponse", response); // 올바른 변수명 사용
 
 	}
-	
-	
 
 	private Long getUserId(HttpSession session) {
 //		user_id 조회
@@ -72,18 +70,17 @@ public class ReservationController {
 	// TODO: 예약 신청(C)
 
 	@PostMapping("/reservations")
-	public String createReservation(ReservationRequest reservationRequest, Model model,HttpSession session) {
+	public String createReservation(ReservationRequest reservationRequest, Model model, HttpSession session) {
 		Long userId = getUserId(session);
-		
+
 		// 로그인이 안됐을 경우
 		if (userId == null) {
 			// 로그인 페이지로 이동
 			return "redirect:/login/form";
 		}
-		
-		ReservationResponse reservationResponse
-			= reservationService.createReservation(userId, reservationRequest);
-		
+
+		ReservationResponse reservationResponse = reservationService.createReservation(userId, reservationRequest);
+
 		if (reservationResponse.isSuccess()) {
 			nextPage = "/reservation/reservation_success";
 			model.addAttribute("reservationResponse", reservationResponse);
@@ -99,34 +96,36 @@ public class ReservationController {
 //			nextPage = "/reservation/reservation_success";
 //		model.addAttribute("result", result);
 //	}
-	return nextPage;
+		return nextPage;
 	}
 //}
-	
+
 	/**
 	 * 예약 정보 불러오기
+	 * 
 	 * @param pageNo 페이지 번호
-	 * @param model 
+	 * @param model
 	 * @return 예약 정보 목록 페이지
 	 */
 	@GetMapping("/reservations/pageNo={pageNo}")
 	public String getMyReservations(@PathVariable int pageNo, Model model) {
 		System.out.println("[ReservationController] getMyReservations");
-		
+
 		// 임의로 userId값 1로 설정 (나중엔 세션에서 받아옴)
 		long userId = 1;
-		
+
 		// 서비스 클래스에서 예약 정보 가져오기
 		List<ReservationEntity> result = reservationService.getReservations(userId);
-		
-		if(result == null) {
-			return  "reservationFind_ng";
+
+		if (result == null) {
+			return "reservationFind_ng";
 		}
-		
+
 		// Model에 예약 정보 받은것을 JSP파일로 전송
 		model.addAttribute("result", result);
 		return "/reservation/reservationFind_ok";
 	}
+
 //	
 //	// TODO: 예약 수정(U)
 //	@PatchMapping("/reservations")
@@ -137,20 +136,34 @@ public class ReservationController {
 //		
 //		return "예약 수정 페이지";
 //	}
-	//TODO: 예약 수정
+	
+	// TODO: 예약 수정 페이지
+	@GetMapping("/reservations/form/{reservationId}/update")
+	public String getReservationUpdateForm(@PathVariable Long reservationId, Model model) {
+		System.out.println("[ReservationController] getReservationUpdateForm()");
+		
+		ReservationEntity reservation = reservationService.findReservation(reservationId);
+		
+		System.out.println("request :"+ reservation.getRequest());
+		System.out.println("partysize :" + reservation.getPartySize());
+		
+		model.addAttribute("reservation", reservation);
+		return "/reservation/reservation_update";
+	}
+	
+	// TODO: 예약 수정 한 후 페이지
 	@PatchMapping("/reservations")
 	public String updateReservations(ReservationUpdateRequest request) {
+		// 업데이트한 정보 가져오기
 		ReservationUpdateResponse result = reservationService.updateReservations(request);
-		
+		// 정보를 가져왔을때 처리
 		if (result.isSuccess()) {
 			// TODO: 성공 처리
 			return "redirect:/reservations/pageNo=1";
 		} else {
 			// TODO: 실패 처리
-			return "실패 메시지 화면";
+			return "/reservation/reservationFind_ng";
 		}
-		
 	}
-}
 	// TODO: 예약 삭제(D)
-
+}

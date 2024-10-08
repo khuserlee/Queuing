@@ -135,6 +135,8 @@ public class ReservationService {
 		}
 		
 		
+		
+		
 		// TODO : 예약 수정 처리
 		public ReservationUpdateResponse updateReservations(ReservationUpdateRequest request){
 			ReservationEntity reservationEntity = reservationDao.findByReservationNumber(request.getReservationNumber());
@@ -148,6 +150,7 @@ public class ReservationService {
 			
 			// 정보 업데이트
 			reservationEntity.setModifiedAt(LocalDateTime.now());
+			reservationEntity.setReservationNumber(request.getReservationNumber());
 			reservationEntity.setPartySize(request.getPartySize());
 			reservationEntity.setRequest(request.getRequest());
 			
@@ -161,22 +164,18 @@ public class ReservationService {
 						.build();
 			}
 			
-			return ReservationUpdateResponse.builder()
+				return ReservationUpdateResponse.builder()
 					.isSuccess(true)
 					.build();
+			}
+
+
+
+		public ReservationEntity findReservation(Long reservationId) {
+			//TODO:DAO로 reservationId를 통해 예약 호출
+			return reservationDao.getReservationsByReservationId(reservationId);
 		}
-	
-		//DB에서 예약 아이디를 대조하여 예약 정보 불러오기
 
-		//예약 수정
-		//다시 DAO 전달 -> DB에 저장
-	
-
-		//TODO : 예약화면에 식당 정보 가져오기
-
-	
-	
-		// TODO: 예약 수정(U)
 	
 		// TODO: 예약 삭제(D)
 //		public List<reservationRequest> listupRes(){

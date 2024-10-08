@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>예약 조회 목록</title>
+<title>예약 조회</title>
 <style>
 body {
 	font-family: Arial, sans-serif;
@@ -91,7 +91,7 @@ button:hover {
 							<td>${reservation.reservationTime}</td>
 
 							<td>
-								<button onclick="location.href='http://localhost:8090/queuing/reservations'">페이지 전환</button>
+								<button onclick="location.href='http://localhost:8090/queuing/reservations/form/${reservation.reservationId}/update'">수정</button>
 
 								<button
 									onclick="deleteReservation(${reservation.reservationNumber})">삭제</button>

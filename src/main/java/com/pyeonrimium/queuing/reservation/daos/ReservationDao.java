@@ -63,8 +63,9 @@ public class ReservationDao {
 
 		return reservations;
 	}
-
-	// 예약된 정보 reservationId로 찾아오기
+	
+	
+	// 예약된 정보 업데이트 하기
 	public boolean updateReservation(ReservationUpdateRequest request) {
 		String sql = "UPDATE reservations SET user_id = ?, store_id = ?, reservation_number = ?, "
 				+ "reservation_date = ?, reservation_time = ?, party_size = ?, request = ?, "
@@ -94,6 +95,23 @@ public class ReservationDao {
 
 		return result > 0;
 	}
+	
+	public ReservationEntity getReservationsByReservationId(Long reservationId) {
+		String sql = "SELECT * FROM reservations WHERE reservation_id = ?";
+		ReservationEntity reservations = null;
+
+		// 예외 처리
+		try {
+			reservations = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(ReservationEntity.class), reservationId);
+		} catch (DataAccessException e) {
+			System.out.println(e.getClass().getSimpleName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return reservations;
+	}
+	
 
 //	// 예약된 정보 reservationId로 찾아오기
 //	public ReservationEntity updateReservation(Long reservationId) {
@@ -116,7 +134,6 @@ public class ReservationDao {
 //	}
 
 	public ReservationEntity findByReservationNumber(String reservationNumber) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
