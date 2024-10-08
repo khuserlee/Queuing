@@ -68,8 +68,7 @@ public class UserController {
 		
 		// 세션 정보 입력
 		if (loginResponse.isSuccess()) {
-			session.setAttribute("user_id", loginResponse.getUserId());
-			session.setAttribute("role", loginResponse.getRole());
+			session.setAttribute("loginedRequest", loginRequest);
 			
 			// 유효기간 설정
 			session.setMaxInactiveInterval(60 * 30);
