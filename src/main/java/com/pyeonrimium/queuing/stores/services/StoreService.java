@@ -85,6 +85,7 @@ public class StoreService {
 		return StoreFindResponse.builder()
 				.isSuccess(true)
 				.storeId(storeEntity.getStoreId())
+				.userId(storeEntity.getUserId())
 				.name(storeEntity.getName())
 				.address(storeEntity.getAddress())
 				.description(storeEntity.getDescription())

@@ -17,12 +17,16 @@ public class StoreFindResponse {
 	private String message;
 	
 	private long storeId;
+	private long userId;
+	
 	private String name;
 	private String address;
 	private String description;
 	private String phone;
+	
 	private LocalTime startTime;
 	private LocalTime endTime;
+	
 	private String closedDay;
 	
 }

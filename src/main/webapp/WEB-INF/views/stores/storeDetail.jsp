@@ -65,8 +65,16 @@
 							</ul>
 						</div>
 						<div id="buttons">
-							<button type="button">정보 수정</button>
-							<button type="button">메뉴 수정</button>
+							<c:choose>
+								<c:when test="${role == 'MANAGER' && user_id == storeFindResponse.userId}">
+									<button type="button">정보 수정</button>
+									<button type="button">메뉴 수정</button>
+								</c:when>
+								<c:otherwise>
+									<button type="button">예약하기</button>
+									<button type="button">웨이팅하기</button>
+								</c:otherwise>
+							</c:choose>
 						</div>
 					</div>
 				</c:otherwise>
