@@ -16,11 +16,11 @@
 		<jsp:include page="../globals/header.jsp" />
 		
 		<main>
-			<form id="storeForm" action="<c:url value='/stores' />" method="POST">
+			<form id="storeForm">
 				<div>
 					<div class="formGroup">
 						<label for="name">가게 이름</label>
-						<input type="text" id="storeName" name="name" required="required">
+						<input type="text" id="storeName" name="name" required="required" value="${storeFindResponse.name}">
 					</div>
 					<div class="formGroup">
 						<label for="img">가게 사진</label>
@@ -28,11 +28,11 @@
 					</div>
 					<div class="formGroup">
 						<label for="description">가게 소개</label>
-						<textarea id="description" name="description" required="required"></textarea>
+						<textarea id="description" name="description" required="required">${storeFindResponse.description}</textarea>
 					</div>
 					<div class="formGroup">
 						<label for="address">주소</label>
-						<input type="text" id="roadAddress" name="roadAddress" placeholder="도로명 주소" readonly="readonly">
+						<input type="text" id="address" name="address" placeholder="도로명 주소" readonly="readonly">
 						<button type="button" class="btn" onclick="getAddress()">주소 검색</button>
 					</div>
 					<div class="formGroup">
@@ -41,24 +41,25 @@
 					</div>
 					<div class="formGroup">
 						<label for="phone">연락처</label>
-						<input type="tel" id="phone" name="phone" required="required">
+						<input type="tel" id="phone" name="phone" required="required" value="${storeFindResponse.phone}">
 					</div>
 					<div class="formGroup">
 						<label for="startTime">시작시간</label>
-						<input type="time" id="startTime" name="startTime" required="required">
+						<input type="time" id="startTime" name="startTime" required="required" value="${storeFindResponse.startTime}">
 					</div>
 					<div class="formGroup">
 						<label for="endTime">마감시간</label>
-						<input type="time" id="endTime" name="endTime" required="required">
+						<input type="time" id="endTime" name="endTime" required="required" value="${storeFindResponse.endTime}">
 					</div>
 					<div class="formGroup">
 						<label for="closedDay">휴무일</label>
-						<input type="text" id="closedDay" name="closedDay">
+						<input type="text" id="closedDay" name="closedDay" value="${storeFindResponse.closedDay}">
 					</div>
 				</div>
 				<div class="buttons">
-					<button type="submit" id="submitBtn">매장 등록</button>
-					<button onclick="window.location.href='<c:url value="/"/>'">취소</button>
+					<button type="button" id="deleteBtn">매장 삭제</button>
+					<button type="submit" id="submitBtn">매장 수정</button>
+					<button onclick="window.location.href='<c:url value="/stores/${storeFindResponse.storeId}"/>'">취소</button>
 
 				</div>
 			</form>
@@ -67,6 +68,9 @@
 		<jsp:include page="../globals/footer.jsp" />
 	</div>
 	<script>
+		const deleteBtn = document.getElementById("deleteBtn");
+		deleteBtn.addEventListener('click', () => console.log("delete"));
+		
 		const submitBtn = document.getElementById("submitBtn");
 		submitBtn.addEventListener('click', submit);
 		
@@ -81,17 +85,21 @@
 				return;
 			}
 			
-			const address = formData['roadAddress'] + ' ' + formData['detailAddress'];
-			formData.address = address;
+			var address = formData['address'];
+			const detailAddress = formData['detailAddress'];
+			
+			if (detailAddress && detailAddress.trim().value !== 0) {
+				address += ' ';
+				address += detailAddress;
+			}
 			
 			getLatLng(address)
 				.then(({latitude, longitude}) => {
-					console.log("lng: " + longitude + ", lat: " + latitude);
 					formData.longitude = longitude;
 					formData.latitude = latitude;
 					
-					fetch('/queuing/stores', {
-						method: 'POST',
+					fetch(`/queuing/stores/${storeFindResponse.storeId}`, {
+						method: 'PUT',
 						headers: {
 							'Content-Type': 'application/json'
 						},
@@ -179,7 +187,7 @@
 		function getAddress() {
 			new daum.Postcode({
 				oncomplete: function(data) {
-					document.getElementById('roadAddress').value = data.roadAddress;
+					document.getElementById('address').value = data.roadAddress;
 				}
 			}).open();
 		}

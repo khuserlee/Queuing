@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditRequest;
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
@@ -89,6 +91,29 @@ public class StoreService {
 	}
 
 	/**
+	 * 가게 정보 불러오기
+	 * @param storeId 가게 고유 번호
+	 * @param userId 유저 고유 번호
+	 * @return 조회 결과
+	 */
+	public StoreFindResponse findStore(Long storeId, Long userId) {
+		StoreFindResponse storeFindResponse = findStore(storeId);
+		
+		if (!storeFindResponse.isSuccess()) {
+			return storeFindResponse;
+		}
+		
+		if (userId != storeFindResponse.getUserId()) {
+			return StoreFindResponse.builder()
+					.isSuccess(false)
+					.message("가게 정보를 불러올 수 없습니다.")
+					.build();
+		}
+		
+		return storeFindResponse;
+	}
+
+	/**
 	 * 등록한 가게 고유 번호 조회
 	 * @param userId 유저 고유 번호
 	 * @return 가게 고유 번호
@@ -102,6 +127,28 @@ public class StoreService {
 		System.out.println("[storeService] updateStore()");
 		return null;
 		
+	}
+
+	public StoreEditResponse editStore(long storeId, Long userId, StoreEditRequest storeEditRequest) {
+		// storeId로 가게 정보 조회
+		StoreEntity storeEntity = storeDao.findStoreByStoreId(storeId);
+		
+		// 조회 실패
+		if (storeEntity == null) {
+			return StoreEditResponse.builder()
+					.isSuccess(false)
+					.message("가게 정보를 불러올 수 없습니다.")
+					.build();
+		}
+		
+		if (userId != storeEntity.getUserId()) {
+			return StoreEditResponse.builder()
+					.isSuccess(false)
+					.message("잘못된 접근입니다.")
+					.build();
+		}
+		
+		return null;
 	}
 
 }

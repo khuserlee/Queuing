@@ -67,12 +67,12 @@
 						<div id="buttons">
 							<c:choose>
 								<c:when test="${role == 'MANAGER' && user_id == storeFindResponse.userId}">
-									<button type="button">정보 수정</button>
-									<button type="button">메뉴 수정</button>
+									<button type="button" onclick="edit()">정보 수정</button>
+									<button type="button" onclick="editMenu()">메뉴 수정</button>
 								</c:when>
 								<c:otherwise>
-									<button type="button">예약하기</button>
-									<button type="button">웨이팅하기</button>
+									<button type="button" onclick="createReservation()">예약하기</button>
+									<button type="button" onclick="createWaiting()">웨이팅하기</button>
 								</c:otherwise>
 							</c:choose>
 						</div>
@@ -83,5 +83,22 @@
 		
 		<jsp:include page="../globals/footer.jsp" />
 	</div>
+	<script>
+		function edit() {
+			window.location.href = `${storeFindResponse.storeId}/form`;
+		}
+		
+		function editMenu() {
+			console.log("메뉴 수정");
+		}
+		
+		function createReservation() {
+			console.log("예약하기");
+		}
+		
+		function createWaiting() {
+			console.log("웨이팅하기");
+		}
+	</script>
 </body>
 </html>
