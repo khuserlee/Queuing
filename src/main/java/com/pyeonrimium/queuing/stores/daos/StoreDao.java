@@ -21,12 +21,13 @@ public class StoreDao {
 	
 	@Transactional
 	public StoreEntity addStore(StoreEntity storeEntity) {
-		System.out.println("[StoreDao] addStore()");
-		String sql = "INSERT INTO stores (user_id, name, "
-						+ "address, " + "description, "
-						+ "phone, " + "start_time, "
-						+ "end_time, " + "closed_day) "
-						+ "VALUES(?, ?,?,?,?,?,?,?)";
+
+		String sql = "INSERT INTO stores ("
+				+ "user_id, name, address, description, "
+				+ "phone, start_time, end_time, closed_day, "
+				+ "longitude, latitude"
+				+ ") "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
 		StoreEntity newEntity = null;
 		int result = -1;
@@ -40,6 +41,8 @@ public class StoreDao {
 		args.add(storeEntity.getStartTime().toString());
 		args.add(storeEntity.getEndTime().toString());
 		args.add(storeEntity.getClosedDay());
+		args.add(String.valueOf(storeEntity.getLongitude()));
+		args.add(String.valueOf(storeEntity.getLatitude()));
 		
 		
 		try {

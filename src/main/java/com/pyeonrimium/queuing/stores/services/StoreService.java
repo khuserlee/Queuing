@@ -18,10 +18,7 @@ public class StoreService {
 	
 	//등록위한 dao연결성
 	public StoreRegistrationResponse addStore(StoreRegisterationRequest storeRegisterationRequest, Long userId) {
-		System.out.println("[storeService] addStore()");
-        //return null;
-		
-		// TODO: 매장 정보 등록
+
 		// 1. StoreEntity 생성
 		StoreEntity storeEntity = StoreEntity.builder()
 				.userId(userId)
@@ -32,6 +29,8 @@ public class StoreService {
 				.startTime(storeRegisterationRequest.getStartTime())
 				.endTime(storeRegisterationRequest.getEndTime())
 				.closedDay(storeRegisterationRequest.getClosedDay())
+				.longitude(storeRegisterationRequest.getLongitude())
+				.latitude(storeRegisterationRequest.getLatitude())
 				.build();
 		
 		// 2. DAO에 StoreEntity를 전달
@@ -51,13 +50,6 @@ public class StoreService {
 		StoreRegistrationResponse storeRegistrationResponse = StoreRegistrationResponse.builder()
 				.isSuccess(true)
 				.storeId(result.getStoreId())
-				.name(result.getName())
-				.description(result.getDescription())
-				.address(result.getAddress())
-				.phone(result.getPhone())
-				.startTime(result.getStartTime())
-				.endTime(result.getEndTime())
-				.closedDay(result.getClosedDay())
 				.build();
 		
 		// 5.StoreRegistrationResponse 반환

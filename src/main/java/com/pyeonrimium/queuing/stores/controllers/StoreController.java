@@ -3,12 +3,14 @@ package com.pyeonrimium.queuing.stores.controllers;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
@@ -22,6 +24,9 @@ public class StoreController {
 	// StoreService 연결
 	@Autowired
 	private StoreService storeService;
+	
+	@Value("#{kakao_dev['map.api.key']}")
+	private String kakaoMapApiKey;
 	
 	@GetMapping("/stores")
 	public String getMyStore(HttpSession session) {
@@ -47,29 +52,41 @@ public class StoreController {
 		return "redirect:/stores/" + storeId;
 	}
 
-	// 매장정보등록 화면 불러오기
+
+	/**
+	 * 매장 정보 등록 화면 불러오기
+	 * @return 매장 정보 등록 페이지
+	 */
 	@GetMapping("/stores/form")
-	public String getStoreform() {
+	public String getStoreform(Model model) {
+		
+		model.addAttribute("kakaoMapApiKey", kakaoMapApiKey);
 		return "/stores/storeRegistration";
 	}
 
 	// TODO: 매장 정보 등록(저장)(Create)
 	@PostMapping("/stores")
-	public String addStore(StoreRegisterationRequest storeRegisterationRequest, HttpSession session, Model model) {
-		System.out.println("[storeControllers] addStore()");
+	public String addStore(@RequestBody StoreRegisterationRequest storeRegisterationRequest, HttpSession session, Model model) {
+		
+		if (session == null) {
+			return "redirect:/login/form";
+		}
+		
+		// 일반 유저인 경우
+		if (!session.getAttribute("role").equals("MANAGER")) {
+			return "redirect:/home";
+		}
 
-		long userId = 1;
+		Long userId = (Long) session.getAttribute("user_id");
 		StoreRegistrationResponse storeRegistrationResponse = storeService.addStore(storeRegisterationRequest, userId);
 
-		if (storeRegistrationResponse.isSuccess() == true) {
-			model.addAttribute("storeRegistrationResponse", storeRegistrationResponse);
-			return "/stores/storeDetail";
-		} else {
-			// TODO: 실패 페이지 로드(실패 메시지 나오게)
+		if (!storeRegistrationResponse.isSuccess()) {
+			// 등록 실패 페이지
 			model.addAttribute("errorMessage", storeRegistrationResponse.getMessage());
 			return "store/storefail";
 		}
-
+		
+		return "redirect:/stores/" + storeRegistrationResponse.getStoreId();
 	}
 
 	/**
