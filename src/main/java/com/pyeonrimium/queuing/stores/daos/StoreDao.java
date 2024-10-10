@@ -195,4 +195,20 @@ public class StoreDao {
 		
 		return result > 0;
 	}
+
+	public boolean deleteStore(StoreEntity storeEntity) {
+
+		String sql = "DELETE FROM stores WHERE store_id = ?";
+		int result = -1;
+		
+		try {
+			result = jdbcTemplate.update(sql, storeEntity.getStoreId());
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result > 0;
+	}
 }

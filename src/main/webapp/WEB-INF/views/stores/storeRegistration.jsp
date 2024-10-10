@@ -73,7 +73,10 @@
 		function submit(event) {
 			event.preventDefault();
 			
+			// 폼 데이터 가져오기
 			var formData = getFormData();
+			
+			// 유효성 검사
 			const isValid = validateFormData(formData);
 			
 			if (!isValid) {
@@ -86,10 +89,9 @@
 			
 			getLatLng(address)
 				.then(({latitude, longitude}) => {
+					// 위도, 경도 저장
 					formData.longitude = longitude;
 					formData.latitude = latitude;
-					
-					console.log(formData);
 					
 					fetch('/queuing/stores', {
 						method: 'POST',
@@ -99,6 +101,7 @@
 						body: JSON.stringify(formData)
 					})
 					.then(response => {
+						// 응답 확인
 						if (response.ok) {
 							return response.text();
 						}
@@ -117,6 +120,7 @@
 				});
 		}
 		
+		// 주소로 위도, 경도 확인
 		function getLatLng(address) {
 			console.log(address);
 			return new Promise((resolve, reject) => {

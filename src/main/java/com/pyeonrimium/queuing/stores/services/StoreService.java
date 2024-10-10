@@ -4,18 +4,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreDeleteRequest;
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreDeleteResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
+import com.pyeonrimium.queuing.users.controllers.UserService;
+import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
 
 @Service
 public class StoreService {
 	
 	@Autowired
 	private StoreDao storeDao;
+	
+	@Autowired
+	private UserService userService;
 	
 	/**
 	 * 신규 매장 정보 등록
@@ -179,6 +186,41 @@ public class StoreService {
 		return StoreEditResponse.builder()
 				.isSuccess(true)
 				.storeId(storeId)
+				.build();
+	}
+
+	/**
+	 * 스토어 삭제
+	 * @param storeDeleteRequest
+	 * @param storeId
+	 * @param userId
+	 * @return
+	 */
+	public StoreDeleteResponse deleteStore(Long storeId, Long userId) {
+		
+		StoreEntity storeEntity = storeDao.findStoreByStoreId(storeId);
+		
+		// 내 가게인지 확인
+		boolean isValid = storeEntity != null && userId.equals(storeEntity.getUserId());
+		if (!isValid) {
+			return StoreDeleteResponse.builder()
+					.isSuccess(false)
+					.message("매장을 삭제할 수 없습니다.")
+					.build();
+		}
+		
+		// 삭제
+		boolean isSuccess = storeDao.deleteStore(storeEntity);
+		if (!isSuccess) {
+			return StoreDeleteResponse.builder()
+					.isSuccess(false)
+					.message("매장을 삭제할 수 없습니다.")
+					.build();
+		}
+		
+		return StoreDeleteResponse.builder()
+				.isSuccess(true)
+				.message("매장을 삭제했습니다.")
 				.build();
 	}
 

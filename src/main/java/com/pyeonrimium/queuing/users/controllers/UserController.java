@@ -3,10 +3,17 @@ package com.pyeonrimium.queuing.users.controllers;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.pyeonrimium.queuing.users.domains.dtos.CheckPasswordRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.CheckPasswordResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
@@ -157,4 +164,42 @@ public class UserController {
 		
 		return "user/auth/profile";
 	}
+	
+	@PostMapping("/users/pwd/check")
+	@ResponseBody
+	public ResponseEntity<?> checkPassword(@RequestBody CheckPasswordRequest request, HttpSession session) {
+		
+		if (session == null) {
+			CheckPasswordResponse response = CheckPasswordResponse.builder()
+					.isSuccess(false)
+					.message("비밀번호가 일치하지 않습니다.")
+					.redirectUrl("/queuing/login/form")
+					.build();
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
+		
+		Long userId = (Long) session.getAttribute("user_id");
+		boolean isValid = userService.comparePassword(userId, request.getPassword());
+		
+		if (!isValid) {
+			CheckPasswordResponse response = CheckPasswordResponse.builder()
+					.isSuccess(false)
+					.message("비밀번호가 일치하지 않습니다.")
+					.build();
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
+
+		return ResponseEntity.ok(CheckPasswordResponse.builder().isSuccess(true).build());
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

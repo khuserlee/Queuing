@@ -187,4 +187,18 @@ public class UserService {
 		return stringBuffer.toString();
 		
 	}
+	
+	public boolean comparePassword(Long userId, String password) {
+		
+		UserEntity userEntity = userDao.findUserByUserId(userId);
+		if (userEntity == null) {
+			return false;
+		}
+		
+		if (!password.equals(userEntity.getPassword())) {
+			return false;
+		}
+		
+		return true;
+	}
 }

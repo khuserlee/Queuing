@@ -57,20 +57,16 @@
 					</div>
 				</div>
 				<div class="buttons">
-					<button type="button" id="deleteBtn">매장 삭제</button>
+					<button type="button" onclick="window.location.href='<c:url value="/stores/${storeFindResponse.storeId}/form/check"/>'">매장 삭제</button>
 					<button type="submit" id="submitBtn">매장 수정</button>
-					<button onclick="window.location.href='<c:url value="/stores/${storeFindResponse.storeId}"/>'">취소</button>
+					<button type="button" onclick="window.location.href='<c:url value="/stores/${storeFindResponse.storeId}"/>'">취소</button>
 				</div>
 			</form>
 		</main>
 		
 		<jsp:include page="../globals/footer.jsp" />
 	</div>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
-		const deleteBtn = document.getElementById("deleteBtn");
-		deleteBtn.addEventListener('click', () => console.log("delete"));
-		
 		const submitBtn = document.getElementById("submitBtn");
 		submitBtn.addEventListener('click', submit);
 		
@@ -133,6 +129,7 @@
 				});
 		}
 		
+		// 주소로 위도, 경도 확인하기
 		function getLatLng(address) {
 			return new Promise((resolve, reject) => {
 				var geocoder = new kakao.maps.services.Geocoder();

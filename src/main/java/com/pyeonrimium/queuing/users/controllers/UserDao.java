@@ -169,4 +169,19 @@ public class UserDao {
 		return result;
 	}
 
+	public UserEntity findUserByUserId(Long userId) {
+		String sql = "SELECT * FROM users WHERE user_id = ?;";
+		UserEntity userEntity = null;
+		
+		try {
+			userEntity = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(UserEntity.class), userId);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return userEntity;
+	}
+
 }
