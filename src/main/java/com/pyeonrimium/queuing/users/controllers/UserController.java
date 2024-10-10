@@ -20,7 +20,7 @@ public class UserController {
 
 	/**
 	 * 회원가입 화면
-	 * @return 회원가입 화면 표시
+	 * @return 회원가입 화면 표시d
 	 */
 	@GetMapping("/signup/form")
 	public String signupForm() {
