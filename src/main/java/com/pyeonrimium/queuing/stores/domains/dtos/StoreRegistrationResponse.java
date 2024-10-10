@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+
 @Getter
 @Setter
 @Builder
@@ -15,6 +17,5 @@ public class StoreRegistrationResponse {
 	private boolean isSuccess;
 	private String message;
 	private String redirectUrl;
-	
 	private Long storeId;
 }

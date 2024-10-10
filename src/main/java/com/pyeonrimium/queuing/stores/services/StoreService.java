@@ -71,7 +71,6 @@ public class StoreService {
 		// 결과 받아오기
 		StoreEntity result = storeDao.findStore(storeId);
 		
-		//TODO: storeresponse
 		if(result == null) {
 			return StoreFindResponse.builder()
 					.isSuccess(false)
