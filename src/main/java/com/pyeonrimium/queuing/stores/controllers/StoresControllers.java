@@ -1,5 +1,7 @@
 package com.pyeonrimium.queuing.stores.controllers;
 
+import java.lang.ProcessBuilder.Redirect;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
@@ -40,30 +43,32 @@ public class StoresControllers {
 		StoreRegistrationResponse storeRegistrationResponse = storeService.addStore(storeRegisterationRequest, userId);
 		
 		if(storeRegistrationResponse.isSuccess() == true) {
-			model.addAttribute("storeRegistrationResponse", storeRegistrationResponse);
-			return "/stores/storeDetail";
+//			model.addAttribute("storeRegistrationResponse", storeRegistrationResponse);
+//			return "/stores/storeDetail";
+			return "redirect:/stores/" + storeRegistrationResponse.getStoreId();
 		} else { 
 			// TODO: 실패 페이지 로드(실패 메시지 나오게)
 			model.addAttribute("errorMessage",storeRegistrationResponse.getMessage());
-			return "store/storefail";
+			return "stores/storefail";
 		}	
 	
 	}
 	
 	// TODO: 매장 정보 조회(Read)
-	@GetMapping("/{storeId}")
-	public String findStore(@PathVariable Long storeId) {
+	@GetMapping("stores/{storeId}")
+	public String findStore(@PathVariable Long storeId, Model model) {
 		System.out.println("[StoresControllers] findStore()");
 		
-		 StoreEntity storeEntity = storeService.findStore(storeId);
+		StoreFindResponse storeFindResponse = storeService.findStore(storeId);
 		 
-		 if (storeEntity == null) {
-			 System.out.println("조회 실패");
+		//조회안에 error메시지 나오게
+		 if (storeFindResponse.isSuccess() == true) {
+			 model.addAttribute("storeFindResponse", storeFindResponse);
+			 return "/stores/storeDetail";
 		 } else {
-			 System.out.println("조회 성공");
-		 }
-		
-		return "";
+			 System.out.println("조회 살패: "  + storeFindResponse.getMessage());
+			 return "/stores/storefail";
+		 }		
 	}
 
 	// TODO: 매장 정보 수정(Update)

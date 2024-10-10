@@ -17,7 +17,7 @@ public class StoreDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-	@Transactional
+
 	public StoreEntity addStore(StoreEntity storeEntity) {
 		System.out.println("[StoreDao] addStore()");
 		String sql = "INSERT INTO stores (user_id, name, "
@@ -46,7 +46,7 @@ public class StoreDao {
 			if (result > 0) {
 				sql = "SELECT * FROM stores WHERE user_id = ? AND name = ? AND address = ?";
 				
-				args.clear();
+				args = new ArrayList<String>();
 				args.add(String.valueOf(storeEntity.getUserId()));
 				args.add(storeEntity.getName());
 				args.add(storeEntity.getAddress());
