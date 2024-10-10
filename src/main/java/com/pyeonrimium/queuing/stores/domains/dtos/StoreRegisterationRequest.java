@@ -13,7 +13,8 @@ import lombok.Setter;
 public class StoreRegisterationRequest {
 	private String name;
 	private String description;
-	private String address;
+	private String roadAddress;
+	private String detailAddress;
 	private String phone;
 	
 	@DateTimeFormat(pattern = "HH:mm")

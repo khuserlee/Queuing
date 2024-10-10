@@ -21,6 +21,8 @@ public class StoreFindResponse {
 	
 	private String name;
 	private String address;
+	private String roadAddress;
+	private String detailAddress;
 	private String description;
 	private String phone;
 	

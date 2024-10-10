@@ -25,7 +25,8 @@ public class StoreEntity {
 	private Long userId;
 	
 	private String name;
-	private String address;
+	private String roadAddress;
+	private String detailAddress;
 	private String description;
 	private String phone;
 
@@ -41,5 +42,13 @@ public class StoreEntity {
 	
 	private BigDecimal longitude;
 	private BigDecimal latitude;
+	
+	public String getAddress() {
+		if (detailAddress == null || detailAddress.isBlank()) {
+			return roadAddress;
+		}
+		
+		return roadAddress + " " + detailAddress;
+	}
 }
 

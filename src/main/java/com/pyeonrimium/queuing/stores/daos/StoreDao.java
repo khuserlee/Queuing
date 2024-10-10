@@ -23,11 +23,11 @@ public class StoreDao {
 	public StoreEntity addStore(StoreEntity storeEntity) {
 
 		String sql = "INSERT INTO stores ("
-				+ "user_id, name, address, description, "
+				+ "user_id, name, road_address, detail_address, description, "
 				+ "phone, start_time, end_time, closed_day, "
 				+ "longitude, latitude"
 				+ ") "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
 		StoreEntity newEntity = null;
 		int result = -1;
@@ -35,7 +35,8 @@ public class StoreDao {
 		List<String> args = new ArrayList<String>();
 		args.add(String.valueOf(storeEntity.getUserId()));
 		args.add(storeEntity.getName());
-		args.add(storeEntity.getAddress());
+		args.add(storeEntity.getRoadAddress());
+		args.add(storeEntity.getDetailAddress());
 		args.add(storeEntity.getDescription());
 		args.add(storeEntity.getPhone());
 		args.add(storeEntity.getStartTime().toString());
@@ -49,12 +50,12 @@ public class StoreDao {
 			result = jdbcTemplate.update(sql, args.toArray());
 			
 			if (result > 0) {
-				sql = "SELECT * FROM stores WHERE user_id = ? AND name = ? AND address = ?";
+				sql = "SELECT * FROM stores WHERE user_id = ? AND name = ? AND road_Address = ?";
 				
 				args.clear();
 				args.add(String.valueOf(storeEntity.getUserId()));
 				args.add(storeEntity.getName());
-				args.add(storeEntity.getAddress());
+				args.add(storeEntity.getRoadAddress());
 				
 				newEntity = jdbcTemplate.queryForObject(sql,
 						BeanPropertyRowMapper.newInstance(StoreEntity.class),
@@ -151,5 +152,47 @@ public class StoreDao {
 		}
 		
 		return nearbyStores;
+	}
+
+	public boolean update(StoreEntity storeEntity) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("UPDATE stores SET ")
+			.append("name = ?, ")
+			.append("road_address = ?, ")
+			.append("detail_address = ?, ")
+			.append("description = ?, ")
+			.append("phone = ?, ")
+			.append("start_time = ?, ")
+			.append("end_time = ?, ")
+			.append("closed_day = ?, ")
+			.append("longitude = ?, ")
+			.append("latitude = ? ")
+			.append("WHERE store_id = ?;");
+		
+		List<String> args = new ArrayList<String>();
+		args.add(storeEntity.getName());
+		args.add(storeEntity.getRoadAddress());
+		args.add(storeEntity.getDetailAddress());
+		args.add(storeEntity.getDescription());
+		args.add(storeEntity.getPhone());
+		args.add(storeEntity.getStartTime().toString());
+		args.add(storeEntity.getEndTime().toString());
+		args.add(storeEntity.getClosedDay());
+		args.add(String.valueOf(storeEntity.getLongitude()));
+		args.add(String.valueOf(storeEntity.getLatitude()));
+		args.add(String.valueOf(storeEntity.getStoreId()));
+		
+		int result = -1;
+		
+		try {
+			result = jdbcTemplate.update(sb.toString(), args.toArray());
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result > 0;
 	}
 }

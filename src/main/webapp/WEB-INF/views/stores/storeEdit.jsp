@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
@@ -9,7 +9,7 @@
 	<link href="<c:url value='/resources/css/stores/storeForm.css' />" rel="stylesheet" type="text/css">
 	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 	<script type="text/javascript"
-		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoMapApiKey}&libraries=services"></script>
+		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoMapApiKey}&libraries=services"></script> 
 </head>
 <body>
 	<div class="container">
@@ -32,12 +32,12 @@
 					</div>
 					<div class="formGroup">
 						<label for="address">주소</label>
-						<input type="text" id="address" name="address" placeholder="도로명 주소" readonly="readonly">
+						<input type="text" id="roadAddress" name="roadAddress" placeholder="도로명 주소" readonly="readonly" value="${storeFindResponse.roadAddress}">
 						<button type="button" class="btn" onclick="getAddress()">주소 검색</button>
 					</div>
 					<div class="formGroup">
 						<label for="address">상세 주소</label>
-						<input type="text" id="detailAddress" name="detailAddress" placeholder="상세 주소">
+						<input type="text" id="detailAddress" name="detailAddress" placeholder="상세 주소" value="${storeFindResponse.detailAddress}">
 					</div>
 					<div class="formGroup">
 						<label for="phone">연락처</label>
@@ -60,13 +60,13 @@
 					<button type="button" id="deleteBtn">매장 삭제</button>
 					<button type="submit" id="submitBtn">매장 수정</button>
 					<button onclick="window.location.href='<c:url value="/stores/${storeFindResponse.storeId}"/>'">취소</button>
-
 				</div>
 			</form>
 		</main>
 		
 		<jsp:include page="../globals/footer.jsp" />
 	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
 		const deleteBtn = document.getElementById("deleteBtn");
 		deleteBtn.addEventListener('click', () => console.log("delete"));
@@ -85,7 +85,7 @@
 				return;
 			}
 			
-			var address = formData['address'];
+			var address = formData['roadAddress'];
 			const detailAddress = formData['detailAddress'];
 			
 			if (detailAddress && detailAddress.trim().value !== 0) {
@@ -97,13 +97,22 @@
 				.then(({latitude, longitude}) => {
 					formData.longitude = longitude;
 					formData.latitude = latitude;
-					
+
 					fetch(`/queuing/stores/${storeFindResponse.storeId}`, {
 						method: 'PUT',
 						headers: {
 							'Content-Type': 'application/json'
 						},
 						body: JSON.stringify(formData)
+					})
+					.then(response => {
+						return response.json();
+					})
+					.then(data => {
+						if (!data.success) {
+							alert(data.message);
+						}
+						return fetch(`/queuing/stores/${storeFindResponse.storeId}`);
 					})
 					.then(response => {
 						if (response.ok) {
@@ -117,7 +126,7 @@
 					})
 					.catch(error => {
 						alert(error);
-					})
+					});
 				})
 				.catch(error => {
 					alert(error);
@@ -125,7 +134,6 @@
 		}
 		
 		function getLatLng(address) {
-			console.log(address);
 			return new Promise((resolve, reject) => {
 				var geocoder = new kakao.maps.services.Geocoder();
 

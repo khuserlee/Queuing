@@ -15,6 +15,7 @@ public class StoreEditResponse {
 	
 	private boolean isSuccess;
 	private String message;
+	private String redirectUrl;
 	
 	private Long storeId;
 	

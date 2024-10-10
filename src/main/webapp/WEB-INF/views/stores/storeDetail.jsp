@@ -85,7 +85,7 @@
 	</div>
 	<script>
 		function edit() {
-			window.location.href = `${storeFindResponse.storeId}/form`;
+			window.location.href = `/queuing/stores/${storeFindResponse.storeId}/form`;
 		}
 		
 		function editMenu() {

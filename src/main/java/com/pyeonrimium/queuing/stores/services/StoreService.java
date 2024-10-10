@@ -14,11 +14,15 @@ import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
 @Service
 public class StoreService {
 	
-	//StoreDao 연결
 	@Autowired
 	private StoreDao storeDao;
 	
-	//등록위한 dao연결성
+	/**
+	 * 신규 매장 정보 등록
+	 * @param storeRegisterationRequest 신규 매장 정보
+	 * @param userId 유저 고유 번호
+	 * @return 결과
+	 */
 	public StoreRegistrationResponse addStore(StoreRegisterationRequest storeRegisterationRequest, Long userId) {
 
 		// 1. StoreEntity 생성
@@ -26,7 +30,8 @@ public class StoreService {
 				.userId(userId)
 				.name(storeRegisterationRequest.getName())
 				.description(storeRegisterationRequest.getDescription())
-				.address(storeRegisterationRequest.getAddress())
+				.roadAddress(storeRegisterationRequest.getRoadAddress())
+				.detailAddress(storeRegisterationRequest.getDetailAddress())
 				.phone(storeRegisterationRequest.getPhone())
 				.startTime(storeRegisterationRequest.getStartTime())
 				.endTime(storeRegisterationRequest.getEndTime())
@@ -82,6 +87,8 @@ public class StoreService {
 				.userId(storeEntity.getUserId())
 				.name(storeEntity.getName())
 				.address(storeEntity.getAddress())
+				.roadAddress(storeEntity.getRoadAddress())
+				.detailAddress(storeEntity.getDetailAddress())
 				.description(storeEntity.getDescription())
 				.phone(storeEntity.getPhone())
 				.startTime(storeEntity.getStartTime())
@@ -122,14 +129,10 @@ public class StoreService {
 		Long storeId = storeDao.findStoreByUserId(userId);
 		return storeId;
 	}
-	
-	public String updateStore(Long storeId) {
-		System.out.println("[storeService] updateStore()");
-		return null;
-		
-	}
+
 
 	public StoreEditResponse editStore(long storeId, Long userId, StoreEditRequest storeEditRequest) {
+
 		// storeId로 가게 정보 조회
 		StoreEntity storeEntity = storeDao.findStoreByStoreId(storeId);
 		
@@ -141,14 +144,42 @@ public class StoreService {
 					.build();
 		}
 		
-		if (userId != storeEntity.getUserId()) {
+		if (!userId.equals(storeEntity.getUserId())) {
+			System.out.println("userId: " + userId + ", id: " + storeEntity.getUserId());
 			return StoreEditResponse.builder()
 					.isSuccess(false)
 					.message("잘못된 접근입니다.")
 					.build();
 		}
 		
-		return null;
+		// 데이터 업데이트
+		storeEntity.setName(storeEditRequest.getName());
+		storeEntity.setRoadAddress(storeEditRequest.getRoadAddress());
+		storeEntity.setDetailAddress(storeEditRequest.getDetailAddress());
+		storeEntity.setDescription(storeEditRequest.getDescription());
+		storeEntity.setPhone(storeEditRequest.getPhone());
+		
+		storeEntity.setStartTime(storeEditRequest.getStartTime());
+		storeEntity.setEndTime(storeEditRequest.getEndTime());
+		storeEntity.setClosedDay(storeEditRequest.getClosedDay());
+		
+		storeEntity.setLongitude(storeEditRequest.getLongitude());
+		storeEntity.setLatitude(storeEditRequest.getLatitude());
+		
+		// 저장
+		boolean isSuccess = storeDao.update(storeEntity);
+		
+		if (!isSuccess) {
+			return StoreEditResponse.builder()
+					.isSuccess(false)
+					.message("가게 정보를 수정할 수 없습니다.")
+					.build();
+		}
+
+		return StoreEditResponse.builder()
+				.isSuccess(true)
+				.storeId(storeId)
+				.build();
 	}
 
 }

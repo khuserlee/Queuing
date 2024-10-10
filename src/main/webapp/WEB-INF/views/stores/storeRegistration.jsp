@@ -86,9 +86,10 @@
 			
 			getLatLng(address)
 				.then(({latitude, longitude}) => {
-					console.log("lng: " + longitude + ", lat: " + latitude);
 					formData.longitude = longitude;
 					formData.latitude = latitude;
+					
+					console.log(formData);
 					
 					fetch('/queuing/stores', {
 						method: 'POST',
