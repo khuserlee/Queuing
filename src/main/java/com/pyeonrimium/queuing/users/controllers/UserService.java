@@ -3,14 +3,16 @@ package com.pyeonrimium.queuing.users.controllers;
 import java.security.SecureRandom;
 import java.util.Date;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
+import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
 import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
-import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
-import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
 
 @Service
 public class UserService {
@@ -205,15 +207,50 @@ public class UserService {
 		
 	}
 	
-	// 회원 정보 조회
-	public ProfileUpdateRequest getProfileUpdateRequest(String id) {
-	    System.out.println("[UserService] getProfileUpdateRequest()");
-	    return userDao.selectProfileUpdateRequest(id);
-	}
-	
-	// 회원 정보 수정
+	// 회원 정보 업데이트
 	public int updateProfileConfirm(ProfileUpdateRequest profileUpdateRequest) {
 	    System.out.println("[UserService] updateProfileConfirm()");
-	    return userDao.updateProfile(profileUpdateRequest);
+
+	    return userDao.updateProfile(profileUpdateRequest);  // DAO에 업데이트 요청
 	}
+
+	
+	// 회원 정보 조회 (업데이트 후 재조회)
+	public ProfileUpdateRequest getProfileUpdateRequest(Long userId) {
+	    System.out.println("[UserService] getProfileUpdateRequest()");
+
+	    UserEntity userEntity = userDao.findUserByUserId(userId);
+	    
+	    if (userEntity == null) {
+	        return null;
+	    }
+	    
+	    return ProfileUpdateRequest.builder()
+	            .id(userEntity.getId())
+	            .name(userEntity.getName())
+	            .address(userEntity.getAddress())
+	            .phone(userEntity.getPhone())
+	            .build();
+	}
+	
+    public String updateProfileAndManageSession(ProfileUpdateRequest profileUpdateRequest, HttpSession session) {
+        String nextPage = "user/auth/updateProfile_ok";
+        
+        Long userId = (Long) session.getAttribute("user_id");
+        if (userId == null) {
+            return "redirect:/login/form";
+        }
+        
+        profileUpdateRequest.setUserId(userId);
+        int result = updateProfileConfirm(profileUpdateRequest);
+        
+        if (result > 0) {
+            ProfileUpdateRequest updatedProfile = getProfileUpdateRequest(profileUpdateRequest.getUserId());
+            session.setAttribute("ProfileRequest", updatedProfile);
+            session.setMaxInactiveInterval(60 * 30);
+        } else {
+            nextPage = "user/auth/updateProfile_ng";
+        }
+        return nextPage;
+    }
 }

@@ -170,37 +170,36 @@ public class UserDao {
 		return result;
 	}
 
-	public ProfileUpdateRequest selectProfileUpdateRequest(String id) {
+	// 사용자 정보 조회 (업데이트 후 확인용)
+	public UserEntity findUserByUserId(Long userId) {
 	    System.out.println("[UserDao] selectProfileUpdateRequest()");
-	    String sql = "SELECT id, name, address, phone FROM users WHERE id = ?";
+	    
+	    String sql = "SELECT * FROM users WHERE user_id = ?";
 	    try {
-	        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
-	            ProfileUpdateRequest profileRequest = new ProfileUpdateRequest();
-	            profileRequest.setId(rs.getString("id"));
-	            profileRequest.setName(rs.getString("name"));
-	            profileRequest.setAddress(rs.getString("address"));
-	            profileRequest.setPhone(rs.getString("phone"));
-	            return profileRequest;
-	        });
+	        return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(UserEntity.class), userId);
 	    } catch (DataAccessException e) {
+	        return null;  // 사용자 정보가 없으면 null 반환
+	    } catch (Exception e) {
 	        e.printStackTrace();
 	        throw new RuntimeException("프로필 정보 조회 중 오류가 발생했습니다.", e);
 	    }
 	}
 
+	// 회원정보 수정 (업데이트)
 	public int updateProfile(ProfileUpdateRequest profileUpdateRequest) {
 	    System.out.println("[UserDao] updateProfile()");
-	    String sql = "UPDATE users SET name = ?, address = ?, phone = ? WHERE id = ?";
+
+	    String sql = "UPDATE users SET name = ?, address = ?, phone = ? WHERE user_id = ?";  // 수정할 필드와 조건 설정
+
 	    try {
-	        return jdbcTemplate.update(sql, 
-	            profileUpdateRequest.getName(), 
-	            profileUpdateRequest.getAddress(), 
-	            profileUpdateRequest.getPhone(),
-	            profileUpdateRequest.getId()
-	        );
-	    } catch (DataAccessException e) {
+	        return jdbcTemplate.update(sql,
+	                profileUpdateRequest.getName(),
+	                profileUpdateRequest.getAddress(),
+	                profileUpdateRequest.getPhone(),
+	                profileUpdateRequest.getId());  // 업데이트할 필드와 ID를 바인딩
+	    } catch (Exception e) {
 	        e.printStackTrace();
-	        throw new RuntimeException("프로필 업데이트 중 오류가 발생했습니다.", e);
+	        return 0;  // 오류가 발생하면 0을 반환
 	    }
 	}
 }

@@ -11,6 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class LoginResponse {
 	
 	private boolean isSuccess;

@@ -26,23 +26,23 @@
             </div>
 			         <div id="edit-info" class="section" style="display:none;">
 			    <h2>회원정보 수정</h2>
-			    <form id="updateProfileForm" action="<c:url value='/user/updateProfile' />" method="POST">
+			    <form id="updateProfileForm" action="<c:url value='/users/profile' />" method="POST">
 			        <input type="hidden" name="_method" value="PATCH">
 			        <div class="input-group">
 			            <label for="id">아이디</label>
-			            <input type="text" id="id" name="id" value="${ProfileRequest.id}" readonly>
+			            <input type="text" id="id" name="id" value="${profileRequest.id}" readonly>
 			        </div>
 			        <div class="input-group">
 			            <label for="name">이름</label>
-			            <input type="text" id="name" name="name" value="${ProfileRequest.name}" required>
+			            <input type="text" id="name" name="name" value="${profileRequest.name}" required>
 			        </div>
 			        <div class="input-group">
 			            <label for="address">주소</label>
-			            <input type="text" id="address" name="address" value="${ProfileRequest.address}" required>
+			            <input type="text" id="address" name="address" value="${profileRequest.address}" required>
 			        </div>
 			        <div class="input-group">
 			            <label for="phone">전화번호</label>
-			            <input type="text" id="phone" name="phone" value="${ProfileRequest.phone}" required>
+			            <input type="text" id="phone" name="phone" value="${profileRequest.phone}" required>
 			        </div>
 			        <button type="submit">수정 완료</button>
 			    </form>
