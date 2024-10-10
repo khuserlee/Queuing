@@ -1,16 +1,15 @@
 package com.pyeonrimium.queuing.stores.services;
 
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.pyeonrimium.queuing.stores.controllers.StoresControllers;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreUpdateRequest;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
 
 @Service
@@ -63,7 +62,7 @@ public class StoreService {
 		return storeRegistrationResponse;
 	}
 	
-	
+	//매장정보조회
 	public StoreFindResponse findStore(Long storeId) {
 		System.out.println("[StoreService] findStore()");
 		
@@ -93,11 +92,53 @@ public class StoreService {
 		//StoreFindResponse 반환
 		return storeFindResponse;
 	}
+	public StoreRegistrationResponse updateStore(Long storeId, StoreUpdateRequest storeUpdateRequest, Long userId) {
+	    System.out.println("[StoreService] updateStore()");
+	    
+	    // 1. 기존 StoreEntity 조회
+	    StoreEntity resultEntity = storeDao.findStore(storeId);
+	    
+	    if (resultEntity == null) {
+	        return StoreRegistrationResponse.builder()
+	                .isSuccess(false)
+	                .message("매장을 찾을 수 없습니다.")
+	                .build();
+	    }
+
+	    // 2. 권한 확인 (매장 소유자인지)
+	    if (!resultEntity.getUserId().equals(userId)) {
+	        return StoreRegistrationResponse.builder()
+	                .isSuccess(false)
+	                .message("수정 권한이 없습니다.")
+	                .build();
+	    }
+
+	    // 3. StoreEntity 업데이트
+	    resultEntity.setName(storeUpdateRequest.getName());
+	    resultEntity.setDescription(storeUpdateRequest.getDescription());
+	    resultEntity.setAddress(storeUpdateRequest.getAddress());
+	    resultEntity.setPhone(storeUpdateRequest.getPhone());
+	    resultEntity.setStartTime(storeUpdateRequest.getStartTime());
+	    resultEntity.setEndTime(storeUpdateRequest.getEndTime());
+	    resultEntity.setClosedDay(storeUpdateRequest.getClosedDay());
+
+	    // 4. DAO를 통해 DB 업데이트
+	    StoreEntity updatedStore = storeDao.updateStore(resultEntity);
+
+	    if (updatedStore == null) {
+	        return StoreRegistrationResponse.builder()
+	                .isSuccess(false)
+	                .message("업데이트에 실패했습니다.")
+	                .build();
+	    }
+
+	    // 5. StoreRegistrationResponse 생성 및 반환
+	    return StoreRegistrationResponse.builder()
+	            .isSuccess(true)
+	            .storeId(updatedStore.getStoreId())
+	            .message("매장 정보가 성공적으로 업데이트되었습니다.")
+	            .build();
 	
-	public String updateStore(Long storeId) {
-		System.out.println("[storeService] updateStore()");
-		return null;
-		
 	}
 
 }

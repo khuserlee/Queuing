@@ -84,4 +84,35 @@ public class StoreDao {
 		return storeEntity;
 	}
 
+	@Transactional
+	public StoreEntity updateStore(StoreEntity storeEntity) {
+	    System.out.println("[StoreDao] updateStore()");
+	    String sql = "UPDATE stores SET name = ?, address = ?, description = ?, " +
+	                 "phone = ?, start_time = ?, end_time = ?, closed_day = ? " +
+	                 "WHERE store_id = ?";
+	    
+	    int result = -1;
+	    
+	    List<Object> args = new ArrayList<>();
+	    args.add(storeEntity.getName());
+	    args.add(storeEntity.getAddress());
+	    args.add(storeEntity.getDescription());
+	    args.add(storeEntity.getPhone());
+	    args.add(storeEntity.getStartTime().toString());
+	    args.add(storeEntity.getEndTime().toString());
+	    args.add(storeEntity.getClosedDay());
+	    args.add(storeEntity.getStoreId());
+	    
+	    try {
+	        result = jdbcTemplate.update(sql, args.toArray());
+	        
+	        if (result > 0) {
+	            return findStore(storeEntity.getStoreId());
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    
+	    return null;
+	}
 }

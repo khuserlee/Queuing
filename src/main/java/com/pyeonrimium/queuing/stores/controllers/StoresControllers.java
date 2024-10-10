@@ -15,16 +15,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreUpdateRequest;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
 import com.pyeonrimium.queuing.stores.services.StoreService;
 
 @Controller
-
 public class StoresControllers {
 
 	//StoreService 연결
 	@Autowired
 	private StoreService storeService;
+	private StoreEntity StoreUpdateRequest;
 
 	
 	// 매장정보등록 화면 불러오기
@@ -49,7 +50,7 @@ public class StoresControllers {
 		} else { 
 			// TODO: 실패 페이지 로드(실패 메시지 나오게)
 			model.addAttribute("errorMessage",storeRegistrationResponse.getMessage());
-			return "stores/storefail";
+			return "/stores/storefail";
 		}	
 	
 	}
@@ -72,10 +73,36 @@ public class StoresControllers {
 	}
 
 	// TODO: 매장 정보 수정(Update)
-	@PutMapping("/stores/{storeId}")
-	public String updateStore(@PathVariable long storeId) {
-		System.out.println("[StoresControllers] updateStore()");
-		return "";
+	// 매장 정보 수정 폼 불러오기
+	@GetMapping("/stores/{storeId}/edit")
+	public String getStoreEditForm(@PathVariable Long storeId, Model model) {
+	    System.out.println("[StoresControllers] getStoreEditForm()");
+	    
+	    StoreFindResponse storeFindResponse = storeService.findStore(storeId);
+	    
+	    if (storeFindResponse.isSuccess()) {
+	        model.addAttribute("store", storeFindResponse);
+	        return "/stores/storeEdit";
+	    } else {
+	        model.addAttribute("errorMessage", storeFindResponse.getMessage());
+	        return "/stores/storefail";
+	    }
+	}
+
+	// 매장 정보 수정 처리
+	@PostMapping("/stores/{storeId}/update")
+	public String updateStore(@PathVariable Long storeId, StoreUpdateRequest storeUpdateRequest, HttpSession session, Model model) {
+	    System.out.println("[StoresControllers] updateStore()");
+	    
+	    long userId = 1; // TODO: 세션에서 실제 사용자 ID를 가져오도록 수정
+	    StoreRegistrationResponse storeUpdateResponse = storeService.updateStore(storeId, storeUpdateRequest, userId);
+	    
+	    if (storeUpdateResponse.isSuccess()) {
+	        return "redirect:/stores/" + storeId;
+	    } else {
+	        model.addAttribute("errorMessage", storeUpdateResponse.getMessage());
+	        return "/stores/storefail";
+	    }
 	}
 	// TODO: 매장 정보 삭제(Delete)
 }
