@@ -1,9 +1,9 @@
 package com.pyeonrimium.queuing.reservation.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-
-import javax.swing.text.html.parser.Entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,8 @@ public class ReservationService {
 	// 예약 신청 처리
 	public ReservationResponse createReservation(long userId, ReservationRequest reservationRequest) {
 		// 예약 번호 만들기
-		String reservationNumber = makeReservationNumber(reservationRequest);
+		String reservationNumber = makeReservationNumber(reservationRequest.getReservationDate(),
+													reservationRequest.getReservationTime());
 		
 		// 식당 아이디 확인
 		System.out.println("[ReservationService] storeId: " + reservationRequest.getStoreId());
@@ -41,7 +42,6 @@ public class ReservationService {
 					.message("가게이름을 찾지 못했습니다.")
 					.build();
 		}
-		
 
 		// ReservatinEntity 생성
 		ReservationEntity reservationEntity = ReservationEntity.builder()
@@ -84,10 +84,10 @@ public class ReservationService {
 	 * @param reservationRequest 예약 신청 양식
 	 * @return 예약 번호
 	 */
-	private String makeReservationNumber(ReservationRequest reservationRequest) {
+	private String makeReservationNumber(LocalDate date, LocalTime time) {
 		
-		String strDate = reservationRequest.getReservationDate().toString().replace("-", "");
-		String strTime = reservationRequest.getReservationTime().toString().replace(":", "");
+		String strDate = date.toString().replace("-", "");
+		String strTime = time.toString().replace(":", "");
 		
 		String reservationNumber = strDate + strTime;
 
@@ -139,23 +139,25 @@ public class ReservationService {
 		
 		// TODO : 예약 수정 처리
 		public ReservationUpdateResponse updateReservations(ReservationUpdateRequest request){
-			ReservationEntity reservationEntity = reservationDao.findByReservationNumber(request.getReservationNumber());
+			String number = makeReservationNumber(request.getReservationDate(), request.getReservationTime());
+			ReservationEntity reservationEntity = reservationDao.findByReservationNumber(number);
 			
 			if (reservationEntity == null) {
 				return ReservationUpdateResponse.builder()
 						.isSuccess(false)
-						.message("예약 수정을 할 수 없습니다.")
+						.message("예약 수정을 할 수 없습니다. 111")
 						.build();
 			}
 			
 			// 정보 업데이트
-			reservationEntity.setModifiedAt(LocalDateTime.now());
-			reservationEntity.setReservationNumber(request.getReservationNumber());
+			reservationEntity.setReservationNumber(number);
+			reservationEntity.setReservationDate(request.getReservationDate());
+			reservationEntity.setReservationTime(request.getReservationTime());
 			reservationEntity.setPartySize(request.getPartySize());
 			reservationEntity.setRequest(request.getRequest());
 			
 			// DAO에 업데이트 요청
-			boolean isSuccess = reservationDao.updateReservation(request);
+			boolean isSuccess = reservationDao.updateReservation(reservationEntity);
 			
 			if (!isSuccess) {
 				return ReservationUpdateResponse.builder()
@@ -176,7 +178,6 @@ public class ReservationService {
 			return reservationDao.getReservationsByReservationId(reservationId);
 		}
 
-	
 		// TODO: 예약 삭제(D)
 //		public List<reservationRequest> listupRes(){
 //		System.out.println("[ReservationService] listipRes()");

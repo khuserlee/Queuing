@@ -5,12 +5,17 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pyeonrimium.queuing.reservation.Service.ReservationService;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
@@ -63,7 +68,7 @@ public class ReservationController {
 //		Long userId = (Long)session.getAttribute("user_id");
 //		return userId;
 //		
-		Long userId = new Long(1);
+		Long userId = 1L;
 		return userId;
 	}
 //		
@@ -136,34 +141,45 @@ public class ReservationController {
 //		
 //		return "예약 수정 페이지";
 //	}
-	
-	// TODO: 예약 수정 페이지
+
+	// TODO: 예약 수정 페이지 불러오기 (예약된 정보) -> 폼으로 원래 있던 정보 보내기
 	@GetMapping("/reservations/form/{reservationId}/update")
 	public String getReservationUpdateForm(@PathVariable Long reservationId, Model model) {
-		System.out.println("[ReservationController] getReservationUpdateForm()");
-		
+
 		ReservationEntity reservation = reservationService.findReservation(reservationId);
-		
-		System.out.println("request :"+ reservation.getRequest());
-		System.out.println("partysize :" + reservation.getPartySize());
-		
+
+//		System.out.println("request :"+ reservation.getRequest());
+//		System.out.println("partysize :" + reservation.getPartySize());
+
 		model.addAttribute("reservation", reservation);
 		return "/reservation/reservation_update";
 	}
-	
-	// TODO: 예약 수정 한 후 페이지
+
+	// TODO: 예약 수정 결과(성공, 실패)
 	@PatchMapping("/reservations")
-	public String updateReservations(ReservationUpdateRequest request) {
+	@ResponseBody
+	public ResponseEntity<?> updateReservations(@RequestBody ReservationUpdateRequest request) {
+		
+		System.out.println("[ReservationController] 예약 수정");
+		
 		// 업데이트한 정보 가져오기
-		ReservationUpdateResponse result = reservationService.updateReservations(request);
-		// 정보를 가져왔을때 처리
-		if (result.isSuccess()) {
-			// TODO: 성공 처리
-			return "redirect:/reservations/pageNo=1";
-		} else {
-			// TODO: 실패 처리
-			return "/reservation/reservationFind_ng";
+		ReservationUpdateResponse response = reservationService.updateReservations(request);
+
+		if (!response.isSuccess()) {
+			// 실패 처리
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
+		
+		// 성공 처리
+		response.setRedirectUrl("/queuing/reservations/pageNo=1");
+		return ResponseEntity.ok(response);
 	}
+	
+	//TODO : 예약 수정 한 후 신청
 	// TODO: 예약 삭제(D)
+	@DeleteMapping("/reservations")
+	public String deleteReservations() {
+		System.out.println("[ReservationController] 예약 삭제");
+		return null;
+	}
 }

@@ -43,93 +43,6 @@
 	justify-content: right;
 }
 </style>
-
-<script>
-	let selectedDate = '';
-	let selectedTime = '';
-	let personCount = 1;
-
-	function updateSelectedInfo() {
-		const selectedInfoDisplay = document.getElementById('selected-info');
-		selectedInfoDisplay.innerText = `고객님이 선택하신 날짜와 시간은 ${selectedDate} ${selectedTime}입니다. 인원수는 ${personCount}명입니다.`;
-	}
-
-	function increaseCount() {
-		personCount++;
-		document.getElementById('person-count').value = personCount;
-		updateSelectedInfo();
-
-	}
-
-	function decreaseCount() {
-		if (personCount > 1) {
-			personCount--;
-			document.getElementById('person-count').value = personCount;
-
-			updateSelectedInfo();
-		}
-	}
-
-	function showTimes() {
-		const storeId = "store_id";
-		//             selectedDate = document.getElementById('date-input').value;
-		//             const timesContainer = document.getElementById('times');
-		//             timesContainer.innerHTML = ''; // 기존 시간 목록 초기화
-
-	}
-
-	function selectTime(time) {
-		selectedTime = time;
-		updateSelectedInfo();
-	}
-
-	let reservationTime = null;
-	function setReservationTime(btn) {
-		reservationTime = btn.innerText;
-
-		const input = document.getElementById("reservationTime");
-		input.value = reservationTime;
-		console.log("time: " + input.value);
-	}
-
-	function submitReservation() {
-		let form = document.getElementById("reservation-form");
-		form.submit();
-		//             const requestTextArea = document.getElementById('request-textarea');
-
-		//             // 예약 데이터 객체 생성
-		//             const reservationData = {
-		//                 date: selectedDate,
-		//                 time: selectedTime,
-		//                 partySize: personCount,
-		//                 request: requestTextArea.value
-		//             };
-
-		//             // JSON 문자열로 변환
-		//             const jsonData = JSON.stringify(reservationData);
-
-		//             console.log(jsonData);
-
-		//             // POST 요청 보내기
-		//             fetch('<c:url value="/reservation/ReservationConfirm" />', {
-		//                 method: 'POST',
-		//                 headers: {
-		//                     'Content-Type': 'application/json' // JSON 형식으로 전송
-		//                 },
-		//                 body: jsonData
-		//             }).then(response => {
-		//                 if (response.ok) {
-		//                     return response.json();
-		//                 }
-		//                 throw new Error('Network response was not ok.');
-		//             }).then(data => {
-		//                 console.log(data); // 서버에서 받은 데이터 콘솔에 출력
-		//                 alert(data.message); // 서버에서 받은 메시지 표시
-		//             }).catch(error => {
-		//                 console.error('There has been a problem with your fetch operation:', error);
-		//             });
-	}
-</script>
 </head>
 
 <body>
@@ -139,8 +52,7 @@
 	<div class="store-name">${storeName}</div>
 	<h1>예약 신청</h1>
 
-	<form id="reservation-form" action="<c:url value='/reservations' />"
-		method="post">
+	<form id="reservation-form">
 		<input type="text" name="storeId" value="${storeId}"
 			readonly="readonly" hidden="true" />
 		<fieldset name="time">
@@ -148,7 +60,8 @@
 			<div class="container">
 				<div class="time-selection">
 					<input type="date" id="date-input" name="reservationDate"
-						value="${reservation.reservationDate}" onchange="showTimes()" required />
+						value="${reservation.reservationDate}" onchange="showTimes()"
+						required />
 				</div>
 				<div id="times">
 					<ul>
@@ -174,9 +87,103 @@
 		</fieldset>
 		<br>
 		<div class="ReservationButton">
-			<input type="button" value="예약" onclick="submitReservation()" />
+			<button type="submit">수정</button>
 		</div>
 	</form>
+
+	<script>
+		let selectedDate = '';
+		let selectedTime = '';
+		let personCount = 1;
+
+		function updateSelectedInfo() {
+			const selectedInfoDisplay = document
+					.getElementById('selected-info');
+			selectedInfoDisplay.innerText = `고객님이 선택하신 날짜와 시간은 ${selectedDate} ${selectedTime}입니다. 인원수는 ${personCount}명입니다.`;
+		}
+
+		function increaseCount() {
+			personCount++;
+			document.getElementById('person-count').value = personCount;
+			updateSelectedInfo();
+
+		}
+
+		function decreaseCount() {
+			if (personCount > 1) {
+				personCount--;
+				document.getElementById('person-count').value = personCount;
+
+				updateSelectedInfo();
+			}
+		}
+
+		function showTimes() {
+			const storeId = "store_id";
+			//             selectedDate = document.getElementById('date-input').value;
+			//             const timesContainer = document.getElementById('times');
+			//             timesContainer.innerHTML = ''; // 기존 시간 목록 초기화
+
+		}
+
+		function selectTime(time) {
+			selectedTime = time;
+			updateSelectedInfo();
+		}
+
+		let reservationTime = null;
+		function setReservationTime(btn) {
+			reservationTime = btn.innerText;
+
+			const input = document.getElementById("reservationTime");
+			input.value = reservationTime;
+			console.log("time: " + input.value);
+		}
+
+		function submitReservation(event) {
+			event.preventDefault();
+
+			let form = document.getElementById("reservation-form");
+			fetch("/queuing/reservations", {
+				header: 'Content-Type: '
+			})
+			form.submit();
+		}
+
+		// id가 reservation-form인 아이디를 찾아 객체를 반환
+		document.getElementById("reservation-form").addEventListener('submit', function(event) {
+			event.preventDefault(); // 기본 폼 제출 동작 방지
+
+			const formData = new FormData(this); // 폼 데이터 가져오기
+			var data = {};
+			
+			formData.forEach((value, key) => {
+				data[key] = value;
+			});
+
+		    fetch("/queuing/reservations", {
+		        method: 'PATCH', // 또는 'PATCH' 등 필요한 HTTP 메서드
+		        headers: {
+		        	'Content-Type': 'application/json',
+		        },
+		        body: JSON.stringify(data), // 폼 데이터 전송
+		    })
+		    .then(response => {
+		        return response.json(); // JSON 응답으로 변환
+		    })
+		    .then(data => {
+		    	if (!data.success) {
+		    		throw new Error(data.message);
+		    	}
+		        console.log(data); // 성공 시 처리
+		        // 예약 성공 페이지로 리다이렉트하거나 메시지 표시
+		        window.location.href = data.redirectUrl;
+		    })
+		    .catch(error => {
+		        alert(error);
+		    });
+		});
+	</script>
 </body>
 </html>
 

@@ -145,6 +145,17 @@
 			<version>1.18.24</version>
 			<scope>provided</scope>
 		</dependency>
+        <!-- Jackson 라이브러리 (JSON 변환을 위한 라이브러리) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.13.3</version>
+        </dependency>
 	</dependencies>
     <build>
         <plugins>

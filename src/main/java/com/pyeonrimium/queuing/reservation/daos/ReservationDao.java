@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
-import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateRequest;
 
 @Repository
 public class ReservationDao {
@@ -66,22 +65,35 @@ public class ReservationDao {
 	
 	
 	// 예약된 정보 업데이트 하기
-	public boolean updateReservation(ReservationUpdateRequest request) {
+	public boolean updateReservation(ReservationEntity reservationEntity) {
 		String sql = "UPDATE reservations SET user_id = ?, store_id = ?, reservation_number = ?, "
 				+ "reservation_date = ?, reservation_time = ?, party_size = ?, request = ?, "
 				+ "status = ?, modified_at = ? WHERE reservation_id = ?;";
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("UPDATE reservations SET ")
+			.append("user_id = ?, ")
+			.append("store_id = ?, ")
+			.append("reservation_number = ?, ")
+			.append("reservation_date = ?, ")
+			.append("reservation_time = ?, ")
+			.append("party_size = ?, ")
+			.append("request = ?, ")
+			.append("status = ?, ")
+			.append("modified_at = ?, ")
+			.append("WHERE reservation_id = ?;");
 
 		List<String> args = new ArrayList<String>();
-		args.add(String.valueOf(request.getUserId()));
-		args.add(String.valueOf(request.getStoreId()));
-		args.add(request.getReservationNumber());
-		args.add(request.getReservationDate().toString()); 
-		args.add(request.getReservationTime().toString());
-		args.add(String.valueOf(request.getPartySize())); 
-		args.add(request.getRequest());
-		args.add(request.getStatus());
+		args.add(String.valueOf(reservationEntity.getUserId()));
+		args.add(String.valueOf(reservationEntity.getStoreId()));
+		args.add(reservationEntity.getReservationNumber());
+		args.add(reservationEntity.getReservationDate().toString()); 
+		args.add(reservationEntity.getReservationTime().toString());
+		args.add(String.valueOf(reservationEntity.getPartySize())); 
+		args.add(reservationEntity.getRequest());
+		args.add(reservationEntity.getStatus());
 		args.add(LocalDateTime.now().toString());
-		args.add(request.getReservationId()); 
+		args.add(String.valueOf(reservationEntity.getReservationId())); 
 		
 		int result = -1;
 		
@@ -134,7 +146,21 @@ public class ReservationDao {
 //	}
 
 	public ReservationEntity findByReservationNumber(String reservationNumber) {
-		return null;
+		System.out.println("[DAO] reservationNumber: " + reservationNumber);
+		String sql = "SELECT * FROM reservations WHERE reservation_number = ?;";
+		ReservationEntity reservationEntity = null;
+		
+		try {
+			reservationEntity = jdbcTemplate.queryForObject(sql,
+					BeanPropertyRowMapper.newInstance(ReservationEntity.class),
+					reservationNumber);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return reservationEntity;
 	}
 
 

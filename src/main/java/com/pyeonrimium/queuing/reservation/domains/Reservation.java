@@ -1,6 +1,5 @@
 package com.pyeonrimium.queuing.reservation.domains;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 import lombok.Getter;

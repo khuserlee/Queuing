@@ -21,8 +21,8 @@ public class ReservationEntity {
 	private long userId;
 	private long storeId;
 	private long storeName;
-	private String reservationNumber;
 	private long reservationId;
+	private String reservationNumber;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate reservationDate;
