@@ -1,105 +1,117 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 
-    pageEncoding="UTF-8"%>
-
-<!DOCTYPE html><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html><%@ taglib uri="http://java.sun.com/jsp/jstl/core"
+	prefix="c"%>
 
 <html>
 
 <head>
 
-    <title>메뉴 목록</title>
+<title>메뉴 목록</title>
 
 </head>
 
 <body>
-    <h1>메뉴 목록</h1> 
-    <table>
-    <tr>
-        <th>사진</th>
-        <th>이름</th>
-        <th>가격</th>
-        <th>상세정보</th>
-        <th>선택</th>
-    </tr>
-    <c:forEach var="menu" items="${menuList}">
-        <tr>
-            <td><img src="" alt="Menu Image" /></td>
-            <td>${menu.name}</td>
-            <td>${menu.price}</td>
-            <td>${menu.description}</td>
-            <td><input type="checkbox" name="selectedMenuId" value="${menu.menuId}" /></td>
-        </tr>
-    </c:forEach>
-</table>
+	<h1>메뉴 목록</h1>
+	<table>
+		<tr>
+			<th>사진</th>
+			<th>이름</th>
+			<th>가격</th>
+			<th>상세정보</th>
+			<th>선택</th>
+		</tr>
+		<c:forEach var="menu" items="${menuList}">
+			<tr>
+				<td><img src="" alt="Menu Image" /></td>
+				<td>${menu.name}</td>
+				<td>${menu.price}</td>
+				<td>${menu.description}</td>
+				<td><input type="checkbox" name="selectedMenuId"
+					value="${menu.menuId}" /></td>
+			</tr>
+		</c:forEach>
+	</table>
 
-<button onclick="updateMenu()">메뉴 수정</button>
-<button onclick="deleteMenu()">메뉴 삭제</button>
-<button onclick="registerMenu()">메뉴 등록</button>
+	<button onclick="updateMenu()">메뉴 수정</button>
+	<button onclick="deleteMenu()">메뉴 삭제</button>
+	<button onclick="registerMenu()">메뉴 등록</button>
 
-<script>
-function updateMenu(){
-	window.location.href = '/queuing/menu/updateView/{selectedMenuId}'; 
-	onsubmit 방식 
-<!--	GetMapping("/menu/update/{menuId}")
-	public String updateMenu(@PathVariable Long menuId) {
-		// menuId로 데이터 조회하기
-		// model에 addAttribute로 저장하기
-		
-		return "수정 페이지";
-	}
+	<script>
+		let selectedBox = null;
+	
+		document.querySelectorAll('input[name="selectedMenuId"]').forEach(checkbox => {
+		    checkbox.addEventListener('change', function() {
+		    	if (selectedBox === null) {
+		    		selectedBox = checkbox;
+		    		return;
+		    	}
+		    	
+		    	if (selectedBox === checkbox) {
+		    		selectedBox = null;
+		    		return;
+		    	}
+		    	
+		    	selectedBox.checked = false;
+		    	selectedBox = checkbox;
+		    });
+		});
 
-	@PostMapping("/menu/update")
-	public String updateMenu(@RequestParam Long menuId) {
-		
-	}
 
-	function updateMenu() {
-		const selectedMenuIds = [...document.querySelectorAll('input[name="selectedMenuId"]:checked')].map(checkbox => checkbox.value);
+	    function getSelectedMenuId() {
+	    	if (selectedBox === null) {
+                alert('메뉴 수정 또는 삭제를 위해서는 하나의 메뉴를 선택해야 합니다.');
+                return -1;
+	    	}
+	    	
+	    	return selectedBox.value;
+	    }
+	    
+	    
+		function updateMenu() {
+		    const selectedMenuId = getSelectedMenuId(); // 체크된 메뉴 ID 가져오기
+		    
+		    if (selectedMenuId === -1) {
+		        alert("수정할 메뉴를 하나만 선택해주세요."); // 경고 메시지
+		    } else {
+		    	const url = '/queuing/menu/updateView/' + selectedMenuId;
+		        window.location.href = url; // 메뉴 수정 페이지로 이동
+		    }
+		}
+	    
 		
-		
-		 // 서버로 전송
-	    if (selectedMenuIds.length === 1) {
-	        // 필요한 데이터만 서버로 POST 요청
-	        fetch('/queuing/menu/updateView', {
-	            method: 'POST',
-	            headers: {
-	                'Content-Type': 'application/json',
-	            },
-	            body: JSON.stringify({ selectedMenuId: selectedMenuIds[0] }),
-	        }).then(response => {
-	            if (response.ok) {
-	                window.location.href = '/queuing/menu/updateView'; // 서버가 리다이렉션을 반환하지 않는다면 직접 이동
-	            }
-	        });
-	    } else {
-	        alert('하나의 메뉴만 선택해 주세요.');
-	    } -->
-		
-}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-}
-
-function deleteMenu() {
+		function deleteMenu() {
+			 const selectedMenuId = getSelectedMenuId();
+			 if (selectedMenuId) {
+			        // 선택된 메뉴 ID를 서버로 POST 요청 보내기
+			        fetch(`/menu/delete`, {
+			            method: 'POST',
+			            headers: {
+			                'Content-Type': 'application/json'
+			            },
+			            body: JSON.stringify({ menuId: selectedMenuId }) // JSON 형태로 ID 전송
+			        })
+			        .then(response => {
+			            if (response.ok) {
+			                alert("메뉴가 삭제되었습니다.");
+			                location.reload(); // 삭제 성공 시 페이지 새로고침
+			            } else {
+			                alert("메뉴 삭제에 실패했습니다.");
+			            }
+			        })
+			        .catch(error => console.error("Error:", error)); // 에러 처리
+			    } else {
+			        alert("삭제할 메뉴를 하나만 선택해주세요."); // 경고 메시지
+			    }
+		}
     
-}
+		
+		function registerMenu() {
+		    window.location.href = '/queuing/menu/registerView'; // 메뉴 등록 페이지로 이동
+		}
 
-function registerMenu() {
-    window.location.href = '/queuing/menu/registerView'; // 메뉴 등록 페이지로 이동
-}
+
 </script>
 
 </body>

@@ -78,8 +78,8 @@ public class MenuController {
 	@Autowired
 	ForUpdatemenuJspService forUpdatemenuJspService;
 
-	@GetMapping("/menu/updateView/{selectedMenuId}") // post인지 get인지 모르겠음..
-	public String getUpdateView( @PathVariable long selectedMenuId, 
+	@GetMapping("/menu/updateView/{menuId}") // post인지 get인지 모르겠음..
+	public String getUpdateView( @PathVariable Long menuId, 
 			/* @RequestParam("storeId") int storeId, */
 			Model model, HttpSession session) {
 
@@ -87,7 +87,7 @@ public class MenuController {
 		ForUpdateMenu menu = null; 
 		
 
-		menu = forUpdatemenuJspService.ForUpdateMenuJspGetThatWantedMenu(selectedMenuId , /* storeId */5);
+		menu = forUpdatemenuJspService.ForUpdateMenuJspGetThatWantedMenu(menuId , /* storeId */5);
 		// selectedMenuId는 익숙한데 storeId는 왜 생소하지? 로컬 변수.. 호출용 변수..매개변수가, 필드에선언된 변수가..
 
 		model.addAttribute("menu", menu);
