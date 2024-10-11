@@ -196,7 +196,7 @@ public class UserDao {
 	                profileUpdateRequest.getName(),
 	                profileUpdateRequest.getAddress(),
 	                profileUpdateRequest.getPhone(),
-	                profileUpdateRequest.getId());  // 업데이트할 필드와 ID를 바인딩
+	                profileUpdateRequest.getUserId());  // 업데이트할 필드와 ID를 바인딩
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        return 0;  // 오류가 발생하면 0을 반환

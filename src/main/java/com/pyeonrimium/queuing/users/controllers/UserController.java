@@ -3,12 +3,16 @@ package com.pyeonrimium.queuing.users.controllers;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
@@ -168,21 +172,21 @@ public class UserController {
 	 * @return
 	 */
 	@PatchMapping("/users/profile")
-	public String updateProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest, HttpSession session) {
+	@ResponseBody
+	public ResponseEntity<?> updateProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest, HttpSession session) {
 	    System.out.println("[UserController] updateProfile()");
-
-	    String nextPage = "user/auth/updateProfile_ok";
 
 	    int result = userService.updateProfileConfirm(profileUpdateRequest);
 	    
-	    if (result > 0) {
-	        // 업데이트 후 세션을 새롭게 설정
-	        ProfileUpdateRequest updatedProfile = userService.getProfileUpdateRequest(profileUpdateRequest.getUserId());
-	        session.setAttribute("loginedProfileUpdateRequest", updatedProfile);
-	        session.setMaxInactiveInterval(60 * 30);  // 세션 시간 설정
-	    } else {
-	        nextPage = "user/auth/updateProfile_ng";
+	    if (result <= 0) {
+	    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("/queuing/home");
 	    }
-	    return nextPage;
+	    
+	    // 업데이트 후 세션을 새롭게 설정
+	    ProfileUpdateRequest updatedProfile = userService.getProfileUpdateRequest(profileUpdateRequest.getUserId());
+	    session.setAttribute("loginedProfileUpdateRequest", updatedProfile);
+	    session.setMaxInactiveInterval(60 * 30);  // 세션 시간 설정
+	    
+	    return ResponseEntity.ok("/queuing/home");
 	}
 }

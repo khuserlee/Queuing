@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+	return;
+	
     // 폼 제출 이벤트 리스너
     var updateProfileForm = document.getElementById('updateProfileForm');
     if (updateProfileForm) {

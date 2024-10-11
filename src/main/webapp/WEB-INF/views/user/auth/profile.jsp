@@ -26,8 +26,9 @@
             </div>
 			         <div id="edit-info" class="section" style="display:none;">
 			    <h2>회원정보 수정</h2>
-			    <form id="updateProfileForm" action="<c:url value='/users/profile' />" method="POST">
-			        <input type="hidden" name="_method" value="PATCH">
+			    	<form id="updateProfileForm" id="profile-form">
+<%-- 			    <form id="updateProfileForm" action="<c:url value='/users/profile' />" method="POST"> --%>
+<!-- 			        <input type="hidden" name="_method" value="PATCH"> -->
 			        <div class="input-group">
 			            <label for="id">아이디</label>
 			            <input type="text" id="id" name="id" value="${profileRequest.id}" readonly>
@@ -44,7 +45,7 @@
 			            <label for="phone">전화번호</label>
 			            <input type="text" id="phone" name="phone" value="${profileRequest.phone}" required>
 			        </div>
-			        <button type="submit">수정 완료</button>
+			        <button type="submit" id="submitBtn">수정 완료</button>
 			    </form>
 			</div>
             <div id="review-management" class="section" style="display:none;">
@@ -55,5 +56,52 @@
     </div>
     
     <jsp:include page="/resources/js/profileScript_js.jsp" />
+    <script>
+    	const submitBtn = document.getElementById("submitBtn");
+    	submitBtn.addEventListener('click', onClickEditButton);
+    	
+    	function onClickEditButton(event) {
+    		event.preventDefault();
+    		
+    		// 폼 데이터를 수집
+    	    const form = document.getElementById("updateProfileForm");
+    	    const formData = new FormData(form);
+
+    	    // 객체 형태로 데이터를 변환
+    	    const data = {
+   	    		userId: ${profileRequest.userId},
+    	        id: formData.get('id'),
+    	        name: formData.get('name'),
+    	        address: formData.get('address'),
+    	        phone: formData.get('phone')
+    	    };
+    	    
+    	    console.log(data);
+    		
+    		fetch ("/queuing/users/profile", {
+    			method: "PATCH",
+    			headers: {
+    				'Content-Type': 'application/json'
+    			},
+    			body: JSON.stringify(data)
+    		})
+    	    .then(response => {
+    	        if (response.ok) {
+    	            return response.text(); // 성공시 JSON 응답 처리
+    	        }
+    	        throw new Error('네트워크 응답에 문제가 있습니다.');
+    	    })
+    	    .then(result => {
+    	        // 서버로부터 받은 결과 처리
+    	        alert('회원정보가 성공적으로 수정되었습니다.');
+				window.location.href = result;
+    	    })
+    	    .catch(error => {
+    	        // 에러 처리
+    	        console.error('There was a problem with the fetch operation:', error);
+    	        alert('회원정보 수정에 실패했습니다.');
+    	    });
+    	}
+    </script>
 </body>
 </html>

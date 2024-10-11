@@ -226,6 +226,7 @@ public class UserService {
 	    }
 	    
 	    return ProfileUpdateRequest.builder()
+	    		.userId(userEntity.getUserId())
 	            .id(userEntity.getId())
 	            .name(userEntity.getName())
 	            .address(userEntity.getAddress())
