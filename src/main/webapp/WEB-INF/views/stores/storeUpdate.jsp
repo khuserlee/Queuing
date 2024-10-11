@@ -5,12 +5,12 @@
 <head>
     <meta charset="UTF-8">
     <title>매장 정보 수정</title>
-    <link href="<c:url value='/resources/css/stores/storeEdit.css' />" rel="stylesheet" type="text/css">
+    <link href="<c:url value='/resources/css/stores/storeDetail.css' />" rel="stylesheet" type="text/css">
 </head>
 <body>
     <div class="container">
-        <h1>매장 정보 수정</h1>
-        <form action="<c:url value='/stores/${store.storeId}/update' />" method="POST">
+        <h1>매장 정보 수정 </h1>
+        <form action="<c:url value='/stores/{storeId}' />" method="POST">
             <div class="form-group">
                 <label for="name">가게 이름</label>
                 <input type="text" id="name" name="name" value="${store.name}" required>
@@ -39,6 +39,7 @@
                 <label for="closedDay">휴무일</label>
                 <input type="text" id="closedDay" name="closedDay" value="${store.closedDay}">
             </div>
+            
             <div class="form-group">
                 <button type="submit">정보 수정</button>
                 <a href="<c:url value='/stores/${store.storeId}' />">취소</a>

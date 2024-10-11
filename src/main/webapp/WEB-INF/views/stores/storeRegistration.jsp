@@ -52,7 +52,6 @@
 					<button type="button" id="deleteBtn">매장 삭제</button>
 					<button type="submit">매장 등록</button>
 					<button onclick="window.location.href='<c:url value="/"/>'">취소</button>
-
 				</div>
 			</form>
 		</main>

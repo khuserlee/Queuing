@@ -1,8 +1,5 @@
 package com.pyeonrimium.queuing.stores.services;
 
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
@@ -62,7 +59,12 @@ public class StoreService {
 		return storeRegistrationResponse;
 	}
 	
-	//매장정보조회
+	
+	/**
+	 * 매장 정보 조회
+	 * @param storeId 가게 고유 번호
+	 * @return 조회 결과 StoreFindResponse
+	 */
 	public StoreFindResponse findStore(Long storeId) {
 		System.out.println("[StoreService] findStore()");
 		
@@ -92,27 +94,27 @@ public class StoreService {
 		//StoreFindResponse 반환
 		return storeFindResponse;
 	}
-	public StoreRegistrationResponse updateStore(Long storeId, StoreUpdateRequest storeUpdateRequest, Long userId) {
+	
+	//정보수정
+//	public void updateStore(Long storeId) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//}
+	public StoreFindResponse updateStore(Long storeId, StoreUpdateRequest storeUpdateRequest) {
 	    System.out.println("[StoreService] updateStore()");
 	    
 	    // 1. 기존 StoreEntity 조회
 	    StoreEntity resultEntity = storeDao.findStore(storeId);
 	    
 	    if (resultEntity == null) {
-	        return StoreRegistrationResponse.builder()
+	        return StoreFindResponse.builder()
 	                .isSuccess(false)
 	                .message("매장을 찾을 수 없습니다.")
 	                .build();
 	    }
 
-	    // 2. 권한 확인 (매장 소유자인지)
-	    if (!resultEntity.getUserId().equals(userId)) {
-	        return StoreRegistrationResponse.builder()
-	                .isSuccess(false)
-	                .message("수정 권한이 없습니다.")
-	                .build();
-	    }
-
+	    
 	    // 3. StoreEntity 업데이트
 	    resultEntity.setName(storeUpdateRequest.getName());
 	    resultEntity.setDescription(storeUpdateRequest.getDescription());
@@ -126,19 +128,19 @@ public class StoreService {
 	    StoreEntity updatedStore = storeDao.updateStore(resultEntity);
 
 	    if (updatedStore == null) {
-	        return StoreRegistrationResponse.builder()
+	        return StoreFindResponse.builder()
 	                .isSuccess(false)
 	                .message("업데이트에 실패했습니다.")
 	                .build();
 	    }
 
 	    // 5. StoreRegistrationResponse 생성 및 반환
-	    return StoreRegistrationResponse.builder()
+	    return StoreFindResponse.builder()
 	            .isSuccess(true)
 	            .storeId(updatedStore.getStoreId())
 	            .message("매장 정보가 성공적으로 업데이트되었습니다.")
 	            .build();
-	
 	}
-
 }
+
+	

@@ -72,17 +72,25 @@ public class StoresControllers {
 		 }		
 	}
 
-	// TODO: 매장 정보 수정(Update)
+	//@PostMapping("/stores/{storeId}")
+//	public String updateStore(@PathVariable Long storeId) {
+//		System.out.println("[storesControllers] updateStroe()");
+//		
+//		storeService.updateStore(storeId);
+//		
+//		return "/stores/sotreUpdate";
+//	}
+// TODO: 매장 정보 수정(Update)
 	// 매장 정보 수정 폼 불러오기
-	@GetMapping("/stores/{storeId}/edit")
-	public String getStoreEditForm(@PathVariable Long storeId, Model model) {
+	@GetMapping("/stores/{storeId}/update")
+	public String getStoreEditForm(@PathVariable Long storeId, HttpSession httpSession, Model model) {
 	    System.out.println("[StoresControllers] getStoreEditForm()");
 	    
 	    StoreFindResponse storeFindResponse = storeService.findStore(storeId);
 	    
 	    if (storeFindResponse.isSuccess()) {
 	        model.addAttribute("store", storeFindResponse);
-	        return "/stores/storeEdit";
+	        return "/stores/storeUpdate";
 	    } else {
 	        model.addAttribute("errorMessage", storeFindResponse.getMessage());
 	        return "/stores/storefail";
@@ -90,12 +98,12 @@ public class StoresControllers {
 	}
 
 	// 매장 정보 수정 처리
-	@PostMapping("/stores/{storeId}/update")
+	@PostMapping("/stores/{storeId}")
 	public String updateStore(@PathVariable Long storeId, StoreUpdateRequest storeUpdateRequest, HttpSession session, Model model) {
 	    System.out.println("[StoresControllers] updateStore()");
 	    
-	    long userId = 1; // TODO: 세션에서 실제 사용자 ID를 가져오도록 수정
-	    StoreRegistrationResponse storeUpdateResponse = storeService.updateStore(storeId, storeUpdateRequest, userId);
+	    
+	    StoreFindResponse storeUpdateResponse = storeService.updateStore(storeId, storeUpdateRequest);
 	    
 	    if (storeUpdateResponse.isSuccess()) {
 	        return "redirect:/stores/" + storeId;

@@ -56,7 +56,7 @@
 					</ul>
 				</div>
 				<div id="buttons">
-					<button type="button">정보 수정</button>
+					<button type="button" onclick="getUpdateForm()">정보 수정</button>
 					<button type="button">메뉴 수정</button>
 				</div>
 			</div>
@@ -64,5 +64,10 @@
 		
 		<jsp:include page="../globals/footer.jsp" />
 	</div>
+	<script>
+		function getUpdateForm(){
+			window.location.href=`/queuing/stores/${storeFindResponse.storeId}/update`;
+		}
+	</script>
 </body>
 </html>
