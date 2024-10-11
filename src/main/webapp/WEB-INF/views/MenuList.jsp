@@ -83,26 +83,12 @@
 		
 		function deleteMenu() {
 			 const selectedMenuId = getSelectedMenuId();
-			 if (selectedMenuId) {
-			        // 선택된 메뉴 ID를 서버로 POST 요청 보내기
-			        fetch(`/menu/delete`, {
-			            method: 'POST',
-			            headers: {
-			                'Content-Type': 'application/json'
-			            },
-			            body: JSON.stringify({ menuId: selectedMenuId }) // JSON 형태로 ID 전송
-			        })
-			        .then(response => {
-			            if (response.ok) {
-			                alert("메뉴가 삭제되었습니다.");
-			                location.reload(); // 삭제 성공 시 페이지 새로고침
-			            } else {
-			                alert("메뉴 삭제에 실패했습니다.");
-			            }
-			        })
-			        .catch(error => console.error("Error:", error)); // 에러 처리
+			 
+			 if (selectedMenuId===-1) {
+				 alert("수정할 메뉴를 하나만 선택해주세요.");
 			    } else {
-			        alert("삭제할 메뉴를 하나만 선택해주세요."); // 경고 메시지
+			    	const url = '/queuing/menu/delete/' + selectedMenuId;
+			    	window.location.href = url; // 경고 메시지
 			    }
 		}
     

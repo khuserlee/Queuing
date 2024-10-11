@@ -57,24 +57,14 @@ public class MenuController {
 	@Autowired
 	LatestMenuDeleteService latestMenuDeleteService;
 
-	@PostMapping("/menu/delete")
-	public String deleteMenu(@RequestParam("selectedMenuId") long selectedMenuId) {
+	@GetMapping("/menu/delete/{menuId}")
+	public String deleteMenu(@PathVariable Long menuId) {
 		
-		latestMenuDeleteService.deleteMenu(selectedMenuId);
+		latestMenuDeleteService.deleteMenu(menuId);
 		return "redirect:/menu/list";
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	@Autowired
 	ForUpdatemenuJspService forUpdatemenuJspService;
 
