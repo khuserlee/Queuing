@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.pyeonrimium.queuing.users.domains.dtos.CheckPasswordRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.CheckPasswordResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
-
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
+import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
 
 @Controller
@@ -131,10 +132,6 @@ public class UserController {
 		return "user/auth/find_password_ok";
 	}
 	
-	// 회원정보 수정
-
-	// 회원정보 수정 확인
-
 	/**
 	 * 로그아웃
 	 * @param session
@@ -150,20 +147,26 @@ public class UserController {
 	}
 	
 	/**
-	 * 회원정보 화면
+	 * 프로필(회원정보) 화면
 	 * @param session
 	 * @return 로그인 세션 확인 시 마이페이지 화면 표시
 	 */
-	@GetMapping("/users/mypage")
-	public String profileform(HttpSession session) {
-		Long userId = (Long) session.getAttribute("user_id");
+	@GetMapping("/users/profile")
+	public String profileform(HttpSession session, Model model) {
 		
+		System.out.println("[UserController] profileForm()");
+		
+		Long userId = (Long) session.getAttribute("user_id");
 		if(userId == null) {
 			return "redirect:/login/form";
 		}
 		
+		ProfileUpdateRequest profileRequest = userService.getProfileUpdateRequest(userId);
+	    model.addAttribute("profileRequest", profileRequest);
+		
 		return "user/auth/profile";
 	}
+	
 	
 	@PostMapping("/users/pwd/check")
 	@ResponseBody
@@ -194,12 +197,28 @@ public class UserController {
 		return ResponseEntity.ok(CheckPasswordResponse.builder().isSuccess(true).build());
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * 프로필(회원정보) 수정
+	 * @param profileUpdateRequest
+	 * @param session
+	 * @return
+	 */
+	@PatchMapping("/users/profile")
+	@ResponseBody
+	public ResponseEntity<?> updateProfile(@RequestBody ProfileUpdateRequest profileUpdateRequest, HttpSession session) {
+	    System.out.println("[UserController] updateProfile()");
+
+	    int result = userService.updateProfileConfirm(profileUpdateRequest);
+	    
+	    if (result <= 0) {
+	    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("/queuing/home");
+	    }
+	    
+	    // 업데이트 후 세션을 새롭게 설정
+	    ProfileUpdateRequest updatedProfile = userService.getProfileUpdateRequest(profileUpdateRequest.getUserId());
+	    session.setAttribute("loginedProfileUpdateRequest", updatedProfile);
+	    session.setMaxInactiveInterval(60 * 30);  // 세션 시간 설정
+	    
+	    return ResponseEntity.ok("/queuing/home");
+	}
 }

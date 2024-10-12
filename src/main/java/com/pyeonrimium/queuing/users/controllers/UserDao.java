@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
 
 @Component
 public class UserDao {
@@ -19,6 +20,7 @@ public class UserDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;	
 	
+	// 회원가입 (아이디 중복 조회)
 	public boolean isUserMember(String id) {
 		System.out.println("[UserDao] isUserMember()");
 		
@@ -29,6 +31,7 @@ public class UserDao {
 		return result > 0 ? true : false; 
 	}
 	
+	// 회원가입 (계정 생성)
 	public int insertUserAccount(SignupRequest signupRequest) {
 		System.out.println("[UserDao] insertUserAccount()");
 		String sql = "INSERT INTO users (id, password, name, address, phone) VALUES (?, ?, ?, ?, ?);";
@@ -48,6 +51,7 @@ public class UserDao {
 		return result;
 	}
 	
+	// 로그인
 	public LoginRequest selectUser(LoginRequest loginRequest) {
 		System.out.println("[UserrDao] selectUser()");
 		
@@ -110,9 +114,7 @@ public class UserDao {
 	}
 	
 	
-	// SELECT
-	
-	// 아이디 찾기 용
+	// 아이디 찾기 (이름, 전화번호)
 	public Find_idRequest selectUser(String name, String phone) {
 		
 		System.out.println("[UserDao] selectUser()");
@@ -130,7 +132,7 @@ public class UserDao {
 	    return find_idRequests.size() > 0 ? find_idRequests.get(0) : null;
 	}
 	
-	// 비밀번호 찾기 용
+	// 비밀번호 찾기 (이름, 전화번호, 아이디)
 	public Find_passwordRequest selectUser(String name, String phone, String id) {
 		System.out.println("[UserDao] selectUser() - id: " + id + ", name: " + name + ", phone: " + phone);
 		System.out.println("[UserDao] selectUser()");
@@ -148,8 +150,7 @@ public class UserDao {
 		return find_passwordRequests.size() > 0 ? find_passwordRequests.get(0) : null;
 	}
 	
-	
-	// UPDATE
+	// 임시 비밀번호 생성 후 비밀번호 업데이트
 	public int updatePassword(String id, String newPassword) {
 		System.out.println("[UserDao] updatePassword()");
 		
@@ -179,9 +180,33 @@ public class UserDao {
 			System.out.println(e);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new RuntimeException("프로필 정보 조회 중 오류가 발생했습니다.", e);
 		}
 		
 		return userEntity;
 	}
 
+
+	// 회원정보 수정 (업데이트)
+	public int updateProfile(ProfileUpdateRequest profileUpdateRequest) {
+		String sql = "UPDATE users SET name = ?, address = ?, phone = ? WHERE user_id = ?";
+		int result = 0;
+		
+		List<String> args = new ArrayList<>();
+		args.add(profileUpdateRequest.getName());
+		args.add(profileUpdateRequest.getAddress());
+		args.add(profileUpdateRequest.getPhone());
+		args.add(String.valueOf(profileUpdateRequest.getUserId()));
+
+		try {
+			result = jdbcTemplate.update(sql, args.toArray());
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("프로필 정보 조회 중 오류가 발생했습니다.", e);
+		}
+		
+		return result;
+	}
 }

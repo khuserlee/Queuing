@@ -19,7 +19,6 @@ main {
 	align-items: center;
 }
 
-/* 로그인 폼을 감싸는 컨테이너 */
 .login-container {
 	margin: 50px auto;
     background-color: white;
@@ -31,13 +30,11 @@ main {
     text-align: center;
 }
 
-/* 입력 그룹 스타일 */
 .input-group {
     margin-bottom: 15px;
     text-align: left;
 }
 
-/* 레이블과 입력 필드 스타일 */
 label {
     font-weight: bold;
     display: block;
@@ -54,7 +51,6 @@ input[type="password"] {
     font-size: 16px;
 }
 
-/* 버튼 스타일 */
 button {
     width: 100%;
     padding: 12px;
@@ -71,7 +67,6 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* 링크 스타일 */
 .links {
     margin-top: 15px;
 }
@@ -86,7 +81,6 @@ button:hover {
     text-decoration: underline;
 }
 
-/* 오류 메시지 스타일 */
 .error-message {
     color: red;
     display: none;

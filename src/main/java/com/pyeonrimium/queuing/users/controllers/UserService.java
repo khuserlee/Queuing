@@ -3,13 +3,16 @@ package com.pyeonrimium.queuing.users.controllers;
 import java.security.SecureRandom;
 import java.util.Date;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
+import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
 import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
-import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 
 @Service
 public class UserService {
@@ -79,6 +82,11 @@ public class UserService {
 		}
 	}
 	
+	/**
+	 * 로그인
+	 * @param loginRequest
+	 * @return 로그인 성공 여부
+	 */
 	public LoginResponse login(LoginRequest loginRequest) {
 		System.out.println("[UserService] login()");
 		
@@ -120,7 +128,11 @@ public class UserService {
 		return loginedRequest;
 	}
 	
-	// 아이디 찾기 확인
+	/**
+	 * 아이디 찾기
+	 * @param find_idRequest
+	 * @return
+	 */
 	public String findIdConfirm(Find_idRequest find_idRequest) {
 		System.out.println("[UserService] findIdConfirm()");
 		
@@ -136,7 +148,11 @@ public class UserService {
 	}
 
 	
-	// 비밀번호 찾기 확인
+	/**
+	 * 비밀번호 찾기
+	 * @param find_passwordRequest
+	 * @return
+	 */
 	public String findPasswordConfirm(Find_passwordRequest find_passwordRequest) {
 		System.out.println("[UserService] findPasswordConfirm()");
 		
@@ -155,7 +171,10 @@ public class UserService {
 		return null;
 	}
 	
-	// 임시 비밀번호 생성
+	/**
+	 * 임시 비밀번호 생성
+	 * @return
+	 */
 	private String createNewPassword() {
 		System.out.println("[AdminService] createNewPassword()");
 		
@@ -200,5 +219,32 @@ public class UserService {
 		}
 		
 		return true;
+	}
+
+	// 회원 정보 업데이트
+	public int updateProfileConfirm(ProfileUpdateRequest profileUpdateRequest) {
+	    System.out.println("[UserService] updateProfileConfirm()");
+
+	    return userDao.updateProfile(profileUpdateRequest);  // DAO에 업데이트 요청
+	}
+
+	
+	// 회원 정보 조회 (업데이트 후 재조회)
+	public ProfileUpdateRequest getProfileUpdateRequest(Long userId) {
+		System.out.println("[UserService] getProfileUpdateRequest()");
+
+		UserEntity userEntity = userDao.findUserByUserId(userId);
+
+		if (userEntity == null) {
+			return null;
+		}
+
+		return ProfileUpdateRequest.builder()
+				.userId(userEntity.getUserId())
+				.id(userEntity.getId())
+				.name(userEntity.getName())
+				.address(userEntity.getAddress())
+				.phone(userEntity.getPhone())
+				.build();
 	}
 }

@@ -27,7 +27,7 @@
 					<a class="header_nav_menu" href="<c:url value='/logout'/>" id="logoutBtn">
 						<span>로그아웃</span>
 					</a>
-					<a class="header_nav_menu" href="<c:url value='/users/mypage' />">
+					<a class="header_nav_menu" href="<c:url value='/users/profile' />">
 						<span>마이페이지</span>
 					</a>
 					<c:if test="${role == 'MANAGER'}">

@@ -1,0 +1,49 @@
+/* 전체 레이아웃 설정 */
+.container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+/* 사이드바 스타일 */
+.sidebar {
+    width: 20%;
+    background-color: #f1f1f1;
+    padding: 20px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.sidebar ul li a:hover {
+    color: #007BFF;
+}
+
+/* 콘텐츠 영역 스타일 */
+.content {
+    width: 80%;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* 각 섹션 숨기기 기본 설정 */
+.section {
+    display: none;
+}
+
+/* 섹션 표시 */
+.section.active {
+    display: block;
+}

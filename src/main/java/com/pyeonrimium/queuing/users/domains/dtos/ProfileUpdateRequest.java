@@ -11,14 +11,12 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class LoginResponse {
-	
-	private boolean isSuccess;
-	private String message;
-	private String redirectUrl;
+public class ProfileUpdateRequest {
 	
 	private long userId;
-	private String role;
-	
+	private String id;
+	// private String password;
+	private String name;
+	private String address;
+	private String phone;
 }
