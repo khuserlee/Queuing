@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
 import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
 
@@ -34,8 +35,7 @@ public class UserService {
 	 * @return 회원가입 결과
 	 */
 	public SignupResponse signup(SignupRequest signupRequest) {
-		System.out.println("[UserService] signup()");
-		
+
 		boolean isRegistered = userDao.isUserMember(signupRequest.getId());
 		
 		if (isRegistered) {
@@ -66,8 +66,7 @@ public class UserService {
 	 * @return 회원가입 성공 여부
 	 */
 	public int signupConfirm(SignupRequest signupRequest) {
-		System.out.println("[UserService] signupConfirm()");
-		
+
 		boolean isMember = userDao.isUserMember(signupRequest.getId());
 		
 		if(!isMember) {
@@ -88,8 +87,7 @@ public class UserService {
 	 * @return 로그인 성공 여부
 	 */
 	public LoginResponse login(LoginRequest loginRequest) {
-		System.out.println("[UserService] login()");
-		
+
 		UserEntity userEntity = userDao.findUserById(loginRequest.getId());
 		
 		if (userEntity == null) {
@@ -230,16 +228,19 @@ public class UserService {
 
 	
 	// 회원 정보 조회 (업데이트 후 재조회)
-	public ProfileUpdateRequest getProfileUpdateRequest(Long userId) {
-		System.out.println("[UserService] getProfileUpdateRequest()");
+	public ProfileUpdateResponse getProfileUpdateResponse(Long userId) {
 
 		UserEntity userEntity = userDao.findUserByUserId(userId);
 
 		if (userEntity == null) {
-			return null;
+			return ProfileUpdateResponse.builder()
+					.isSuccess(false)
+					.message("회원 정보를 조회할 수 없습니다.")
+					.build();
 		}
 
-		return ProfileUpdateRequest.builder()
+		return ProfileUpdateResponse.builder()
+				.isSuccess(true)
 				.userId(userEntity.getUserId())
 				.id(userEntity.getId())
 				.name(userEntity.getName())

@@ -18,6 +18,7 @@ import com.pyeonrimium.queuing.users.domains.dtos.CheckPasswordResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
 
 @Controller
@@ -152,17 +153,19 @@ public class UserController {
 	 * @return 로그인 세션 확인 시 마이페이지 화면 표시
 	 */
 	@GetMapping("/users/profile")
-	public String profileform(HttpSession session, Model model) {
+	public String profileForm(HttpSession session, Model model) {
 		
-		System.out.println("[UserController] profileForm()");
+		if (session == null) {
+			return "redirect:/login/form";
+		}
 		
 		Long userId = (Long) session.getAttribute("user_id");
 		if(userId == null) {
 			return "redirect:/login/form";
 		}
 		
-		ProfileUpdateRequest profileRequest = userService.getProfileUpdateRequest(userId);
-	    model.addAttribute("profileRequest", profileRequest);
+		ProfileUpdateResponse profileUpdateResponse = userService.getProfileUpdateResponse(userId);
+	    model.addAttribute("profileUpdateResponse", profileUpdateResponse);
 		
 		return "user/auth/profile";
 	}
@@ -215,7 +218,7 @@ public class UserController {
 	    }
 	    
 	    // 업데이트 후 세션을 새롭게 설정
-	    ProfileUpdateRequest updatedProfile = userService.getProfileUpdateRequest(profileUpdateRequest.getUserId());
+	    ProfileUpdateResponse updatedProfile = userService.getProfileUpdateResponse(profileUpdateRequest.getUserId());
 	    session.setAttribute("loginedProfileUpdateRequest", updatedProfile);
 	    session.setMaxInactiveInterval(60 * 30);  // 세션 시간 설정
 	    
