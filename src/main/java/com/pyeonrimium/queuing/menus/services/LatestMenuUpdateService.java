@@ -8,13 +8,12 @@ import com.pyeonrimium.queuing.menus.domains.WillBeUpdatedMenu;
 
 @Service
 public class LatestMenuUpdateService {
-	
+
 	@Autowired
 	LatestMenuUpdateDao menuUpdateDao;
-	
-	
+
 	public void updateMenu(WillBeUpdatedMenu menu) {
-		
+
 		menuUpdateDao.updateMenu(menu);
 	}
 

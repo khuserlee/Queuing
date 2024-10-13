@@ -1,17 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<!DOCTYPE html><%@ taglib uri="http://java.sun.com/jsp/jstl/core"
-	prefix="c"%>
-
+<!DOCTYPE html>
 <html>
-
 <head>
-
-<title>메뉴 목록</title>
-
+	<meta charset="UTF-8">
+	<title>메뉴 목록</title>
 </head>
-
 <body>
 	<h1>메뉴 목록</h1>
 	<table>
@@ -33,72 +29,64 @@
 			</tr>
 		</c:forEach>
 	</table>
-
 	<button onclick="updateMenu()">메뉴 수정</button>
 	<button onclick="deleteMenu()">메뉴 삭제</button>
 	<button onclick="registerMenu()">메뉴 등록</button>
-
+	
 	<script>
 		let selectedBox = null;
 	
 		document.querySelectorAll('input[name="selectedMenuId"]').forEach(checkbox => {
-		    checkbox.addEventListener('change', function() {
-		    	if (selectedBox === null) {
-		    		selectedBox = checkbox;
-		    		return;
-		    	}
-		    	
-		    	if (selectedBox === checkbox) {
-		    		selectedBox = null;
-		    		return;
-		    	}
-		    	
-		    	selectedBox.checked = false;
-		    	selectedBox = checkbox;
-		    });
+			checkbox.addEventListener('change', function() {
+				if (selectedBox === null) {
+					selectedBox = checkbox;
+					return;
+				}
+				
+				if (selectedBox === checkbox) {
+					selectedBox = null;
+					return;
+				}
+				
+				selectedBox.checked = false;
+				selectedBox = checkbox;
+			});
 		});
 
-
-	    function getSelectedMenuId() {
-	    	if (selectedBox === null) {
-                alert('메뉴 수정 또는 삭제를 위해서는 하나의 메뉴를 선택해야 합니다.');
-                return -1;
-	    	}
-	    	
-	    	return selectedBox.value;
-	    }
-	    
-	    
-		function updateMenu() {
-		    const selectedMenuId = getSelectedMenuId(); // 체크된 메뉴 ID 가져오기
-		    
-		    if (selectedMenuId === -1) {
-		        alert("수정할 메뉴를 하나만 선택해주세요."); // 경고 메시지
-		    } else {
-		    	const url = '/queuing/menu/updateView/' + selectedMenuId;
-		        window.location.href = url; // 메뉴 수정 페이지로 이동
-		    }
+		function getSelectedMenuId() {
+			if (selectedBox === null) {
+				alert('메뉴 수정 또는 삭제를 위해서는 하나의 메뉴를 선택해야 합니다.');
+				return -1;
+			}
+			
+			return selectedBox.value;
 		}
-	    
+
+		function updateMenu() {
+			const selectedMenuId = getSelectedMenuId(); // 체크된 메뉴 ID 가져오기
+			
+			if (selectedMenuId === -1) {
+				alert("수정할 메뉴를 하나만 선택해주세요."); // 경고 메시지
+			} else {
+				const url = '/queuing/menu/updateView/' + selectedMenuId;
+				window.location.href = url; // 메뉴 수정 페이지로 이동
+			}
+		}
 		
 		function deleteMenu() {
 			 const selectedMenuId = getSelectedMenuId();
 			 
-			 if (selectedMenuId===-1) {
-				 alert("수정할 메뉴를 하나만 선택해주세요.");
-			    } else {
-			    	const url = '/queuing/menu/delete/' + selectedMenuId;
-			    	window.location.href = url; // 경고 메시지
-			    }
+			if (selectedMenuId === -1) {
+				alert("수정할 메뉴를 하나만 선택해주세요.");
+			} else {
+				const url = '/queuing/menu/delete/' + selectedMenuId;
+				window.location.href = url;
+			}
 		}
-    
 		
 		function registerMenu() {
-		    window.location.href = '/queuing/menu/registerView'; // 메뉴 등록 페이지로 이동
+			window.location.href = '/queuing/menu/registerView'; // 메뉴 등록 페이지로 이동
 		}
-
-
-</script>
-
+	</script>
 </body>
 </html>

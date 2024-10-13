@@ -8,12 +8,12 @@ import com.pyeonrimium.queuing.menus.domains.WillBePostedMenu;
 
 @Service
 public class LatestMenuPostService {
-	
+
 	@Autowired
 	private LatestMenuPostDao menuPostDao;
-	
+
 	public void saveMenu(WillBePostedMenu menu) {
-		
+
 		menuPostDao.save(menu);
 	}
 

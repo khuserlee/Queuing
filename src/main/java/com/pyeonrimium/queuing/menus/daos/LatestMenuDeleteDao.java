@@ -6,16 +6,16 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class LatestMenuDeleteDao {
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-    public void deleteMenu(long selectedmenuId) {
+	public void deleteMenu(long selectedmenuId) {
 
-	String sql = "DELETE FROM menus WHERE menu_id = ?";
+		String sql = "DELETE FROM menus WHERE menu_id = ?";
 
-	int rowsAffected = jdbcTemplate.update(sql, selectedmenuId); 
-	System.out.println("Rows affected: " + rowsAffected);
-	    }
+		int rowsAffected = jdbcTemplate.update(sql, selectedmenuId);
+		System.out.println("Rows affected: " + rowsAffected);
+	}
 
 }

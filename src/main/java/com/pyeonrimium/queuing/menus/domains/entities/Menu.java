@@ -9,19 +9,16 @@ import lombok.Setter;
 
 //실제 데이터베이스에 메뉴를 저장하는 로직 으로 엔티티를 작성중인데.. 뭔지도 모르겠네미ㅏ엄나ㅣㅓ
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Menu {
 //	@Id
-    private long menuId;
-    private String name;
-    private int price;
-    private String description;
- //   private String imageUrl;
-
-
+	private long menuId;
+	private String name;
+	private int price;
+	private String description;
+	// private String imageUrl;
 
 }

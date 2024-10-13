@@ -1,4 +1,7 @@
 package com.pyeonrimium.queuing.menus.daos;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -7,29 +10,26 @@ import org.springframework.stereotype.Repository;
 
 import com.pyeonrimium.queuing.menus.domains.entities.Menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Repository
 public class MenuListDao {
-	
-@Autowired
-private JdbcTemplate jdbcTemplate;
 
-public List<Menu> findByStoreId(int storeId) {
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
-        String sql = "SELECT * FROM menus WHERE store_id = ?";
+	public List<Menu> findByStoreId(int storeId) {
+
+		String sql = "SELECT * FROM menus WHERE store_id = ?";
 		List<Menu> menus = null;
-        
-        try {
-        	menus = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Menu.class), storeId);
+
+		try {
+			menus = jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Menu.class), storeId);
 		} catch (DataAccessException e) {
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-        return menus;
+		return menus;
 //       return jdbcTemplate.query(sql, new Object[]{storeId}, (rs, rowNum) -> {
 //
 //            Menu menu = new Menu();
@@ -46,5 +46,5 @@ public List<Menu> findByStoreId(int storeId) {
 //
 //        } );
 
-}
+	}
 }
