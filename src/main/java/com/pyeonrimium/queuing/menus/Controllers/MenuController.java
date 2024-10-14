@@ -16,14 +16,19 @@ import com.pyeonrimium.queuing.menus.daos.MenuListDao;
 import com.pyeonrimium.queuing.menus.domains.ForUpdateMenu;
 import com.pyeonrimium.queuing.menus.domains.WillBePostedMenu;
 import com.pyeonrimium.queuing.menus.domains.WillBeUpdatedMenu;
+import com.pyeonrimium.queuing.menus.domains.dtos.MenuListResponse;
 import com.pyeonrimium.queuing.menus.domains.entities.Menu;
 import com.pyeonrimium.queuing.menus.services.ForUpdatemenuJspService;
 import com.pyeonrimium.queuing.menus.services.LatestMenuDeleteService;
 import com.pyeonrimium.queuing.menus.services.LatestMenuPostService;
 import com.pyeonrimium.queuing.menus.services.LatestMenuUpdateService;
+import com.pyeonrimium.queuing.menus.services.MenuService;
 
 @Controller
 public class MenuController {
+	
+	@Autowired
+	private MenuService menuService;
 
 	@Autowired
 	private MenuListDao menuListDao;
@@ -39,6 +44,72 @@ public class MenuController {
 
 	@Autowired
 	private LatestMenuUpdateService latestMenuUpdateService;
+	
+	/**
+	 * 로그인 여부 확인
+	 * @param session
+	 * @return true: 로그인 됨, false: 로그인 안 됨
+	 */
+	private boolean verifyLogin(HttpSession session) {
+		if (session == null) {
+			return false;
+		}
+		
+		if (session.getAttribute("user_id") == null) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * 사용자 권한 확인
+	 * @param session
+	 * @return true: 매니저, false: 일반 사용자
+	 */
+	private boolean verifyManager(HttpSession session) {
+		String role = (String) session.getAttribute("role");
+		
+		if (role == null) {
+			return false;
+		}
+		
+		if (!role.equals("MANAGER")) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * 가게 메뉴 목록 조회하기
+	 * @param storeId 가게 고유 번호
+	 * @param session
+	 * @param model
+	 * @return 메뉴 목록 페이지
+	 */
+	@GetMapping("/menu/{storeId}")
+	public String getMenusInStore(@PathVariable Long storeId, HttpSession session, Model model) {
+		
+		if (!verifyLogin(session)) {
+			return "redirect:/login/form";
+		}
+		
+		if (!verifyManager(session)) {
+			return "redirect:/stores/" + storeId;
+		}
+		
+//		Long userId = (Long) session.getAttribute("user_id");
+		MenuListResponse menuListResponse = menuService.getMenusByStoreId(storeId);
+		
+		if (!menuListResponse.isSuccess()) {
+			System.out.println("Error: " + menuListResponse.getMessage());
+			return "";
+		}
+		
+		model.addAttribute("menuListResponse", menuListResponse);
+		return "menus/store_menus";
+	}
 
 	@GetMapping("/menu/list")
 	public String listMenus(Model model, HttpSession session) {
