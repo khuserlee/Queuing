@@ -14,7 +14,60 @@ body {
 main {
 	flex: 1;
 	padding: 50px 50px;
+}
+
+.table-container {
+	max-height: 700px; /* 최대 높이 700px */
+	overflow-y: auto; /* 수직 스크롤 가능 */
+	width: 100%;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table th, table td {
+	padding: 10px;
+	border-bottom: 1px solid #ccc;
+	text-align: center;
+}
+
+table th {
+    background-color: #f1f1f1;
+	font-weight: bold;
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	border-bottom: 1px solid #ccc;
+}
+
+td img {
+	width: 100px;
+	height: 100px;
+}
+
+td intpu[type="checkbox"] {
+	margin: auto;
+}
+
+.buttons {
 	display: flex;
-	justify-content: center;
-	aligh-items: center;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.buttons button {
+	flex-basis: 30%; /* 3등분 */
+	padding: 10px 20px;
+	font-size: 16px;
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.buttons button:hover {
+	background-color: #0056b3;
 }

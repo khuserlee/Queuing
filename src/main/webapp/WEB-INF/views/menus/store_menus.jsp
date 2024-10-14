@@ -15,27 +15,35 @@
 		
 		<main>
 			<h1>메뉴 목록</h1>
-			<table>
-				<tr>
-					<th>사진</th>
-					<th>이름</th>
-					<th>가격</th>
-					<th>상세정보</th>
-					<th>선택</th>
-				</tr>
-				<c:forEach var="menu" items="${menuListResponse.menus}">
-					<tr>
-						<td><img src="" alt="Menu Image" /></td>
-						<td>${menu.name}</td>
-						<td>${menu.price}</td>
-						<td>${menu.description}</td>
-						<td><input type="checkbox" name="selectedMenuId" value="${menu.menuId}" /></td>
-					</tr>
-				</c:forEach>
-			</table>
-			<button onclick="updateMenu()">메뉴 수정</button>
-			<button onclick="deleteMenu()">메뉴 삭제</button>
-			<button onclick="registerMenu()">메뉴 등록</button>
+			<div class="table-container">
+				<table>
+					<thead class="sticky-header">
+						<tr>
+							<th>사진</th>
+							<th>이름</th>
+							<th>가격</th>
+							<th>상세정보</th>
+							<th>선택</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach var="menu" items="${menuListResponse.menus}">
+							<tr>
+								<td><img src="" alt="" /></td>
+								<td>${menu.name}</td>
+								<td>${menu.price}</td>
+								<td>${menu.description}</td>
+								<td><input type="checkbox" name="selectedMenuId" value="${menu.menuId}" /></td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+			</div>
+			<div class="buttons">
+				<button onclick="updateMenu()">메뉴 수정</button>
+				<button onclick="deleteMenu()">메뉴 삭제</button>
+				<button onclick="registerMenu()">메뉴 등록</button>
+			</div>
 		</main>
 		
 		<jsp:include page="../globals/footer.jsp" />
@@ -62,7 +70,6 @@
 
 		function getSelectedMenuId() {
 			if (selectedBox === null) {
-				alert('메뉴 수정 또는 삭제를 위해서는 하나의 메뉴를 선택해야 합니다.');
 				return -1;
 			}
 			
@@ -84,7 +91,7 @@
 			 const selectedMenuId = getSelectedMenuId();
 			 
 			if (selectedMenuId === -1) {
-				alert("수정할 메뉴를 하나만 선택해주세요.");
+				alert("삭제할 메뉴를 하나만 선택해주세요.");
 			} else {
 				const url = '/queuing/menu/delete/' + selectedMenuId;
 				window.location.href = url;
