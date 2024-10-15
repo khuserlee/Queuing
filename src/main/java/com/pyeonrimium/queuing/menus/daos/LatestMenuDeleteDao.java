@@ -10,7 +10,7 @@ public class LatestMenuDeleteDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	public void deleteMenu(long selectedmenuId) {
+	public void deleteMenu(Long selectedmenuId) {
 
 		String sql = "DELETE FROM menus WHERE menu_id = ?";
 

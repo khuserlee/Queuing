@@ -3,14 +3,19 @@ package com.pyeonrimium.queuing.menus.Controllers;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pyeonrimium.queuing.menus.domains.WillBeUpdatedMenu;
+import com.pyeonrimium.queuing.menus.domains.dtos.MenuDeleteResponse;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuListResponse;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationRequest;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationResponse;
@@ -39,6 +44,7 @@ public class MenuController {
 
 	@Autowired
 	private LatestMenuUpdateService latestMenuUpdateService;
+	
 	
 	/**
 	 * 가게 메뉴 목록 조회하기
@@ -128,6 +134,7 @@ public class MenuController {
 		return "redirect:/menu/" + storeId;
 	}
 
+	
 	/**
 	 * 메뉴 수정 화면 불러오기
 	 * @param storeId 가게 고유 번호
@@ -170,6 +177,7 @@ public class MenuController {
 //		return "UpdateMenu";
 	}
 
+	
 	/**
 	 * 메뉴 정보 수정
 	 * @param storeId 가게 고유 번호
@@ -200,11 +208,31 @@ public class MenuController {
 		return "redirect:/menu/" + storeId;
 	}
 
-	@GetMapping("/menu/delete/{menuId}")
-	public String deleteMenu(@PathVariable Long menuId) {
+	
+	/**
+	 * 메뉴 삭제하기
+	 * @param storeId 가게 고유 번호
+	 * @param menuId 메뉴 고유 번호
+	 * @param session 세션
+	 * @return
+	 */
+	@DeleteMapping("/menu/delete")
+	@ResponseBody
+	public ResponseEntity<?> deleteMenu(@RequestParam Long storeId, @RequestParam Long menuId, HttpSession session) {		
+		if (!verifyLogin(session)) {
+			MenuDeleteResponse response = MenuDeleteResponse.builder()
+					.httpStatus(HttpStatus.UNAUTHORIZED)	// 401 에러
+					.message("로그인이 필요합니다.")
+					.redirectUrl("/queuing/login/form")
+					.build();
+			
+			return ResponseEntity.status(response.getHttpStatus()).body(response);
+		}
 
-		latestMenuDeleteService.deleteMenu(menuId);
-		return "redirect:/menu/list";
+		Long userId = (Long) session.getAttribute("user_id");
+		MenuDeleteResponse menuDeleteResponse = latestMenuDeleteService.deleteMenu(storeId, userId, menuId);
+
+		return ResponseEntity.status(menuDeleteResponse.getHttpStatus()).body(menuDeleteResponse);
 	}
 	
 	

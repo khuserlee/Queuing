@@ -43,12 +43,21 @@ table th {
 	border-bottom: 1px solid #ccc;
 }
 
+td input[type="checkbox"] {
+	width: 20px;
+	height: 20px;
+}
+
+td {
+	max-width: 500px;
+}
+
 td img {
 	width: 100px;
 	height: 100px;
 }
 
-td:last-child {
+td:first-child {
 	width: 80px;
 }
 

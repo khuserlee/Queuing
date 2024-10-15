@@ -18,6 +18,36 @@ public class MenuDao {
 
 	private final JdbcTemplate jdbcTemplate;
 
+
+	/**
+	 * 메뉴 조회하기
+	 * @param menuId 메뉴 고유 번호
+	 * @return 조회 결과
+	 */
+	public Menu findMenuByMenuId(Long menuId) {
+		
+		String sql = "SELECT * FROM menus WHERE menu_id = ?;";
+		Menu menu = null;
+		
+		try {
+			menu = jdbcTemplate.queryForObject(sql,
+											BeanPropertyRowMapper.newInstance(Menu.class),
+											menuId);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return menu;
+	}
+	
+
+	/**
+	 * 메뉴 목록 조회하기
+	 * @param storeId 가게 고유 번호
+	 * @return
+	 */
 	public List<Menu> findMenusByStoreId(Long storeId) {
 		
 		String sql = "SELECT * FROM menus WHERE store_id = ?;";
@@ -37,6 +67,11 @@ public class MenuDao {
 	}
 
 	
+	/**
+	 * 새 메뉴 정보 등록하기
+	 * @param menu 메뉴 정보
+	 * @return 성공 여부
+	 */
 	public boolean insertNewMenu(Menu menu) {
 
 		String sql = "INSERT INTO menus (store_id, name, description, price, menu_order) VALUES (?, ?, ?, ?, ?);";
@@ -62,28 +97,25 @@ public class MenuDao {
 		return result > 0;
 	}
 	
-
-
+	
 	/**
-	 * 메뉴 조회하기
-	 * @param menuId 메뉴 고유 번호
-	 * @return 조회 결과
+	 * 메뉴 삭제
+	 * @param menuId 메뉴 고유 ID
+	 * @return 성공 여부
 	 */
-	public Menu findMenuByMenuId(Long menuId) {
-		
-		String sql = "SELECT * FROM menus WHERE menu_id = ?;";
-		Menu menu = null;
+	public boolean deleteMenu(Long menuId) {
+
+		String sql = "DELETE FROM menus WHERE menu_id = ?;";
+		int rowsAffected = -1;
 		
 		try {
-			menu = jdbcTemplate.queryForObject(sql,
-											BeanPropertyRowMapper.newInstance(Menu.class),
-											menuId);
+			rowsAffected = jdbcTemplate.update(sql, menuId);
 		} catch (DataAccessException e) {
 			System.out.println(e);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return menu;
+		return rowsAffected > 0;
 	}
 }

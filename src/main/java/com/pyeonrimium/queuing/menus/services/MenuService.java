@@ -21,6 +21,11 @@ public class MenuService {
 	private final StoreDao storeDao;
 	private final MenuDao menuDao;
 
+	/**
+	 * 가게 메뉴 목록 불러오기
+	 * @param storeId 가게 고유 번호
+	 * @return 메뉴 목록
+	 */
 	public MenuListResponse getMenusByStoreId(Long storeId) {
 		
 		List<Menu> menus = menuDao.findMenusByStoreId(storeId);
@@ -39,8 +44,16 @@ public class MenuService {
 				.build();
 	}
 
-	public MenuRegistrationResponse addNewMenu(Long storeId, Long userId, MenuRegistrationRequest request) {
+	/**
+	 * 신규 메뉴 등록하기
+	 * @param storeId 가게 고유 번호
+	 * @param userId 유저 고유 번호
+	 * @param menuRegistrationRequest 메뉴 정보
+	 * @return
+	 */
+	public MenuRegistrationResponse addNewMenu(Long storeId, Long userId, MenuRegistrationRequest menuRegistrationRequest) {
 		
+		// 내 가게인지 확인(권한 확인)
 		Long id = storeDao.findStoreIdByUserId(userId);
 		if (!storeId.equals(id)) {
 			return MenuRegistrationResponse.builder()
@@ -49,11 +62,12 @@ public class MenuService {
 					.build();
 		}
 		
+		// 메뉴 엔터티 생성
 		Menu menu = Menu.builder()
 				.storeId(storeId)
-				.name(request.getName())
-				.description(request.getDescription())
-				.price(request.getPrice())
+				.name(menuRegistrationRequest.getName())
+				.description(menuRegistrationRequest.getDescription())
+				.price(menuRegistrationRequest.getPrice())
 				.menuOrder(0)
 				.build();
 		
@@ -71,6 +85,13 @@ public class MenuService {
 				.build();
 	}
 
+	/**
+	 * 메뉴 정보 불러오기
+	 * @param storeId 가게 고유 번호
+	 * @param userId 유저 고유 번호
+	 * @param menuId 메뉴 고유 번호
+	 * @return
+	 */
 	public MenuUpdateFormResponse getMenuForUpdate(Long storeId, Long userId, Long menuId) {
 		
 		// 가게 주인인지 확인

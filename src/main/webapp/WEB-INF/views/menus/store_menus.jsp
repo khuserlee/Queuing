@@ -19,21 +19,21 @@
 				<table>
 					<thead class="sticky-header">
 						<tr>
+							<th>선택</th>
 							<th>사진</th>
 							<th>이름</th>
 							<th>가격</th>
 							<th>상세정보</th>
-							<th>선택</th>
 						</tr>
 					</thead>
 					<tbody>
 						<c:forEach var="menu" items="${menuListResponse.menus}">
 							<tr>
+								<td><input type="checkbox" name="selectedMenuId" value="${menu.menuId}" /></td>
 								<td><img src="" alt="" /></td>
 								<td>${menu.name}</td>
 								<td>${menu.price}</td>
 								<td>${menu.description}</td>
-								<td><input type="checkbox" name="selectedMenuId" value="${menu.menuId}" /></td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -95,10 +95,30 @@
 			 
 			if (selectedMenuId === -1) {
 				alert("삭제할 메뉴를 하나만 선택해주세요.");
-			} else {
-				const url = '/queuing/menu/delete/' + selectedMenuId;
-				window.location.href = url;
+				return;
 			}
+
+// 			const url = '/queuing/menu/delete/' + selectedMenuId;
+// 			window.location.href = url;
+
+// 			const url = '/queuing/menu/delete/' + ${menuListResponse.storeId} + '/' + selectedMenuId;
+
+			const url = `/queuing/menu/delete?storeId=${menuListResponse.storeId}&menuId=\${selectedMenuId}`;
+			fetch(url, {
+				method: 'DELETE'
+			})
+			.then(response => {
+				return response.json(); // JSON 응답 처리
+			})
+			.then(data => {
+				// 여기서 data는 response.json()의 결과
+				// 즉, MenuController에서 ResponseEntity.body에 담은 MenuDeleteResponse임
+				alert(data.message);
+				window.location.href = data.redirectUrl;
+			})
+			.catch(error => {
+				alert(error);
+			});
 		}
 		
 		function registerMenu() {
