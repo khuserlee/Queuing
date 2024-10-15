@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.pyeonrimium.queuing.menus.daos.MenuListDao;
 import com.pyeonrimium.queuing.menus.domains.ForUpdateMenu;
-import com.pyeonrimium.queuing.menus.domains.WillBePostedMenu;
 import com.pyeonrimium.queuing.menus.domains.WillBeUpdatedMenu;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuListResponse;
+import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationRequest;
+import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationResponse;
 import com.pyeonrimium.queuing.menus.domains.entities.Menu;
 import com.pyeonrimium.queuing.menus.services.ForUpdatemenuJspService;
 import com.pyeonrimium.queuing.menus.services.LatestMenuDeleteService;
@@ -111,6 +112,51 @@ public class MenuController {
 		return "menus/store_menus";
 	}
 
+	
+	/**
+	 * 메뉴 등록 화면 불러오기
+	 * @param storeId 가게 고유 번호
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/menu/registerView/{storeId}")
+	public String registerView(@PathVariable Long storeId, Model model) {
+		model.addAttribute("storeId", storeId);
+		return "/menus/menu_registration";
+	}
+
+	
+	/**
+	 * 신규 메뉴 저장
+	 * @param storeId 가게 고유 번호
+	 * @param menuRegistrationRequest 메뉴 정보
+	 * @param httpsession
+	 * @return
+	 */
+	@PostMapping("/menu/register/{storeId}")
+	public String registerMenu(@PathVariable Long storeId, MenuRegistrationRequest menuRegistrationRequest,
+			HttpSession session) {
+		
+		if (!verifyLogin(session)) {
+			return "redirect:/login/form";
+		}
+		
+		if (!verifyManager(session)) {
+			return "redirect:/stores/" + storeId;
+		}
+
+		Long userId = (Long) session.getAttribute("user_id");
+		MenuRegistrationResponse menuRegistrationResponse = menuService.addNewMenu(storeId, userId, menuRegistrationRequest);
+		
+		// 실패했을 때
+		if (!menuRegistrationResponse.isSuccess()) {
+			System.out.println("Error: " + menuRegistrationResponse.getMessage());
+			return "PostMenu";
+		}
+		
+		return "redirect:/menu/" + storeId;
+	}
+
 	@GetMapping("/menu/list")
 	public String listMenus(Model model, HttpSession session) {
 		List<Menu> menuList = menuListDao.findByStoreId(5);
@@ -137,33 +183,6 @@ public class MenuController {
 		model.addAttribute("menu", menu);
 
 		return "UpdateMenu";
-	}
-
-	@GetMapping("/menu/registerView")
-	public String registerView() {
-		return "PostMenu";
-	}
-
-	@PostMapping("/menu/register")
-	public String registerMenu(@RequestParam("name") String name,
-			@RequestParam("price") int price,
-			@RequestParam("description") String description,
-			HttpSession httpsession) {
-
-		try {
-			WillBePostedMenu menu = new WillBePostedMenu();
-			// menu.setId(menuId);
-			menu.setName(name);
-			menu.setPrice(price);
-			menu.setDescription(description);
-			menu.setStoreId(5);
-
-			latestMenuPostService.saveMenu(menu);
-			return "redirect:/menu/list";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "PostMenu";
-		}
 	}
 
 	@PostMapping("/menu/update")

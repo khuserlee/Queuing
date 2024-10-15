@@ -13,13 +13,14 @@ body {
 
 main {
 	flex: 1;
-	padding: 50px 50px;
+	padding: 20px 50px 50px;
 }
 
 .table-container {
-	max-height: 700px; /* 최대 높이 700px */
+	max-height: 600px; /* 최대 높이 700px */
 	overflow-y: auto; /* 수직 스크롤 가능 */
 	width: 100%;
+	border: 1px solid #ccc;
 }
 
 table {
@@ -47,8 +48,8 @@ td img {
 	height: 100px;
 }
 
-td intpu[type="checkbox"] {
-	margin: auto;
+td:last-child {
+	width: 80px;
 }
 
 .buttons {

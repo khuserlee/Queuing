@@ -14,8 +14,11 @@ import lombok.Setter;
 public class Menu {
 
 	private long menuId;
+	private long storeId;
+	
 	private String name;
 	private int price;
 	private String description;
+	private int menuOrder;
 
 }

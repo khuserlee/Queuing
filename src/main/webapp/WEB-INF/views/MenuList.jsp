@@ -12,20 +12,19 @@
 	<h1>메뉴 목록</h1>
 	<table>
 		<tr>
+			<th>선택</th>
 			<th>사진</th>
 			<th>이름</th>
 			<th>가격</th>
 			<th>상세정보</th>
-			<th>선택</th>
 		</tr>
 		<c:forEach var="menu" items="${menuList}">
 			<tr>
+				<td><input type="checkbox" name="selectedMenuId" value="${menu.menuId}" /></td>
 				<td><img src="" alt="Menu Image" /></td>
 				<td>${menu.name}</td>
 				<td>${menu.price}</td>
 				<td>${menu.description}</td>
-				<td><input type="checkbox" name="selectedMenuId"
-					value="${menu.menuId}" /></td>
 			</tr>
 		</c:forEach>
 	</table>

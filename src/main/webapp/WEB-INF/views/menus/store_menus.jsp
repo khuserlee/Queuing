@@ -99,7 +99,7 @@
 		}
 		
 		function registerMenu() {
-			window.location.href = '/queuing/menu/registerView'; // 메뉴 등록 페이지로 이동
+			window.location.href = '/queuing/menu/registerView/' + ${menuListResponse.storeId}; // 메뉴 등록 페이지로 이동
 		}
 	</script>
 </body>

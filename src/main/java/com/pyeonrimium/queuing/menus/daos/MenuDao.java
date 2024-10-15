@@ -1,5 +1,6 @@
 package com.pyeonrimium.queuing.menus.daos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
@@ -35,4 +36,29 @@ public class MenuDao {
 		return results;
 	}
 
+	
+	public boolean insertNewMenu(Menu menu) {
+
+		String sql = "INSERT INTO menus (store_id, name, description, price, menu_order) VALUES (?, ?, ?, ?, ?)";
+		
+		List<String> args = new ArrayList<String>();
+		args.add(String.valueOf(menu.getStoreId()));
+		args.add(menu.getName());
+		args.add(menu.getDescription());
+		args.add(String.valueOf(menu.getPrice()));
+		args.add(String.valueOf(menu.getMenuOrder()));
+
+		int result = -1;
+		
+		try {
+			result = jdbcTemplate.update(sql, args.toArray());
+			
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result > 0;
+	}
 }

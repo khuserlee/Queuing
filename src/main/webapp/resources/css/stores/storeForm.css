@@ -16,7 +16,7 @@ main {
 	padding: 50px 50px;
 	display: flex;
 	justify-content: center;
-	aligh-items: center;
+	align-items: center;
 }
 
 form {

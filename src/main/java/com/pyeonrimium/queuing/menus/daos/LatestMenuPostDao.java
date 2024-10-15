@@ -14,10 +14,10 @@ public class LatestMenuPostDao {
 
 	public void save(WillBePostedMenu menu) {
 
-		String sql = "INSERT INTO menus (name, price, description, store_id) VALUES (?, ?, ?,?)";// values 이거 뭐임?
+		String sql = "INSERT INTO menus (store_id, name, description, price, menu_order) VALUES (?, ?, ?, ?, 0)";// values 이거 뭐임?
 
-		jdbcTemplate.update(sql, menu.getName(), menu.getPrice(), menu.getDescription(), menu.getStoreId());
+		jdbcTemplate.update(sql, menu.getStoreId(), menu.getName(), menu.getDescription(), menu.getPrice());
 
-	} // 메뉴 id는 자동 할당?
+	}
 
 }
