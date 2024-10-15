@@ -51,8 +51,14 @@ input[type="file"] {
 	padding-left: 0;
 }
 
+.buttons {
+	display: flex;
+	width: 100%;
+	justify-content: space-around;
+}
+
 button {
-	width: 30%;
+	width: 45%;
 	padding: 10px 20px;
 	background-color: #007BFF;
 	color: white;

@@ -33,7 +33,8 @@
 					<input type="text" name="description" />
 				</div>
 				<div class="buttons">
-					<button type="submit" id="submit">등록</button>
+					<button type="submit">등록</button>
+					<button type="button" id="cancelBtn">취소</button>
 				</div>
 			</form>
 		</main>
@@ -41,12 +42,12 @@
 		<jsp:include page="../globals/footer.jsp" />
 	</div>
 	<script>
-// 		const submitBtn = document.getElementById("submit");
-// 		submitBtn.addEventListenr('click', submit());
-		
-// 		function submit(event) {
-			
-// 		}
+	const cancelBtn = document.getElementById("cancelBtn");
+	cancelBtn.addEventListener('click', cancel);
+	
+	function cancel() {
+		window.location.href = "/queuing/menu/" + ${storeId};
+	}
 	</script>
 </body>
 </html>
