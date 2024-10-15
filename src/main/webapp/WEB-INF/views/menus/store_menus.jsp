@@ -81,10 +81,13 @@
 			
 			if (selectedMenuId === -1) {
 				alert("수정할 메뉴를 하나만 선택해주세요."); // 경고 메시지
-			} else {
-				const url = '/queuing/menu/updateView/' + selectedMenuId;
-				window.location.href = url; // 메뉴 수정 페이지로 이동
+				return;
 			}
+			
+// 			const url = '/queuing/menu/updateView/' + selectedMenuId;
+			const url = `/queuing/menu/updateView?storeId=${menuListResponse.storeId}&menuId=\${selectedMenuId}`;
+
+			window.location.href = url; // 메뉴 수정 페이지로 이동
 		}
 		
 		function deleteMenu() {

@@ -5,23 +5,23 @@ public class WillBeUpdatedMenu {
 
 //	입력 필드를 등록이랑 똑같이 해야할까? 수정된곳이 3개 다 일수 있잖아.. 
 
-	private int id;
+	private Long id;
 	private String name;
 	private int price;
 	private String description;
 
-	public void Menu(int id, String name, int price, String description) {
+	public void Menu(Long id, String name, int price, String description) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.description = description;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

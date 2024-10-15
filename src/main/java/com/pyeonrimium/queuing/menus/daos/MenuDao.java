@@ -39,7 +39,7 @@ public class MenuDao {
 	
 	public boolean insertNewMenu(Menu menu) {
 
-		String sql = "INSERT INTO menus (store_id, name, description, price, menu_order) VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO menus (store_id, name, description, price, menu_order) VALUES (?, ?, ?, ?, ?);";
 		
 		List<String> args = new ArrayList<String>();
 		args.add(String.valueOf(menu.getStoreId()));
@@ -60,5 +60,30 @@ public class MenuDao {
 		}
 		
 		return result > 0;
+	}
+	
+
+
+	/**
+	 * 메뉴 조회하기
+	 * @param menuId 메뉴 고유 번호
+	 * @return 조회 결과
+	 */
+	public Menu findMenuByMenuId(Long menuId) {
+		
+		String sql = "SELECT * FROM menus WHERE menu_id = ?;";
+		Menu menu = null;
+		
+		try {
+			menu = jdbcTemplate.queryForObject(sql,
+											BeanPropertyRowMapper.newInstance(Menu.class),
+											menuId);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return menu;
 	}
 }

@@ -96,7 +96,7 @@ public class StoreDao {
 	 * @param userId 유저 고유 번호
 	 * @return 조회된 가게 정보
 	 */
-	public Long findStoreByUserId(Long userId) {
+	public Long findStoreIdByUserId(Long userId) {
 		// 등록된 정보가 여러 개일 수 있음
 		// LIMIT 으로 반환할 행의 개수를 제한
 		// 여기서는 1개로 제한

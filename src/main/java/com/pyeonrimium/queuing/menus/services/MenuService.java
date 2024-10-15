@@ -8,6 +8,7 @@ import com.pyeonrimium.queuing.menus.daos.MenuDao;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuListResponse;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationRequest;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationResponse;
+import com.pyeonrimium.queuing.menus.domains.dtos.MenuUpdateFormResponse;
 import com.pyeonrimium.queuing.menus.domains.entities.Menu;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
 
@@ -40,7 +41,7 @@ public class MenuService {
 
 	public MenuRegistrationResponse addNewMenu(Long storeId, Long userId, MenuRegistrationRequest request) {
 		
-		Long id = storeDao.findStoreByUserId(userId);
+		Long id = storeDao.findStoreIdByUserId(userId);
 		if (!storeId.equals(id)) {
 			return MenuRegistrationResponse.builder()
 					.isSuccess(false)
@@ -67,6 +68,40 @@ public class MenuService {
 		
 		return MenuRegistrationResponse.builder()
 				.isSuccess(true)
+				.build();
+	}
+
+	public MenuUpdateFormResponse getMenuForUpdate(Long storeId, Long userId, Long menuId) {
+		
+		// 가게 주인인지 확인
+		Long myStoreId = storeDao.findStoreIdByUserId(userId);
+		
+		if (!storeId.equals(myStoreId)) {
+			return MenuUpdateFormResponse.builder()
+					.isSuccess(false)
+					.message("권한이 없습니다.")
+					.build();
+		}
+		
+		// 메뉴 데이터 조회
+		Menu menu = menuDao.findMenuByMenuId(menuId);
+		
+		if (menu == null) {
+			// 조회 실패
+			return MenuUpdateFormResponse.builder()
+					.isSuccess(false)
+					.message("해당 메뉴를 찾을 수 없습니다.")
+					.build();
+		}
+		
+		// 조회 성공
+		return MenuUpdateFormResponse.builder()
+				.isSuccess(true)
+				.menuId(menu.getMenuId())
+				.storeId(menu.getStoreId())
+				.name(menu.getName())
+				.price(menu.getPrice())
+				.description(menu.getDescription())
 				.build();
 	}
 

@@ -1,7 +1,5 @@
 package com.pyeonrimium.queuing.menus.Controllers;
 
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +10,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.pyeonrimium.queuing.menus.daos.MenuListDao;
-import com.pyeonrimium.queuing.menus.domains.ForUpdateMenu;
 import com.pyeonrimium.queuing.menus.domains.WillBeUpdatedMenu;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuListResponse;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationRequest;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationResponse;
-import com.pyeonrimium.queuing.menus.domains.entities.Menu;
+import com.pyeonrimium.queuing.menus.domains.dtos.MenuUpdateFormResponse;
 import com.pyeonrimium.queuing.menus.services.ForUpdatemenuJspService;
 import com.pyeonrimium.queuing.menus.services.LatestMenuDeleteService;
 import com.pyeonrimium.queuing.menus.services.LatestMenuPostService;
@@ -30,9 +26,7 @@ public class MenuController {
 	
 	@Autowired
 	private MenuService menuService;
-
-	@Autowired
-	private MenuListDao menuListDao;
+	
 
 	@Autowired
 	LatestMenuDeleteService latestMenuDeleteService;
@@ -47,45 +41,9 @@ public class MenuController {
 	private LatestMenuUpdateService latestMenuUpdateService;
 	
 	/**
-	 * 로그인 여부 확인
-	 * @param session
-	 * @return true: 로그인 됨, false: 로그인 안 됨
-	 */
-	private boolean verifyLogin(HttpSession session) {
-		if (session == null) {
-			return false;
-		}
-		
-		if (session.getAttribute("user_id") == null) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * 사용자 권한 확인
-	 * @param session
-	 * @return true: 매니저, false: 일반 사용자
-	 */
-	private boolean verifyManager(HttpSession session) {
-		String role = (String) session.getAttribute("role");
-		
-		if (role == null) {
-			return false;
-		}
-		
-		if (!role.equals("MANAGER")) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
 	 * 가게 메뉴 목록 조회하기
 	 * @param storeId 가게 고유 번호
-	 * @param session
+	 * @param session 세션
 	 * @param model
 	 * @return 메뉴 목록 페이지
 	 */
@@ -111,6 +69,15 @@ public class MenuController {
 		model.addAttribute("menuListResponse", menuListResponse);
 		return "menus/store_menus";
 	}
+
+//	@GetMapping("/menu/list")
+//	public String listMenus(Model model, HttpSession session) {
+//		List<Menu> menuList = menuListDao.findByStoreId(5);
+//
+//		model.addAttribute("menuList", menuList);
+//
+//		return "MenuList"; // 메뉴 목록 화면
+//	}
 
 	
 	/**
@@ -146,47 +113,75 @@ public class MenuController {
 		}
 
 		Long userId = (Long) session.getAttribute("user_id");
+		
+		// 메뉴 정보 저장
 		MenuRegistrationResponse menuRegistrationResponse = menuService.addNewMenu(storeId, userId, menuRegistrationRequest);
 		
-		// 실패했을 때
 		if (!menuRegistrationResponse.isSuccess()) {
+			// 실패
 			System.out.println("Error: " + menuRegistrationResponse.getMessage());
-			return "PostMenu";
+			
+			// 목록 화면으로 돌아가기
+			return "redirect:/menu/" + storeId;
 		}
 		
 		return "redirect:/menu/" + storeId;
 	}
 
-	@GetMapping("/menu/list")
-	public String listMenus(Model model, HttpSession session) {
-		List<Menu> menuList = menuListDao.findByStoreId(5);
+	/**
+	 * 메뉴 수정 화면 불러오기
+	 * @param storeId 가게 고유 번호
+	 * @param menuId 메뉴 고유 번호
+	 * @param session 세션
+	 * @param model
+	 * @return 메뉴 수정 화면
+	 */
+	@GetMapping("/menu/updateView")
+	public String getUpdateView(@RequestParam Long storeId, @RequestParam Long menuId, HttpSession session, Model model) {
+		
+		if (!verifyLogin(session)) {
+			return "redirect:/login/form";
+		}
 
-		model.addAttribute("menuList", menuList);
+		if (!verifyManager(session)) {
+			return "redirect:/stores/" + storeId;
+		}
+		
+		// 기존 코드
+//		ForUpdateMenu menu = forUpdatemenuJspService.ForUpdateMenuJspGetThatWantedMenu(menuId, storeId);
+//		model.addAttribute("menu", menu);
+		
+		Long userId = (Long)session.getAttribute("user_id");
+		
+		// 메뉴 조회
+		MenuUpdateFormResponse menuUpdateFormResponse = menuService.getMenuForUpdate(storeId, userId, menuId);
+		
+		if (!menuUpdateFormResponse.isSuccess()) {
+			// 실패
+			System.out.println(menuUpdateFormResponse.getMessage());
+			
+			// 목록 화면으로 돌아가기
+			return "redirect:/menu/" + storeId;
+		}
 
-		return "MenuList"; // 메뉴 목록 화면
+		model.addAttribute("menuUpdateFormResponse", menuUpdateFormResponse);
+		return "menus/menu_edit";
+		
+//		return "UpdateMenu";
 	}
 
-	@GetMapping("/menu/delete/{menuId}")
-	public String deleteMenu(@PathVariable Long menuId) {
-
-		latestMenuDeleteService.deleteMenu(menuId);
-		return "redirect:/menu/list";
-	}
-
-	@GetMapping("/menu/updateView/{menuId}")
-	public String getUpdateView(@PathVariable Long menuId, Model model, HttpSession session) {
-
-		ForUpdateMenu menu = null;
-
-		menu = forUpdatemenuJspService.ForUpdateMenuJspGetThatWantedMenu(menuId, 5);
-
-		model.addAttribute("menu", menu);
-
-		return "UpdateMenu";
-	}
-
+	/**
+	 * 메뉴 정보 수정
+	 * @param storeId 가게 고유 번호
+	 * @param menuId 메뉴 고유 번호
+	 * @param name 메뉴 이름
+	 * @param price 메뉴 가격
+	 * @param description 메뉴 설명
+	 * @return
+	 */
 	@PostMapping("/menu/update")
-	public String updateMenu(@RequestParam("menuId") int menuId,
+	public String updateMenu(@RequestParam Long storeId,
+			@RequestParam Long menuId,
 			@RequestParam("name") String name,
 			@RequestParam("price") int price,
 			@RequestParam("description") String description) {
@@ -198,11 +193,55 @@ public class MenuController {
 			menu.setDescription(description);
 
 			latestMenuUpdateService.updateMenu(menu);
-			return "redirect:/menu/list";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "UpdateMenu";
 		}
+		
+		return "redirect:/menu/" + storeId;
 	}
 
+	@GetMapping("/menu/delete/{menuId}")
+	public String deleteMenu(@PathVariable Long menuId) {
+
+		latestMenuDeleteService.deleteMenu(menuId);
+		return "redirect:/menu/list";
+	}
+	
+	
+	/**
+	 * 로그인 여부 확인
+	 * @param session 세션
+	 * @return true: 로그인 됨, false: 로그인 안 됨
+	 */
+	private boolean verifyLogin(HttpSession session) {
+		if (session == null) {
+			return false;
+		}
+		
+		if (session.getAttribute("user_id") == null) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * 사용자 권한 확인
+	 * @param session 세션
+	 * @return true: 매니저, false: 일반 사용자
+	 */
+	private boolean verifyManager(HttpSession session) {
+		String role = (String) session.getAttribute("role");
+		
+		if (role == null) {
+			return false;
+		}
+		
+		if (!role.equals("MANAGER")) {
+			return false;
+		}
+		
+		return true;
+	}
 }
