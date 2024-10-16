@@ -89,7 +89,7 @@
 		}
 		
 		function editMenu() {
-			console.log("메뉴 수정");
+			window.location.href = `/queuing/menu/${storeFindResponse.storeId}`;
 		}
 		
 		function createReservation() {

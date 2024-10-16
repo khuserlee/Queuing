@@ -133,7 +133,7 @@ public class StoreService {
 	 * @return 가게 고유 번호
 	 */
 	public Long getMyStoreId(Long userId) {
-		Long storeId = storeDao.findStoreByUserId(userId);
+		Long storeId = storeDao.findStoreIdByUserId(userId);
 		return storeId;
 	}
 
