@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -217,11 +219,24 @@ public class UserController {
 	    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("/queuing/home");
 	    }
 	    
-	    // 업데이트 후 세션을 새롭게 설정
 	    ProfileUpdateResponse updatedProfile = userService.getProfileUpdateResponse(profileUpdateRequest.getUserId());
 	    session.setAttribute("loginedProfileUpdateRequest", updatedProfile);
-	    session.setMaxInactiveInterval(60 * 30);  // 세션 시간 설정
+	    session.setMaxInactiveInterval(60 * 30);
 	    
 	    return ResponseEntity.ok("/queuing/home");
 	}
+	
+	// 회원탈퇴
+	@DeleteMapping("/users/profile")
+	@ResponseBody
+	public ResponseEntity<?> deleteProfile(HttpSession session){
+		
+		Long userId = (Long) session.getAttribute("userId");
+		
+		if(userId == null) {
+			return ResponseEntity.status(401).body("로그인이 필요합니다.");
+		}
+		
+	}
+	
 }

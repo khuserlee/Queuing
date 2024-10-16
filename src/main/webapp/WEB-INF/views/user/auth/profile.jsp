@@ -17,13 +17,16 @@
 			<div class="sidebar">
 				<ul>
 					<li>
-						<button type="button" class="sidebar-btn" onclick="showSection('reservation')">예약 내역 확인</button>
+						<button type="button" class="sidebar-btn"
+							onclick="showSection('reservation')">예약 내역 확인</button>
 					</li>
 					<li>
-						<button type="button" class="sidebar-btn" onclick="showSection('edit-info')">회원정보 수정</button>
+						<button type="button" class="sidebar-btn"
+							onclick="showSection('edit-info')">회원정보 수정</button>
 					</li>
 					<li>
-						<button type="button" class="sidebar-btn" onclick="showSection('review-management')">리뷰 관리</button>
+						<button type="button" class="sidebar-btn"
+							onclick="showSection('delete-account')">회원탈퇴</button>
 					</li>
 				</ul>
 			</div>
@@ -54,9 +57,15 @@
 						<button type="submit" id="submitBtn">수정하기</button>
 					</form>
 				</div>
-				<div id="review-management" class="section" style="display: none;">
-					<h2>리뷰 관리</h2>
-					<p>여기에 리뷰 목록을 표시합니다.</p>
+				<div id="delete-account" class="section" style="display: none;">
+					<h2>회원탈퇴</h2>
+					<div class="profile-actions">
+						<form action="${pageContext.request.contextPath}/users/profile"
+							method="post" onsubmit="return confirm('정말로 탈퇴하시겠습니까?');">
+							<input type="hidden" name="_method" value="DELETE" />
+							<button type="submit" class="delete-button">회원탈퇴</button>
+						</form>
+					</div>
 				</div>
 			</div>
 		</main>
