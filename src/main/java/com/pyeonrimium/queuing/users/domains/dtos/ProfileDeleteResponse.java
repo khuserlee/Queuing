@@ -11,11 +11,9 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileUpdateRequest {
+public class ProfileDeleteResponse {
 	
-	private long userId;
-	private String id;
-	private String name;
-	private String address;
-	private String phone;
+	private boolean isSuccess;
+	private String message;
+	private String redirectUrl;
 }

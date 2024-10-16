@@ -3,13 +3,12 @@ package com.pyeonrimium.queuing.users.controllers;
 import java.security.SecureRandom;
 import java.util.Date;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
+import com.pyeonrimium.queuing.users.domains.dtos.ProfileDeleteResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
@@ -246,6 +245,24 @@ public class UserService {
 				.name(userEntity.getName())
 				.address(userEntity.getAddress())
 				.phone(userEntity.getPhone())
+				.build();
+	}
+	
+	// 회원정보 삭제 (회원탈퇴)
+	public ProfileDeleteResponse deleteProfile(Long userId) {
+		
+		UserEntity userEntity = userDao.findUserByUserId(userId);
+		
+		boolean isSuccess = userDao.deleteProfile(userEntity);
+		if(!isSuccess) {
+			return ProfileDeleteResponse.builder()
+					.isSuccess(false)
+					.message("회원정보를 삭제할 수 없습니다.")
+					.build();
+		}
+		return ProfileDeleteResponse.builder()
+				.isSuccess(true)
+				.message("탈퇴가 완료되었습니다.")
 				.build();
 	}
 }
