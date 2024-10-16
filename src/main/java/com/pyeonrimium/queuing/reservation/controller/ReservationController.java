@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.pyeonrimium.queuing.reservation.Service.ReservationService;
+import com.pyeonrimium.queuing.reservation.domains.ReservationDeleteResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
 import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
@@ -47,7 +49,7 @@ public class ReservationController {
 		String storeName = reservationService.getStoreName(storeId);
 
 		if (storeName == null) {
-			// TODO: 조회 실패 처리
+			//  조회 실패 처리
 			System.out.println("[ReservationController] 가게 이름 조회 실패");
 		}
 
@@ -72,7 +74,7 @@ public class ReservationController {
 		return userId;
 	}
 //		
-	// TODO: 예약 신청(C)
+	//  예약 신청(C)
 
 	@PostMapping("/reservations")
 	public String createReservation(ReservationRequest reservationRequest, Model model, HttpSession session) {
@@ -132,7 +134,7 @@ public class ReservationController {
 	}
 
 //	
-//	// TODO: 예약 수정(U)
+//	//  예약 수정(U)
 //	@PatchMapping("/reservations")
 //	public String updateReservations(ReservationUpdateReuqest request, Model model) {
 //		System.out.println("[ReservationController] updateReservations");
@@ -142,7 +144,7 @@ public class ReservationController {
 //		return "예약 수정 페이지";
 //	}
 
-	// TODO: 예약 수정 페이지 불러오기 (예약된 정보) -> 폼으로 원래 있던 정보 보내기
+	//  예약 수정 페이지 불러오기 (예약된 정보) -> 폼으로 원래 있던 정보 보내기
 	@GetMapping("/reservations/form/{reservationId}/update")
 	public String getReservationUpdateForm(@PathVariable Long reservationId, Model model) {
 
@@ -155,7 +157,7 @@ public class ReservationController {
 		return "/reservation/reservation_update";
 	}
 
-	// TODO: 예약 수정 결과(성공, 실패)
+	//  예약 수정 결과(성공, 실패)
 	@PatchMapping("/reservations")
 	@ResponseBody
 	public ResponseEntity<?> updateReservations(@RequestBody ReservationUpdateRequest request) {
@@ -175,11 +177,28 @@ public class ReservationController {
 		return ResponseEntity.ok(response);
 	}
 	
-	//TODO : 예약 수정 한 후 신청
+	// 예약 수정 한 후 신청
 	// TODO: 예약 삭제(D)
-	@DeleteMapping("/reservations")
-	public String deleteReservations() {
-		System.out.println("[ReservationController] 예약 삭제");
-		return null;
+//	@DeleteMapping("/reservations/{reservationNumber}")
+//	public String deleteReservation(@PathVariable String ReservationNumber, Model model) {
+//		System.out.println("[ReservationController] 예약 삭제");
+//		ReservationEntity deleteReservation = reservationService.deleteReservation(ReservationNumber);
+//		model.addAttribute("deleteReservation", deleteReservation);
+//		return "reservations/pageNo=1";
+//	}
+	
+
+	@DeleteMapping("/reservations/{reservationNumber}")
+	@ResponseBody
+	public ResponseEntity<?> deleteReservation(@PathVariable String reservationNumber, HttpSession session, Model model) {
+		ReservationDeleteResponse response = reservationService.deleteReservation(reservationNumber);
+		
+		return ResponseEntity.status(response.getHttpStatus()).body(response);
 	}
+	
+	
+	// 뷰 리졸버 -> "new_form.jsp"를 찾아서 html 파일로 전환
+	// ↓↓
+	// 서블릿(servlet) -> 클라이언트한테 전달
+	//  - 응답 객체(ResponseEntity)에 html 파일을 넣어서 응답 객체를 클라이언트한테 보냄
 }

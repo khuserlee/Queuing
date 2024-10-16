@@ -163,5 +163,23 @@ public class ReservationDao {
 		return reservationEntity;
 	}
 
+	public boolean deleteReservationByNumber(String reservationNumber) {
 
+		String sql = "DELETE FROM reservations where reservation_number = ?;";
+		int deletedCount = -1;
+		
+		try {
+			deletedCount = jdbcTemplate.update(sql, reservationNumber);
+			
+		} catch (DataAccessException e) {
+		    System.out.println(e);
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+		
+		boolean isSuccess = deletedCount > 0;
+		return isSuccess;
+	}
 }
+
+

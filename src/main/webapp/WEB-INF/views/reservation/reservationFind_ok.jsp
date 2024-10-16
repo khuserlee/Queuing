@@ -93,8 +93,7 @@ button:hover {
 							<td>
 								<button onclick="location.href='http://localhost:8090/queuing/reservations/form/${reservation.reservationId}/update'">수정</button>
 
-								<button
-									onclick="deleteReservation(${reservation.reservationNumber})">삭제</button>
+								<button onclick="deleteReservation(${reservation.reservationNumber})">삭제</button>
 							</td>
 						</tr>
 					</c:forEach>
@@ -108,11 +107,33 @@ button:hover {
 		</div>
 	</div>
 	<script>
-	function editReservation(reservationId) {
-		window.location.href("http://localhost:8090/queuing/reservations")
+		function print() {
+			console.log("클릭");
 		}
-		function deleteReservation(reservationId) {
+		function editReservation(reservationId) {
+			window.location.href("http://localhost:8090/queuing/reservations")
+		}
+	
+		function deleteReservation(reservationNumber) {
+			const url = "/queuing/reservations/" + reservationNumber;
 			
+			fetch(url, {
+				method: "DELETE",	// 요청 메서드 지정
+			})
+			.then(response => { // 응답 처리
+				if (!response.ok) {
+					throw new Error("알 수 없는 오류가 발생했습니다");
+				}
+				// {httpStatus: ok, message: "신창섭", redirectUrl: "https://www.naver.com"}
+				return response.json(); //  json형식으로 변환
+			})
+			.then(data => {
+				alert(data.message);
+				window.location.href = data.redirectUrl;
+			})
+			.catch(error => {
+				alert(error);
+			})
 		}
 
 		function prevPage() {

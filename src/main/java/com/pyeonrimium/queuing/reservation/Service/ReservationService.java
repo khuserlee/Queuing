@@ -6,11 +6,13 @@ import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.reservation.daos.ReservationDao;
 import com.pyeonrimium.queuing.reservation.daos.StoreDao;
 import com.pyeonrimium.queuing.reservation.domains.MyReservationResponse;
+import com.pyeonrimium.queuing.reservation.domains.ReservationDeleteResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
 import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
@@ -174,14 +176,32 @@ public class ReservationService {
 
 
 		public ReservationEntity findReservation(Long reservationId) {
-			//TODO:DAO로 reservationId를 통해 예약 호출
+		//DAO로 reservationId를 통해 예약 호출
 			return reservationDao.getReservationsByReservationId(reservationId);
 		}
 
 		// TODO: 예약 삭제(D)
-//		public List<reservationRequest> listupRes(){
-//		System.out.println("[ReservationService] listipRes()");
-//		
-//		return ReservationDao.selectRes();
-//	}
+		
+//		public ReservationEntity deleteReservation(String reservationNumber) {
+//			return reservationDao.deleteReservationByNumber(reservationNumber);
+//		}
+		
+		public ReservationDeleteResponse deleteReservation(String reservationNumber) {
+			
+			// 메뉴 삭제
+			boolean isSuccess = reservationDao.deleteReservationByNumber(reservationNumber);
+			
+			if (!isSuccess) {
+				return ReservationDeleteResponse.builder()
+						.httpStatus(HttpStatus.BAD_REQUEST)
+						.message("메뉴를 삭제할 수 없습니다.")
+						.build();
+			}
+
+			return ReservationDeleteResponse.builder()
+					.httpStatus(HttpStatus.OK)
+					.message("메뉴를 삭제했습니다.")
+					.redirectUrl("/queuing/reservations/pageNo=1")
+					.build();
+		}
 }
