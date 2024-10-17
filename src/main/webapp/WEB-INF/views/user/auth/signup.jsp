@@ -38,8 +38,10 @@
 					</div>
 					<div class="input-group">
 						<label for="address">주소</label>
-						<input type="text" id="address" name="address" readonly placeholder="주소" required>
-						<button type="button" id="addrBtn" onclick="execDaumPostcode()">주소 검색</button>
+						<div class="addr-container">
+							<input type="text" id="address" name="address" readonly placeholder="주소" required>
+							<button type="button" id="addrBtn" onclick="execDaumPostcode()">주소 검색</button>
+						</div>
 					</div>
 					<div class="input-group">
 						<label for="phone">전화번호</label>
@@ -101,6 +103,13 @@
 					alert("회원가입 양식을 확인해주세요.");
 					return false;
 				}
+				
+				if (value != value.trim()) {
+					alert("회원가입 양식을 확인해주세요.");
+					return false;
+				}
+				
+				return true;
 			}
 			
 			// 전화번호 검사

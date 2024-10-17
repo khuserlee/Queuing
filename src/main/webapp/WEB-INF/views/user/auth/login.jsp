@@ -15,20 +15,21 @@
 	
 	<main>
 		<div class="login-container">
+			<h2>로그인</h2>
 			<form action="<c:url value='/login' />" name="login" method="POST">
 				<div class="input-group">
-					<label for="ID">아이디 :</label>
+					<label for="ID">아이디</label>
 					<input type="text" id="id" name="id" required>
 				</div>
 				<div class="input-group">
-					<label for="password">비밀번호 :</label>
+					<label for="password">비밀번호</label>
 					<input type="password" id="password" name="password" required>
 				</div>
 				<button type="submit">로그인</button>
 			</form>
 			
 			<div class="links">
-            <a href="<c:url value='/users/find/form'/>">ID/PW 찾기</a>
+				<a href="<c:url value='/users/find/form'/>">ID/PW 찾기</a>
 			</div>
 		</div>
 	</main>
