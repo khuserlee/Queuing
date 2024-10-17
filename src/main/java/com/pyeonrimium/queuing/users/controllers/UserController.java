@@ -231,31 +231,40 @@ public class UserController {
 	}
 
 	// 회원탈퇴
-    @DeleteMapping("/users/profile")
-    public ResponseEntity<ProfileDeleteResponse> deleteProfile(HttpSession session) {
-        System.out.println("[UserController] deleteProfile()");
-        
-    	// 세션에서 로그인된 사용자의 ID 가져오기
-        Long userId = (Long) session.getAttribute("user_id");
+	@DeleteMapping("/users/profile")
+	@ResponseBody
+	public ResponseEntity<ProfileDeleteResponse> deleteProfile(HttpSession session) {
+		
+		if (session == null) {
+			// 로그인되어 있지 않은 경우
+			return ResponseEntity.status(401)
+				.body(ProfileDeleteResponse.builder()
+						.isSuccess(false)
+						.message("로그인이 필요합니다.")
+						.build());
+		}
 
-        if (userId == null) {
-            // 로그인되어 있지 않은 경우
-            return ResponseEntity.status(401)
-                    .body(ProfileDeleteResponse.builder()
-                    .isSuccess(false)
-                    .message("로그인이 필요합니다.")
-                    .build());
-        }
+		// 세션에서 로그인된 사용자의 ID 가져오기
+		Long userId = (Long) session.getAttribute("user_id");
 
-        // 회원탈퇴 로직 호출
-        ProfileDeleteResponse response = userService.deleteProfile(userId);
+		if (userId == null) {
+			// 로그인되어 있지 않은 경우
+			return ResponseEntity.status(401)
+					.body(ProfileDeleteResponse.builder()
+							.isSuccess(false)
+							.message("로그인이 필요합니다.")
+							.build());
+		}
 
-        if (response.isSuccess()) {
-            // 세션 무효화
-            session.invalidate();
-            response.setRedirectUrl("/queuing/home");
-        }
+		// 회원탈퇴 로직 호출
+		ProfileDeleteResponse response = userService.deleteProfile(userId);
 
-        return ResponseEntity.ok(response);
-    }
+		if (response.isSuccess()) {
+			// 세션 무효화
+			session.invalidate();
+			response.setRedirectUrl("/queuing/home");
+		}
+
+		return ResponseEntity.ok(response);
+	}
 }
