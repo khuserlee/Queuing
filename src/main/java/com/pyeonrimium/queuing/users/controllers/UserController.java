@@ -75,20 +75,25 @@ public class UserController {
 	 * @return 로그인 결과 화면
 	 */
 	@PostMapping("/login")
-	public String login(LoginRequest loginRequest, Model model, HttpSession session) {
+	@ResponseBody
+	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
 		LoginResponse loginResponse = userService.login(loginRequest);
-		model.addAttribute("loginResponse", loginResponse);
 
-		// 세션 정보 입력
-		if (loginResponse.isSuccess()) {
-			session.setAttribute("user_id", loginResponse.getUserId());
-			session.setAttribute("role", loginResponse.getRole());
-
-			// 유효기간 설정
-			session.setMaxInactiveInterval(60 * 30);
+		if (!loginResponse.isSuccess()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(loginResponse);
 		}
+		
+		// 세션 정보 입력
+		session.setAttribute("user_id", loginResponse.getUserId());
+		session.setAttribute("role", loginResponse.getRole());
+		
+		// 유효기간 설정
+		session.setMaxInactiveInterval(60 * 30);
 
-		return "user/auth/login_result";
+		loginResponse.setUserId(0);
+		loginResponse.setRole(null);
+		
+		return ResponseEntity.ok(loginResponse);
 	}
 
 	/**

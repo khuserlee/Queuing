@@ -22,11 +22,11 @@
 				<form action="<c:url value='/signup' />" name="signup" id="signup" method="POST">
 					<div class="input-group">
 						<label for="id">아이디</label>
-						<input type="text" id="id" name="id" required>
+						<input type="text" id="id" name="id" placeholder="영어 대소문자, 숫자만 가능" required>
 					</div>
 					<div class="input-group">
 						<label for="password">비밀번호</label>
-						<input type="password" id="password" name="password" required>
+						<input type="password" id="password" name="password" placeholder="영어 대소문자, 숫자, 특수문자 @$!%*?& 만 가능" required>
 					</div>
 					<div class="input-group">
 						<label for="confirmPassword">비밀번호 확인</label>
