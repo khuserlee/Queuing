@@ -1,22 +1,22 @@
 package com.pyeonrimium.queuing.users.controllers;
 
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.pyeonrimium.queuing.users.domains.dtos.CheckPasswordRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.CheckPasswordResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
+import com.pyeonrimium.queuing.users.domains.dtos.ProfileDeleteResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
@@ -29,6 +29,7 @@ public class UserController {
 
 	/**
 	 * 회원가입 화면
+	 * 
 	 * @return 회원가입 화면 표시
 	 */
 	@GetMapping("/signup/form")
@@ -38,6 +39,7 @@ public class UserController {
 
 	/**
 	 * 회원가입 확인
+	 * 
 	 * @param signupRequest 회원가입 양식
 	 * @param model
 	 * @return 회원가입 결과 화면
@@ -52,6 +54,7 @@ public class UserController {
 
 	/**
 	 * 로그인 화면
+	 * 
 	 * @return 로그인 화면 표시
 	 */
 	@GetMapping("/login/form")
@@ -61,6 +64,7 @@ public class UserController {
 
 	/**
 	 * 로그인 화면
+	 * 
 	 * @param loginRequest 로그인 양식
 	 * @param model
 	 * @param session
@@ -70,30 +74,32 @@ public class UserController {
 	public String login(LoginRequest loginRequest, Model model, HttpSession session) {
 		LoginResponse loginResponse = userService.login(loginRequest);
 		model.addAttribute("loginResponse", loginResponse);
-		
+
 		// 세션 정보 입력
 		if (loginResponse.isSuccess()) {
 			session.setAttribute("user_id", loginResponse.getUserId());
 			session.setAttribute("role", loginResponse.getRole());
-			
+
 			// 유효기간 설정
 			session.setMaxInactiveInterval(60 * 30);
 		}
-		
+
 		return "user/auth/login_result";
 	}
-	
+
 	/**
 	 * 아이디, 비밀번호 찾기 화면
+	 * 
 	 * @return 회원정보 찾기 화면 표시
 	 */
 	@GetMapping("/users/find/form")
 	public String findForm() {
 		return "/user/auth/find_userInfo";
 	}
-	
+
 	/**
 	 * 아이디 찾기
+	 * 
 	 * @param find_idRequest
 	 * @param model
 	 * @return
@@ -102,19 +108,19 @@ public class UserController {
 	public String find_idConfirm(Find_idRequest find_idRequest, Model model) {
 
 		String foundId = userService.findIdConfirm(find_idRequest);
-		
-		if(foundId == null) {
+
+		if (foundId == null) {
 			return "user/auth/find_id_ng";
 		}
-		
+
 		model.addAttribute("foundId", foundId);
-		
+
 		return "user/auth/find_id_ok";
 	}
 
-	
 	/**
 	 * 비밀번호 찾기
+	 * 
 	 * @param find_passwordRequest
 	 * @param model
 	 * @return
@@ -123,18 +129,19 @@ public class UserController {
 	public String find_passwordConfirm(Find_passwordRequest find_passwordRequest, Model model) {
 
 		String newPassword = userService.findPasswordConfirm(find_passwordRequest);
-		
+
 		if (newPassword == null) {
 			return "user/auth/find_password_ng";
 		}
-		
+
 		model.addAttribute("newPassword", newPassword);
-		
+
 		return "user/auth/find_password_ok";
 	}
-	
+
 	/**
 	 * 로그아웃
+	 * 
 	 * @param session
 	 * @return 홈 화면
 	 */
@@ -143,63 +150,58 @@ public class UserController {
 		if (session != null) {
 			session.invalidate();
 		}
-		
+
 		return "redirect:/";
 	}
-	
+
 	/**
 	 * 프로필(회원정보) 화면
+	 * 
 	 * @param session
 	 * @return 로그인 세션 확인 시 마이페이지 화면 표시
 	 */
 	@GetMapping("/users/profile")
 	public String profileForm(HttpSession session, Model model) {
-		
+
 		if (session == null) {
 			return "redirect:/login/form";
 		}
-		
+
 		Long userId = (Long) session.getAttribute("user_id");
-		if(userId == null) {
+		if (userId == null) {
 			return "redirect:/login/form";
 		}
-		
+
 		ProfileUpdateResponse profileUpdateResponse = userService.getProfileUpdateResponse(userId);
-	    model.addAttribute("profileUpdateResponse", profileUpdateResponse);
-		
+		model.addAttribute("profileUpdateResponse", profileUpdateResponse);
+
 		return "user/auth/profile";
 	}
-	
-	
+
 	@PostMapping("/users/pwd/check")
 	@ResponseBody
 	public ResponseEntity<?> checkPassword(@RequestBody CheckPasswordRequest request, HttpSession session) {
-		
+
 		if (session == null) {
-			CheckPasswordResponse response = CheckPasswordResponse.builder()
-					.isSuccess(false)
-					.message("비밀번호가 일치하지 않습니다.")
-					.redirectUrl("/queuing/login/form")
-					.build();
-			
+			CheckPasswordResponse response = CheckPasswordResponse.builder().isSuccess(false)
+					.message("비밀번호가 일치하지 않습니다.").redirectUrl("/queuing/login/form").build();
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
-		
+
 		Long userId = (Long) session.getAttribute("user_id");
 		boolean isValid = userService.comparePassword(userId, request.getPassword());
-		
+
 		if (!isValid) {
-			CheckPasswordResponse response = CheckPasswordResponse.builder()
-					.isSuccess(false)
-					.message("비밀번호가 일치하지 않습니다.")
-					.build();
-			
+			CheckPasswordResponse response = CheckPasswordResponse.builder().isSuccess(false)
+					.message("비밀번호가 일치하지 않습니다.").build();
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 
 		return ResponseEntity.ok(CheckPasswordResponse.builder().isSuccess(true).build());
 	}
-	
+
 	/**
 	 * 프로필(회원정보) 수정
 	 * @param profileUpdateRequest
@@ -217,11 +219,39 @@ public class UserController {
 	    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("/queuing/home");
 	    }
 	    
-	    // 업데이트 후 세션을 새롭게 설정
 	    ProfileUpdateResponse updatedProfile = userService.getProfileUpdateResponse(profileUpdateRequest.getUserId());
 	    session.setAttribute("loginedProfileUpdateRequest", updatedProfile);
-	    session.setMaxInactiveInterval(60 * 30);  // 세션 시간 설정
+	    session.setMaxInactiveInterval(60 * 30);
 	    
 	    return ResponseEntity.ok("/queuing/home");
 	}
+
+	// 회원탈퇴
+    @DeleteMapping("/users/profile")
+    public ResponseEntity<ProfileDeleteResponse> deleteProfile(HttpSession session) {
+        System.out.println("[UserController] deleteProfile()");
+        
+    	// 세션에서 로그인된 사용자의 ID 가져오기
+        Long userId = (Long) session.getAttribute("user_id");
+
+        if (userId == null) {
+            // 로그인되어 있지 않은 경우
+            return ResponseEntity.status(401)
+                    .body(ProfileDeleteResponse.builder()
+                    .isSuccess(false)
+                    .message("로그인이 필요합니다.")
+                    .build());
+        }
+
+        // 회원탈퇴 로직 호출
+        ProfileDeleteResponse response = userService.deleteProfile(userId);
+
+        if (response.isSuccess()) {
+            // 세션 무효화
+            session.invalidate();
+            response.setRedirectUrl("/queuing/home");
+        }
+
+        return ResponseEntity.ok(response);
+    }
 }

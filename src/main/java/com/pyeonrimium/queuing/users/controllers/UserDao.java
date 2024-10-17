@@ -10,9 +10,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
+import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
 
 @Component
 public class UserDao {
@@ -41,7 +41,6 @@ public class UserDao {
 			result = jdbcTemplate.update(sql,
 					signupRequest.getId(),
 					signupRequest.getPassword(),
-					// passwordencoder 필요한지?
 					signupRequest.getName(),
 					signupRequest.getAddress(),
 					signupRequest.getPhone());
@@ -169,7 +168,8 @@ public class UserDao {
 		
 		return result;
 	}
-
+	
+	// User_id로 유저 조회
 	public UserEntity findUserByUserId(Long userId) {
 		String sql = "SELECT * FROM users WHERE user_id = ?;";
 		UserEntity userEntity = null;
@@ -208,5 +208,21 @@ public class UserDao {
 		}
 		
 		return result;
+	}
+
+	// 회원정보 삭제 (회원탈퇴)
+	public boolean deleteProfile(UserEntity userEntity) {
+		
+		String sql = "DELETE FROM users WHERE user_id = ?";
+		int result = -1;
+		
+		try {
+			result = jdbcTemplate.update(sql, userEntity.getUserId());
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result > 0;
 	}
 }
