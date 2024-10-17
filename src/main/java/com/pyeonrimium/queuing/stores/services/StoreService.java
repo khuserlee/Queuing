@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
-import com.pyeonrimium.queuing.stores.domains.dtos.StoreDeleteRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreDeleteResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditResponse;
@@ -12,8 +11,7 @@ import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
-import com.pyeonrimium.queuing.users.controllers.UserService;
-import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
+import com.pyeonrimium.queuing.users.services.UserService;
 
 @Service
 public class StoreService {

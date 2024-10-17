@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.pyeonrimium.queuing.stores.domains.dtos.StoreDeleteRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreDeleteResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditResponse;

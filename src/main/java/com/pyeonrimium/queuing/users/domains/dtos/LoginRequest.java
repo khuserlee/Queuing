@@ -1,4 +1,4 @@
-package com.pyeonrimium.queuing.users.controllers;
+package com.pyeonrimium.queuing.users.domains.dtos;
 
 import lombok.Getter;
 import lombok.Setter;

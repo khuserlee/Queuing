@@ -5,13 +5,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>회원가입</title>
-<script
-	src="http://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<link href="<c:url value='/resources/css/signupStyles.css' />"
-	rel="stylesheet" type="text/css">
-<jsp:include page="/resources/js/signupScript_js.jsp" />
+	<meta charset="UTF-8">
+	<title>회원가입</title>
+	<link href="<c:url value='/resources/css/signupStyles.css' />" rel="stylesheet" type="text/css">
+	<jsp:include page="/resources/js/signupScript_js.jsp" />
+	<script src="http://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body>
 
@@ -23,30 +21,33 @@
 				<h2>회원가입</h2>
 				<form action="<c:url value='/signup' />" name="signup" method="POST">
 					<div class="input-group">
-						<label for="id">아이디</label> <input type="text" id="id" name="id"
-							required>
+						<label for="id">아이디</label>
+						<input type="text" id="id" name="id" required>
 					</div>
 					<div class="input-group">
-						<label for="password">비밀번호</label> <input type="password"
-							id="password" name="password" required>
+						<label for="password">비밀번호</label>
+						<input type="password" id="password" name="password" required>
 					</div>
 					<div class="input-group">
-						<label for="confirmPassword">비밀번호 확인</label> <input
-							type="password" id="confirmPassword" name="confirmPassword"
-							required>
-					</div>
-					<label for="name">이름</label> <input type="text" id="name"
-						name="name" required>
-					<div>
-						<label for="address">주소</label> <input type="text" id="address"
-							name="address" readonly placeholder="주소">
-						<button type="button" onclick="execDaumPostcode()">주소 검색</button>
+						<label for="confirmPassword">비밀번호 확인</label>
+						<input type="password" id="confirmPassword" name="confirmPassword" required>
 					</div>
 					<div class="input-group">
-						<label for="phone">전화번호</label> <input type="text" id="phone"
-							name="phone" required>
+						<label for="name">이름</label>
+						<input type="text" id="name" name="name" required>
 					</div>
-					<button type="submit">회원가입</button>
+					<div class="input-group">
+						<label for="address">주소</label>
+						<input type="text" id="address" name="address" readonly placeholder="주소" required>
+						<button type="button" id="addrBtn" onclick="execDaumPostcode()">주소 검색</button>
+					</div>
+					<div class="input-group">
+						<label for="phone">전화번호</label>
+						<input type="text" id="phone" name="phone" required>
+					</div>
+					<div class="buttons">
+						<button type="submit" id="submitBtn">회원가입</button>
+					</div>
 				</form>
 			</div>
 		</main>
@@ -85,7 +86,7 @@
 					document.getElementById('address').value = fullAddr; // 주소
 
 					// 상세 주소 입력란에 포커스
-					document.getElementById('detailAddress').focus();
+// 					document.getElementById('detailAddress').focus();
 				}
 			}).open();
 		}
