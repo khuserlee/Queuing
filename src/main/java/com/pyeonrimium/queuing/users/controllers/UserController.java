@@ -49,11 +49,11 @@ public class UserController {
 	 * @return 회원가입 결과 화면
 	 */
 	@PostMapping("/signup")
-	public String signup(SignupRequest signupRequest, Model model) {
+	@ResponseBody
+	public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
 		SignupResponse signupResponse = userService.signup(signupRequest);
-		model.addAttribute("signupResponse", signupResponse);
-
-		return "user/auth/signup_result";
+		
+		return ResponseEntity.status(signupResponse.getHttpStatus()).body(signupResponse);
 	}
 
 	/**

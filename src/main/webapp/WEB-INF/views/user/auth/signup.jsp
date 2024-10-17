@@ -19,7 +19,7 @@
 		<main>
 			<div class="signup-container">
 				<h2>회원가입</h2>
-				<form action="<c:url value='/signup' />" name="signup" method="POST">
+				<form action="<c:url value='/signup' />" name="signup" id="signup" method="POST">
 					<div class="input-group">
 						<label for="id">아이디</label>
 						<input type="text" id="id" name="id" required>
@@ -43,7 +43,7 @@
 					</div>
 					<div class="input-group">
 						<label for="phone">전화번호</label>
-						<input type="text" id="phone" name="phone" required>
+						<input type="text" id="phone" name="phone" placeholder="- 포함" required>
 					</div>
 					<div class="buttons">
 						<button type="submit" id="submitBtn">회원가입</button>
@@ -55,6 +55,84 @@
 		<jsp:include page="../../globals/footer.jsp" />
 	</div>
 	<script>
+		const submitBtn = document.getElementById("submitBtn");
+		submitBtn.addEventListener('click', submit);
+	
+		function submit(event) {
+			event.preventDefault();
+			
+			var formData = getFormData();
+			const isValid = validateFormData(formData);
+			
+			if (!isValid) {
+				return;
+			}
+			
+			fetch('/queuing/signup', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(formData)
+			})
+			.then(response => {
+				return response.json();
+			})
+			.then(data => {
+				alert(data.message);
+				
+				// 성공 시 로그인 화면으로 이동
+				if (data.httpStatus === "OK") {
+					window.location.href = data.redirectUrl;
+				}
+			})
+			.catch(error => {
+				alert(error);
+			});
+		}
+	
+		// 유효성 검사
+		function validateFormData(formData) {
+			// required 속성 검사
+			for (const key of Object.keys(formData)) {
+				const value = formData[key];
+				
+				if (!value || value.trim().length === 0) {
+					alert("회원가입 양식을 확인해주세요.");
+					return false;
+				}
+			}
+			
+			// 전화번호 검사
+			const phone = formData['phone'];
+			const phoneRegex = /^(01[016789]-\d{3,4}-\d{4}|02-\d{3,4}-\d{4}|\d{2,3}\d{3,4}\d{4})$/;
+			
+			if (!phoneRegex.test(phone)) {
+				alert("전화번호 양식을 확인해주세요.");
+				return false;
+			}
+			
+			if (formData['password'] !== formData['confirmPassword']) {
+				alert("비밀번호가 일치하지 않습니다.");
+				return false;
+			}
+			
+			return true;
+		}
+	
+		// 폼 데이터 가져오기
+		function getFormData() {
+			const form = document.getElementById('signup');
+			const formData = new FormData(form);
+			var result = {};
+			
+			formData.forEach((value, key) => {
+				result[key] = value;
+			});
+			
+			return result;
+		}
+	
 		function execDaumPostcode() {
 			new daum.Postcode({
 				oncomplete : function(data) {

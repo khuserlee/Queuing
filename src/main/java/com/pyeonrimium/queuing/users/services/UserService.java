@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.users.daos.UserDao;
@@ -38,13 +39,23 @@ public class UserService {
 	 * @return 회원가입 결과
 	 */
 	public SignupResponse signup(SignupRequest signupRequest) {
+		
+		// ID 유효성 검사
+		String id = signupRequest.getId();
+		
+		if (id == null || id.trim().length() == 0) {
+			return SignupResponse.builder()
+					.httpStatus(HttpStatus.BAD_REQUEST)	// 400 에러
+					.message("회원가입 양식을 확인해주세요.")
+					.build();
+		}
 
-		boolean isRegistered = userDao.isUserMember(signupRequest.getId());
+		boolean isRegistered = userDao.isUserMember(id);
 		
 		if (isRegistered) {
 			return SignupResponse.builder()
-					.isSuccess(false)
-					.message("회원가입에 실패했습니다.")
+					.httpStatus(HttpStatus.CONFLICT)	// 409 에러
+					.message("사용할 수 없는 아이디입니다.")
 					.build();
 		}
 		
@@ -52,14 +63,15 @@ public class UserService {
 		
 		if (result <= 0) {
 			return SignupResponse.builder()
-					.isSuccess(false)
+					.httpStatus(HttpStatus.BAD_REQUEST)	// 400 에러
 					.message("회원가입에 실패했습니다.")
 					.build();
 		}
 		
 		return SignupResponse.builder()
-				.isSuccess(true)
-				.message("회원가입을 완료했습니다!")
+				.httpStatus(HttpStatus.OK)
+				.message("회원가입을 완료했습니다!\n로그인 화면으로 이동합니다.")
+				.redirectUrl("/queuing/login/form")
 				.build();
 	}
 	
