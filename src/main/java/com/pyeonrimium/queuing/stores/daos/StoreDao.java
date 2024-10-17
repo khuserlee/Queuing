@@ -1,6 +1,8 @@
 package com.pyeonrimium.queuing.stores.daos;
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -210,5 +213,30 @@ public class StoreDao {
 		}
 		
 		return result > 0;
+	}
+	
+	/**
+	 * 가게 이름 조회하기
+	 * @param storeId 가게 고유 번호
+	 * @return 가게 이름
+	 */
+	public String getStoreName(long storeId) {
+		String sql = "SELECT name FROM stores WHERE store_id = ?;";
+		String storeName = null;
+
+		try {
+			storeName = jdbcTemplate.queryForObject(sql, new RowMapper<String>() {
+				@Override
+				public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+					return rs.getString("name");
+				}
+			}, storeId);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return storeName;
 	}
 }

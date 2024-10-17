@@ -53,7 +53,7 @@ body {
 
 	<div class="button-container">
 		<input type="button" value="메인 페이지로 돌아가기"
-			onclick="location.href='http://localhost:8090/queuing/reservations/form';" />
+			onclick="location.href='http://localhost:8090/queuing/home';" />
 	</div>
 </body>
 </html>

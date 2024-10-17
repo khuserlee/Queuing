@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.reservation.daos.ReservationDao;
-import com.pyeonrimium.queuing.reservation.daos.StoreDao;
 import com.pyeonrimium.queuing.reservation.domains.MyReservationResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationDeleteResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
@@ -18,6 +17,7 @@ import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateResponse;
+import com.pyeonrimium.queuing.stores.daos.StoreDao;
 
 @Service
 public class ReservationService {

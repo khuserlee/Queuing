@@ -93,7 +93,7 @@
 		}
 		
 		function createReservation() {
-			console.log("예약하기");
+			window.location.href = `/queuing/reservations/form/${storeFindResponse.storeId}`;
 		}
 		
 		function createWaiting() {

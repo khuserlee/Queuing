@@ -42,9 +42,15 @@ public class ReservationController {
 	 * @return 성공: 예약 페이지, 실패: 실패 안내 페이지
 	 */
 	@GetMapping("/reservations/form/{storeId}")
-	public String reservationHome(@PathVariable long storeId, Model model) {
-		System.out.println("[ReservationController] reservationHome()");
-
+	public String reservationHome(@PathVariable long storeId, HttpSession session, Model model) {
+		
+		// 로그인 유무 확인
+		Long userId = getUserId(session);
+		
+		if (userId == null) {
+			return "redirect:/login/form";
+		}
+		
 		// storeId를 통해서 storeName 가져오기
 		String storeName = reservationService.getStoreName(storeId);
 
@@ -65,19 +71,34 @@ public class ReservationController {
 
 	}
 
+	/**
+	 * 로그인 확인
+	 * @param session 세션
+	 * @return 유저 고유 번호
+	 */
 	private Long getUserId(HttpSession session) {
-//		user_id 조회
-//		Long userId = (Long)session.getAttribute("user_id");
-//		return userId;
-//		
-		Long userId = 1L;
+		if(session == null) {
+			// 로그인 화면으로 리다이렉트
+			return null;
+		}
+		
+		// user_id 조회
+		Long userId = (Long)session.getAttribute("user_id");
 		return userId;
 	}
-//		
-	//  예약 신청(C)
 
+
+	/**
+	 * 예약하기
+	 * @param reservationRequest 예약 정보
+	 * @param session 세션
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("/reservations")
-	public String createReservation(ReservationRequest reservationRequest, Model model, HttpSession session) {
+	public String createReservation(ReservationRequest reservationRequest, HttpSession session, Model model) {
+		
+		// 로그인 확인
 		Long userId = getUserId(session);
 
 		// 로그인이 안됐을 경우
@@ -89,8 +110,8 @@ public class ReservationController {
 		ReservationResponse reservationResponse = reservationService.createReservation(userId, reservationRequest);
 
 		if (reservationResponse.isSuccess()) {
-			nextPage = "/reservation/reservation_success";
 			model.addAttribute("reservationResponse", reservationResponse);
+			nextPage = "/reservation/reservation_success";
 		} else {
 			// 실패했을 때 경로
 			nextPage = "/reservation/reservation_fail";
@@ -105,7 +126,6 @@ public class ReservationController {
 //	}
 		return nextPage;
 	}
-//}
 
 	/**
 	 * 예약 정보 불러오기
@@ -178,7 +198,7 @@ public class ReservationController {
 	}
 	
 	// 예약 수정 한 후 신청
-	// TODO: 예약 삭제(D)
+	// 예약 삭제(D)
 //	@DeleteMapping("/reservations/{reservationNumber}")
 //	public String deleteReservation(@PathVariable String ReservationNumber, Model model) {
 //		System.out.println("[ReservationController] 예약 삭제");
@@ -188,6 +208,13 @@ public class ReservationController {
 //	}
 	
 
+	/**
+	 * 예약 삭제하기
+	 * @param reservationNumber 예약번호
+	 * @param session 세션
+	 * @param model
+	 * @return
+	 */
 	@DeleteMapping("/reservations/{reservationNumber}")
 	@ResponseBody
 	public ResponseEntity<?> deleteReservation(@PathVariable String reservationNumber, HttpSession session, Model model) {
