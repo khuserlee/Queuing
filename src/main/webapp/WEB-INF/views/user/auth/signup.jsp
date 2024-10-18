@@ -5,13 +5,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>회원가입</title>
-<script
-	src="http://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<link href="<c:url value='/resources/css/signupStyles.css' />"
-	rel="stylesheet" type="text/css">
-<jsp:include page="/resources/js/signupScript_js.jsp" />
+	<meta charset="UTF-8">
+	<title>회원가입</title>
+	<link href="<c:url value='/resources/css/signupStyles.css' />" rel="stylesheet" type="text/css">
+	<jsp:include page="/resources/js/signupScript_js.jsp" />
+	<script src="http://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </head>
 <body>
 
@@ -21,32 +19,37 @@
 		<main>
 			<div class="signup-container">
 				<h2>회원가입</h2>
-				<form action="<c:url value='/signup' />" name="signup" method="POST">
+				<form action="<c:url value='/signup' />" name="signup" id="signup" method="POST">
 					<div class="input-group">
-						<label for="id">아이디</label> <input type="text" id="id" name="id"
-							required>
-					</div>
-					<div class="input-group">
-						<label for="password">비밀번호</label> <input type="password"
-							id="password" name="password" required>
+						<label for="id">아이디</label>
+						<input type="text" id="id" name="id" placeholder="영어 대소문자, 숫자만 가능" required>
 					</div>
 					<div class="input-group">
-						<label for="confirmPassword">비밀번호 확인</label> <input
-							type="password" id="confirmPassword" name="confirmPassword"
-							required>
-					</div>
-					<label for="name">이름</label> <input type="text" id="name"
-						name="name" required>
-					<div>
-						<label for="address">주소</label> <input type="text" id="address"
-							name="address" readonly placeholder="주소">
-						<button type="button" onclick="execDaumPostcode()">주소 검색</button>
+						<label for="password">비밀번호</label>
+						<input type="password" id="password" name="password" placeholder="영어 대소문자, 숫자, 특수문자 @$!%*?& 만 가능" required>
 					</div>
 					<div class="input-group">
-						<label for="phone">전화번호</label> <input type="text" id="phone"
-							name="phone" required>
+						<label for="confirmPassword">비밀번호 확인</label>
+						<input type="password" id="confirmPassword" name="confirmPassword" required>
 					</div>
-					<button type="submit">회원가입</button>
+					<div class="input-group">
+						<label for="name">이름</label>
+						<input type="text" id="name" name="name" required>
+					</div>
+					<div class="input-group">
+						<label for="address">주소</label>
+						<div class="addr-container">
+							<input type="text" id="address" name="address" readonly placeholder="주소" required>
+							<button type="button" id="addrBtn" onclick="execDaumPostcode()">주소 검색</button>
+						</div>
+					</div>
+					<div class="input-group">
+						<label for="phone">전화번호</label>
+						<input type="text" id="phone" name="phone" placeholder="- 포함" required>
+					</div>
+					<div class="buttons">
+						<button type="submit" id="submitBtn">회원가입</button>
+					</div>
 				</form>
 			</div>
 		</main>
@@ -54,6 +57,91 @@
 		<jsp:include page="../../globals/footer.jsp" />
 	</div>
 	<script>
+		const submitBtn = document.getElementById("submitBtn");
+		submitBtn.addEventListener('click', submit);
+	
+		function submit(event) {
+			event.preventDefault();
+			
+			var formData = getFormData();
+			const isValid = validateFormData(formData);
+			
+			if (!isValid) {
+				return;
+			}
+			
+			fetch('/queuing/signup', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(formData)
+			})
+			.then(response => {
+				return response.json();
+			})
+			.then(data => {
+				alert(data.message);
+				
+				// 성공 시 로그인 화면으로 이동
+				if (data.httpStatus === "OK") {
+					window.location.href = data.redirectUrl;
+				}
+			})
+			.catch(error => {
+				alert(error);
+			});
+		}
+	
+		// 유효성 검사
+		function validateFormData(formData) {
+			// required 속성 검사
+			for (const key of Object.keys(formData)) {
+				const value = formData[key];
+				
+				if (!value || value.trim().length === 0) {
+					alert("회원가입 양식을 확인해주세요.");
+					return false;
+				}
+				
+				if (value != value.trim()) {
+					alert("회원가입 양식을 확인해주세요.");
+					return false;
+				}
+				
+				return true;
+			}
+			
+			// 전화번호 검사
+			const phone = formData['phone'];
+			const phoneRegex = /^(01[016789]-\d{3,4}-\d{4}|02-\d{3,4}-\d{4}|\d{2,3}\d{3,4}\d{4})$/;
+			
+			if (!phoneRegex.test(phone)) {
+				alert("전화번호 양식을 확인해주세요.");
+				return false;
+			}
+			
+			if (formData['password'] !== formData['confirmPassword']) {
+				alert("비밀번호가 일치하지 않습니다.");
+				return false;
+			}
+			
+			return true;
+		}
+	
+		// 폼 데이터 가져오기
+		function getFormData() {
+			const form = document.getElementById('signup');
+			const formData = new FormData(form);
+			var result = {};
+			
+			formData.forEach((value, key) => {
+				result[key] = value;
+			});
+			
+			return result;
+		}
+	
 		function execDaumPostcode() {
 			new daum.Postcode({
 				oncomplete : function(data) {
@@ -85,7 +173,7 @@
 					document.getElementById('address').value = fullAddr; // 주소
 
 					// 상세 주소 입력란에 포커스
-					document.getElementById('detailAddress').focus();
+// 					document.getElementById('detailAddress').focus();
 				}
 			}).open();
 		}

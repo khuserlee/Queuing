@@ -15,11 +15,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.pyeonrimium.queuing.users.domains.dtos.CheckPasswordRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.CheckPasswordResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.Find_passwordRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.LoginRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileDeleteResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateResponse;
+import com.pyeonrimium.queuing.users.domains.dtos.SignupRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
+import com.pyeonrimium.queuing.users.services.UserService;
 
 @Controller
 public class UserController {
@@ -45,11 +49,11 @@ public class UserController {
 	 * @return 회원가입 결과 화면
 	 */
 	@PostMapping("/signup")
-	public String signup(SignupRequest signupRequest, Model model) {
+	@ResponseBody
+	public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
 		SignupResponse signupResponse = userService.signup(signupRequest);
-		model.addAttribute("signupResponse", signupResponse);
-
-		return "user/auth/signup_result";
+		
+		return ResponseEntity.status(signupResponse.getHttpStatus()).body(signupResponse);
 	}
 
 	/**
@@ -71,20 +75,25 @@ public class UserController {
 	 * @return 로그인 결과 화면
 	 */
 	@PostMapping("/login")
-	public String login(LoginRequest loginRequest, Model model, HttpSession session) {
+	@ResponseBody
+	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
 		LoginResponse loginResponse = userService.login(loginRequest);
-		model.addAttribute("loginResponse", loginResponse);
 
-		// 세션 정보 입력
-		if (loginResponse.isSuccess()) {
-			session.setAttribute("user_id", loginResponse.getUserId());
-			session.setAttribute("role", loginResponse.getRole());
-
-			// 유효기간 설정
-			session.setMaxInactiveInterval(60 * 30);
+		if (!loginResponse.isSuccess()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(loginResponse);
 		}
+		
+		// 세션 정보 입력
+		session.setAttribute("user_id", loginResponse.getUserId());
+		session.setAttribute("role", loginResponse.getRole());
+		
+		// 유효기간 설정
+		session.setMaxInactiveInterval(60 * 30);
 
-		return "user/auth/login_result";
+		loginResponse.setUserId(0);
+		loginResponse.setRole(null);
+		
+		return ResponseEntity.ok(loginResponse);
 	}
 
 	/**
@@ -227,31 +236,40 @@ public class UserController {
 	}
 
 	// 회원탈퇴
-    @DeleteMapping("/users/profile")
-    public ResponseEntity<ProfileDeleteResponse> deleteProfile(HttpSession session) {
-        System.out.println("[UserController] deleteProfile()");
-        
-    	// 세션에서 로그인된 사용자의 ID 가져오기
-        Long userId = (Long) session.getAttribute("user_id");
+	@DeleteMapping("/users/profile")
+	@ResponseBody
+	public ResponseEntity<ProfileDeleteResponse> deleteProfile(HttpSession session) {
+		
+		if (session == null) {
+			// 로그인되어 있지 않은 경우
+			return ResponseEntity.status(401)
+				.body(ProfileDeleteResponse.builder()
+						.isSuccess(false)
+						.message("로그인이 필요합니다.")
+						.build());
+		}
 
-        if (userId == null) {
-            // 로그인되어 있지 않은 경우
-            return ResponseEntity.status(401)
-                    .body(ProfileDeleteResponse.builder()
-                    .isSuccess(false)
-                    .message("로그인이 필요합니다.")
-                    .build());
-        }
+		// 세션에서 로그인된 사용자의 ID 가져오기
+		Long userId = (Long) session.getAttribute("user_id");
 
-        // 회원탈퇴 로직 호출
-        ProfileDeleteResponse response = userService.deleteProfile(userId);
+		if (userId == null) {
+			// 로그인되어 있지 않은 경우
+			return ResponseEntity.status(401)
+					.body(ProfileDeleteResponse.builder()
+							.isSuccess(false)
+							.message("로그인이 필요합니다.")
+							.build());
+		}
 
-        if (response.isSuccess()) {
-            // 세션 무효화
-            session.invalidate();
-            response.setRedirectUrl("/queuing/home");
-        }
+		// 회원탈퇴 로직 호출
+		ProfileDeleteResponse response = userService.deleteProfile(userId);
 
-        return ResponseEntity.ok(response);
-    }
+		if (response.isSuccess()) {
+			// 세션 무효화
+			session.invalidate();
+			response.setRedirectUrl("/queuing/home");
+		}
+
+		return ResponseEntity.ok(response);
+	}
 }

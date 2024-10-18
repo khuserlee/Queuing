@@ -1,16 +1,21 @@
-package com.pyeonrimium.queuing.users.controllers;
+package com.pyeonrimium.queuing.users.services;
 
 import java.security.SecureRandom;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.pyeonrimium.queuing.users.daos.UserDao;
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.Find_passwordRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.LoginRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.LoginResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileDeleteResponse;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateResponse;
+import com.pyeonrimium.queuing.users.domains.dtos.SignupRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.SignupResponse;
 import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
 
@@ -35,12 +40,31 @@ public class UserService {
 	 */
 	public SignupResponse signup(SignupRequest signupRequest) {
 
-		boolean isRegistered = userDao.isUserMember(signupRequest.getId());
+		String id = signupRequest.getId();
+		String pwd = signupRequest.getPassword();
+
+		// 아이디, 비밀번호 유효성 검사
+		if (!validateIdAndPassword(id, pwd)) {
+			return SignupResponse.builder()
+					.httpStatus(HttpStatus.BAD_REQUEST)	// 400 에러
+					.message("회원가입 양식을 확인해주세요.")
+					.build();
+		}
+		
+		// 비밀번호 확인
+		if (!pwd.equals(signupRequest.getConfirmPassword())) {
+			return SignupResponse.builder()
+					.httpStatus(HttpStatus.BAD_REQUEST)	// 400 에러
+					.message("회원가입 양식을 확인해주세요.")
+					.build();
+		}
+
+		boolean isRegistered = userDao.isUserMember(id);
 		
 		if (isRegistered) {
 			return SignupResponse.builder()
-					.isSuccess(false)
-					.message("회원가입에 실패했습니다.")
+					.httpStatus(HttpStatus.CONFLICT)	// 409 에러
+					.message("사용할 수 없는 아이디입니다.")
 					.build();
 		}
 		
@@ -48,37 +72,45 @@ public class UserService {
 		
 		if (result <= 0) {
 			return SignupResponse.builder()
-					.isSuccess(false)
+					.httpStatus(HttpStatus.BAD_REQUEST)	// 400 에러
 					.message("회원가입에 실패했습니다.")
 					.build();
 		}
 		
 		return SignupResponse.builder()
-				.isSuccess(true)
-				.message("회원가입을 완료했습니다!")
+				.httpStatus(HttpStatus.OK)
+				.message("회원가입을 완료했습니다!\n로그인 화면으로 이동합니다.")
+				.redirectUrl("/queuing/login/form")
 				.build();
 	}
 	
-	/**
-	 * 회원가입
-	 * @param signupRequest 회원가입 양식
-	 * @return 회원가입 성공 여부
-	 */
-	public int signupConfirm(SignupRequest signupRequest) {
-
-		boolean isMember = userDao.isUserMember(signupRequest.getId());
+	
+	private boolean validateIdAndPassword(String id, String pwd) {
 		
-		if(!isMember) {
-			int result = userDao.insertUserAccount(signupRequest);
-			
-			if(result > 0)
-				return USER_SIGNUP_SUCCESS;
-			else 
-				return USER_SIGNUP_FAIL;	
-		} else {
-			return USER_ACCOUNT_ALREADY_EXIST;
+		if (id == null || pwd == null) {
+			return false;
 		}
+		
+		// 공백 포함 확인
+		if (id.matches(".*\\s.*") || pwd.matches(".*\\s.*")) {
+			return false;
+		}
+		
+		// ID는 영어 대소문자, 숫자만 입력 가능
+		if (!id.matches("^[a-zA-Z0-9]+$")) {
+			return false;
+		}
+		
+		// Password는
+		// 영어 대소문자, 숫자, 특수문자만 입력 가능
+		// 사용가능 특수문자: @$!%*?&
+		if (!pwd.matches("^[a-zA-Z0-9@$!%*?&]*$")) {
+			return false;
+		}
+		
+		return true;
 	}
+	
 	
 	/**
 	 * 로그인
@@ -110,7 +142,8 @@ public class UserService {
 		
 		return LoginResponse.builder()
 				.isSuccess(true)
-				.redirectUrl("/")
+				.message("로그인 되었습니다!")
+				.redirectUrl("/queuing/home")
 				.userId(userEntity.getUserId())
 				.role(role)
 				.build();

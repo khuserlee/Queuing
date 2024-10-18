@@ -1,4 +1,4 @@
-package com.pyeonrimium.queuing.users.controllers;
+package com.pyeonrimium.queuing.users.daos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,32 +8,50 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.pyeonrimium.queuing.users.domains.dtos.Find_idRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.Find_passwordRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.LoginRequest;
 import com.pyeonrimium.queuing.users.domains.dtos.ProfileUpdateRequest;
+import com.pyeonrimium.queuing.users.domains.dtos.SignupRequest;
 import com.pyeonrimium.queuing.users.domains.entities.UserEntity;
 
-@Component
+@Repository
 public class UserDao {
 	
 	@Autowired
-	private JdbcTemplate jdbcTemplate;	
+	private JdbcTemplate jdbcTemplate;
 	
-	// 회원가입 (아이디 중복 조회)
+	
+	/**
+	 * 아이디 중복 조회
+	 * @param id 사용자 ID
+	 * @return true: 사용 가능, false: 사용 불가
+	 */
 	public boolean isUserMember(String id) {
-		System.out.println("[UserDao] isUserMember()");
-		
+
 		String sql = "SELECT COUNT(*) FROM users WHERE id = ?";
+		int result = -1;
 		
-		int result = jdbcTemplate.queryForObject(sql, Integer.class, id);
+		try {
+			result = jdbcTemplate.queryForObject(sql, Integer.class, id);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
-		return result > 0 ? true : false; 
+		return result > 0;
 	}
 	
-	// 회원가입 (계정 생성)
+
+	/**
+	 * 신규 회원 정보 등록(회원가입)
+	 * @param signupRequest 회원가입 정보
+	 * @return
+	 */
 	public int insertUserAccount(SignupRequest signupRequest) {
-		System.out.println("[UserDao] insertUserAccount()");
 		String sql = "INSERT INTO users (id, password, name, address, phone) VALUES (?, ?, ?, ?, ?);";
 		int result = -1;
 		
@@ -44,16 +62,23 @@ public class UserDao {
 					signupRequest.getName(),
 					signupRequest.getAddress(),
 					signupRequest.getPhone());
+		} catch (DataAccessException e) {
+			System.out.println(e);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		return result;
 	}
 	
-	// 로그인
+	
+	/**
+	 * 사용자 조회하기
+	 * @param loginRequest 사용자 정보
+	 * @return 조회 결과
+	 */
 	public LoginRequest selectUser(LoginRequest loginRequest) {
-		System.out.println("[UserrDao] selectUser()");
-		
+
 		String sql = "SELECT * FROM users WHERE id = ?";
 		
 		List<LoginRequest> loginRequests = new ArrayList<LoginRequest>();
@@ -61,10 +86,12 @@ public class UserDao {
 		try {
 			RowMapper<LoginRequest> rowMapper = BeanPropertyRowMapper.newInstance(LoginRequest.class);
 			loginRequests = jdbcTemplate.query(sql, rowMapper, loginRequest.getId());
+			
 			if(loginRequests.size() > 0) {
-				if(!loginRequest.getPassword().equals(loginRequests.get(0).getPassword())) {loginRequests.clear();
+				if(!loginRequest.getPassword().equals(loginRequests.get(0).getPassword())) {
+					loginRequests.clear();
+				}
 			}
-		}
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
@@ -115,8 +142,6 @@ public class UserDao {
 	
 	// 아이디 찾기 (이름, 전화번호)
 	public Find_idRequest selectUser(String name, String phone) {
-		
-		System.out.println("[UserDao] selectUser()");
 	    
 	    String sql = "SELECT * FROM users WHERE name = ? AND phone = ?";
 	    
@@ -128,16 +153,14 @@ public class UserDao {
 	    } catch(Exception e) {
 	    	e.printStackTrace();
 	    }
+	    
 	    return find_idRequests.size() > 0 ? find_idRequests.get(0) : null;
 	}
 	
 	// 비밀번호 찾기 (이름, 전화번호, 아이디)
 	public Find_passwordRequest selectUser(String name, String phone, String id) {
-		System.out.println("[UserDao] selectUser() - id: " + id + ", name: " + name + ", phone: " + phone);
-		System.out.println("[UserDao] selectUser()");
 		
 		String sql = "SELECT * FROM users WHERE id = ? AND name = ? AND phone = ?";
-		
 		List<Find_passwordRequest> find_passwordRequests = new ArrayList<Find_passwordRequest>();
 		
 		try {
@@ -151,10 +174,8 @@ public class UserDao {
 	
 	// 임시 비밀번호 생성 후 비밀번호 업데이트
 	public int updatePassword(String id, String newPassword) {
-		System.out.println("[UserDao] updatePassword()");
 		
 		String sql = "UPDATE users SET password = ? WHERE id = ?";
-		
 		int result = -1;
 		
 		try {
@@ -162,6 +183,7 @@ public class UserDao {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		
 		System.out.println("id:" + id);
 		System.out.println("newPassword: " + newPassword);
 		System.out.println("result: " + result);
@@ -171,6 +193,7 @@ public class UserDao {
 	
 	// User_id로 유저 조회
 	public UserEntity findUserByUserId(Long userId) {
+		
 		String sql = "SELECT * FROM users WHERE user_id = ?;";
 		UserEntity userEntity = null;
 		
@@ -189,6 +212,7 @@ public class UserDao {
 
 	// 회원정보 수정 (업데이트)
 	public int updateProfile(ProfileUpdateRequest profileUpdateRequest) {
+		
 		String sql = "UPDATE users SET name = ?, address = ?, phone = ? WHERE user_id = ?";
 		int result = 0;
 		

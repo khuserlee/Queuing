@@ -59,6 +59,15 @@
 				</div>
 				<div id="delete-account" class="section" style="display: none;">
 					<h2>회원탈퇴</h2>
+					<div class="message-section">
+						<h3>탈퇴하시겠습니까?</h3>
+						<p>삭제된 정보는 복구할 수 없습니다.</p>
+						<p>삭제를 하려면 비밀번호를 입력하세요.</p>
+					</div>
+					<div class="input-group">
+						<label for="password">비밀번호</label>
+						<input type="password" id="password" name="password" required>
+					</div>
 					<div class="profile-actions">
 						<button type="submit" class="delete-button" id="deleteAccountBtn">회원탈퇴</button>
 					</div>
@@ -71,87 +80,115 @@
 
 	<jsp:include page="/resources/js/profileScript_js.jsp" />
 	<script>
-    // 회원정보 수정 버튼
-    const submitBtn = document.getElementById("submitBtn");
-    submitBtn.addEventListener('click', onClickEditButton);
+		// 회원정보 수정 버튼
+		const submitBtn = document.getElementById("submitBtn");
+		submitBtn.addEventListener('click', onClickEditButton);
+		
+		function onClickEditButton(event) {
+			event.preventDefault();
+			
+			// 폼 데이터를 수집
+			const form = document.getElementById("updateProfileForm");
+			const formData = new FormData(form);
+			
+			// 객체 형태로 데이터를 변환
+			const data = {
+				userId: ${profileUpdateResponse.userId},
+				id: formData.get('id'),
+				name: formData.get('name'),
+				address: formData.get('address'),
+				phone: formData.get('phone')
+			};
+			
+			fetch ("/queuing/users/profile", {
+				method: "PATCH",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+			.then(response => {
+				if (response.ok) {
+					return response.text(); // 성공시 JSON 응답 처리
+				}
+				throw new Error('네트워크 응답에 문제가 있습니다.');
+			})
+			.then(result => {
+				// 서버로부터 받은 결과 처리
+				alert('회원정보가 성공적으로 수정되었습니다.');
+			window.location.href = result;
+			})
+			.catch(error => {
+				// 에러 처리
+				console.error('There was a problem with the fetch operation:', error);
+				alert('회원정보 수정에 실패했습니다.');
+			});
+		}
 
-    function onClickEditButton(event) {
-        event.preventDefault();
+		// 회원탈퇴 버튼
+		const deleteAccountBtn = document.getElementById("deleteAccountBtn");
+		deleteAccountBtn.addEventListener("click", function() {
+			if (!confirm('정말로 탈퇴하시겠습니까?')) {
+				return;
+			}
+			
+			const pwd = document.getElementById('password').value;
+			const data = { 'password': pwd };
+			
+			// 비밀번호 확인
+			fetch('/queuing/users/pwd/check', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error("비밀번호를 확인해주세요.");
+				}
+				return response.json();
+			})
+			.then(data => {
+				if (!data.success) {
+					throw new Error(data.message);
+				}
+				
+				// 회원탈퇴
+				deleteAccount();
+			})
+			.catch(error => {
+				alert(error);
+			});
+		});
 
-        // 폼 데이터를 수집
-        const form = document.getElementById("updateProfileForm");
-        const formData = new FormData(form);
-
-        // 객체 형태로 데이터를 변환
-        const data = {
-            userId: ${profileUpdateResponse.userId},
-            id: formData.get('id'),
-            name: formData.get('name'),
-            address: formData.get('address'),
-            phone: formData.get('phone')
-        };
-
-        fetch ("/queuing/users/profile", {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.text(); // 성공시 JSON 응답 처리
-            }
-            throw new Error('네트워크 응답에 문제가 있습니다.');
-        })
-        .then(result => {
-            // 서버로부터 받은 결과 처리
-            alert('회원정보가 성공적으로 수정되었습니다.');
-            window.location.href = result;
-        })
-        .catch(error => {
-            // 에러 처리
-            console.error('There was a problem with the fetch operation:', error);
-            alert('회원정보 수정에 실패했습니다.');
-        });
-    }
-
-    // 회원탈퇴 버튼
-    const deleteAccountBtn = document.getElementById("deleteAccountBtn");
-    deleteAccountBtn.addEventListener("click", function() {
-        if (confirm('정말로 탈퇴하시겠습니까?')) {
-            // 회원탈퇴 AJAX 요청
-            deleteAccount();
-        }
-    });
-
-    function deleteAccount() {
-        // fetch API를 사용하여 DELETE 요청을 전송
-        fetch("/queuing/users/profile", {
-            method: "DELETE",  // HTTP DELETE 메서드 사용
-            headers: {
-                "Content-Type": "application/json"  // JSON 형식으로 보냄
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();  // JSON 응답을 받음
-            } else {
-                throw new Error("탈퇴 요청이 실패했습니다.");
-            }
-        })
-        .then(data => {
-            if (data.isSuccess) {
-                alert(data.message);  // 성공 메시지 출력
-                window.location.href = data.redirectUrl;  // 성공 시 리다이렉트
-            } else {
-                alert(data.message);  // 실패 메시지 출력
-            }
-        })
-        .catch(error => {
-            console.error("에러 발생:", error);
-        });
-    }
-</script>
+		function deleteAccount() {
+			// fetch API를 사용하여 DELETE 요청을 전송
+			fetch("/queuing/users/profile", {
+				method: "DELETE",  // HTTP DELETE 메서드 사용
+				headers: {
+					"Content-Type": "application/json"  // JSON 형식으로 보냄
+				}
+			})
+			.then(response => {
+				if (response.ok) {
+					return response.json();  // JSON 응답을 받음
+				} else {
+					throw new Error("탈퇴 요청이 실패했습니다.");
+				}
+			})
+			.then(data => {
+				alert(data.message);  // 메시지 출력
+				
+				if (data.success) {
+					// 성공 시 리다이렉트
+					window.location.href = data.redirectUrl;
+				}
+			})
+			.catch(error => {
+				console.error("에러 발생:", error);
+			});
+		}
+	</script>
 </body>
 </html>

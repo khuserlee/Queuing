@@ -1,5 +1,7 @@
 package com.pyeonrimium.queuing.users.domains.dtos;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +15,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SignupResponse {
 	
-	private boolean isSuccess;
+	private HttpStatus httpStatus;
 	private String message;
+	private String redirectUrl;
 	
 }

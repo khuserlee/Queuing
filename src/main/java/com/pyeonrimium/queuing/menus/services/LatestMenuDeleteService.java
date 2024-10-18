@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.pyeonrimium.queuing.menus.daos.LatestMenuDeleteDao;
 import com.pyeonrimium.queuing.menus.daos.MenuDao;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuDeleteResponse;
-import com.pyeonrimium.queuing.menus.domains.entities.Menu;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
 
 @Service

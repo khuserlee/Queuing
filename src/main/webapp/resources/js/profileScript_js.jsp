@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function showSection(sectionId) {
-    console.log('Showing section:', sectionId); // 디버깅을 위한 로그
+    //console.log('Showing section:', sectionId); // 디버깅을 위한 로그
     // 모든 섹션을 숨김
     document.querySelectorAll('.section').forEach(function(section) {
         section.style.display = 'none';
