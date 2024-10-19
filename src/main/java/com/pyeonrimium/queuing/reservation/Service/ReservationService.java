@@ -3,6 +3,8 @@ package com.pyeonrimium.queuing.reservation.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +20,54 @@ import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateResponse;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
+import com.pyeonrimium.queuing.users.services.UserService;
 
 @Service
 public class ReservationService {
 	@Autowired
 	private ReservationDao reservationDao;
 
+	@Autowired
+	private UserService userService;
+	
     @Autowired
     private StoreDao storeDao;
     
 	// 예약 신청 처리
 	public ReservationResponse createReservation(long userId, ReservationRequest reservationRequest) {
+		
 		// 예약 번호 만들기
 		String reservationNumber = makeReservationNumber(reservationRequest.getReservationDate(),
 													reservationRequest.getReservationTime());
 		
-		// 식당 아이디 확인
-		System.out.println("[ReservationService] storeId: " + reservationRequest.getStoreId());
-		
-		String storeName = storeDao.getStoreName(reservationRequest.getStoreId());
-		
-		if (storeName == null) {
+		if (reservationNumber == null) {
 			return ReservationResponse.builder()
 					.isSuccess(false)
-					.message("가게이름을 찾지 못했습니다.")
+					.message("예약 날짜와 시간을 선택하세요.")
+					.storeId(reservationRequest.getStoreId())
+					.build();
+		}
+		
+		String userName = userService.getUserName(userId);
+		
+		if (userName == null) {
+			return ReservationResponse.builder()
+					.isSuccess(false)
+					.message("예약에 실패했습니다.")
+					.storeId(reservationRequest.getStoreId())
+					.build();
+		}
+		
+		// 같은 날, 시간에 예약이 있는지 확인
+		boolean isExisted = reservationDao.checkReservation(reservationRequest.getStoreId(),
+									reservationRequest.getReservationDate(),
+									reservationRequest.getReservationTime());
+		
+		if (isExisted) {
+			return ReservationResponse.builder()
+					.isSuccess(false)
+					.message("이미 예약이 있습니다. 다른 날짜 또는 시간을 선택해주세요.")
+					.storeId(reservationRequest.getStoreId())
 					.build();
 		}
 
@@ -49,6 +75,8 @@ public class ReservationService {
 		ReservationEntity reservationEntity = ReservationEntity.builder()
 				.userId(userId)
 				.storeId(reservationRequest.getStoreId())
+				.userName(userName)
+				.storeName(reservationRequest.getStoreName())
 				.reservationNumber(reservationNumber)
 				.reservationDate(reservationRequest.getReservationDate())
 				.reservationTime(reservationRequest.getReservationTime())
@@ -65,12 +93,16 @@ public class ReservationService {
 			return ReservationResponse.builder()
 					.isSuccess(false)
 					.message("예약에 실패했습니다.")
+					.storeId(reservationRequest.getStoreId())
 					.build();
 		}
 		
 		return ReservationResponse.builder()
 				.isSuccess(true)
 				.message("예약에 성공했습니다.")
+				.userName(reservationEntity.getUserName())
+				.storeId(reservationEntity.getStoreId())
+				.storeName(reservationEntity.getStoreName())
 				.reservationNumber(reservationEntity.getReservationNumber())
 				.reservationDate(reservationEntity.getReservationDate())
 				.reservationTime(reservationEntity.getReservationTime())
@@ -88,11 +120,18 @@ public class ReservationService {
 	 */
 	private String makeReservationNumber(LocalDate date, LocalTime time) {
 		
-		String strDate = date.toString().replace("-", "");
-		String strTime = time.toString().replace(":", "");
+		String reservationNumber = null;
 		
-		String reservationNumber = strDate + strTime;
-
+		try {
+			String strDate = date.toString().replace("-", "");
+			String strTime = time.toString().replace(":", "");
+			
+			reservationNumber = strDate + strTime;
+			
+		} catch (Exception e) {
+			System.out.println("Error: 예약번호를 만들 수 없습니다. => " + e);
+		}
+		
 		return reservationNumber;
 	}
 

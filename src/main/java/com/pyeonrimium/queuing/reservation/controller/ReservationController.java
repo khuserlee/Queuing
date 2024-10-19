@@ -26,12 +26,11 @@ import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateResponse;
 
 @Controller
-//예약화면 홈
 public class ReservationController {
+	
 	@Autowired
 	ReservationService reservationService;
-
-	private String nextPage;
+	
 
 	/**
 	 * 예약 신청 화면 불러오기
@@ -62,12 +61,13 @@ public class ReservationController {
 		model.addAttribute("storeId", storeId);
 		model.addAttribute("storeName", storeName);
 
-		return "reservation/reservation_home";
+		return "reservation/reservation_new";
 
 //	    예약 화면에 필요한 정보 불러오기 => 식당 정보
 //	    System.out.println("[ReservationController] getReservationForm");
 //	    model.addAttribute("reservationFormResponse", response); // 올바른 변수명 사용
 
+//		return "reservation/reservation_home";
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ReservationController {
 	 * @return
 	 */
 	@PostMapping("/reservations")
-	public String createReservation(ReservationRequest reservationRequest, HttpSession session, Model model) {
+	public String createReservation(@RequestBody ReservationRequest reservationRequest, HttpSession session, Model model) {
 		
 		// 로그인 확인
 		Long userId = getUserId(session);
@@ -107,23 +107,14 @@ public class ReservationController {
 		}
 
 		ReservationResponse reservationResponse = reservationService.createReservation(userId, reservationRequest);
-
-		if (reservationResponse.isSuccess()) {
-			model.addAttribute("reservationResponse", reservationResponse);
-			nextPage = "/reservation/reservation_success";
-		} else {
+		model.addAttribute("reservationResponse", reservationResponse);
+		
+		if (!reservationResponse.isSuccess()) {
 			// 실패했을 때 경로
-			nextPage = "/reservation/reservation_fail";
+			return "/reservation/reservation_fail";
 		}
-//		
-//		if(result == null) {
-//			// 실패했을 때 경로
-//			nextPage = "/reservation/reservation_fail";
-//		} else {
-//			nextPage = "/reservation/reservation_success";
-//		model.addAttribute("result", result);
-//	}
-		return nextPage;
+		
+		return "/reservation/reservation_success";
 	}
 
 	/**

@@ -1,0 +1,63 @@
+body {
+	font-family: Arial, sans-serif;
+	margin: 0; padding : 0; height : 100%;
+	background-color: #f8d7da;
+	padding: 0;
+	height: 100%; /* 부드러운 빨간색 배경 */
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh
+}
+
+main {
+	flex: 1;
+	margin: 0;;
+	display: flex;
+	align-items: center;
+}
+
+.popup {
+	margin: 50px auto;
+	background-color: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+	text-align: center;
+}
+
+.error-message {
+	margin-top: 20px;
+	font-size: 24px;
+	font-weight: bold;
+	color: #721c24;
+}
+
+.details {
+	margin-top: 30px;
+	font-size: 18px;
+	color: #856404; /* 어두운 노란색 */
+}
+
+.button-container {
+	margin-top: 30px;
+}
+
+.button-container button {
+	width: 100%;
+	padding: 12px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	cursor: pointer;
+	font-size: 16px;
+	border-radius: 4px;
+	margin-top: 10px;
+}
+
+#btn {
+	background-color: #ced4da;
+	color: black;
+}

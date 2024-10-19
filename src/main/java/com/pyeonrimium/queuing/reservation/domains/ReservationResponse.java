@@ -20,6 +20,9 @@ public class ReservationResponse {
 	private boolean isSuccess; //성공여부
 	private String message; //메세지
 	
+	private String userName;
+
+	private Long storeId;
 	private String storeName; //식당이름
 	private String reservationNumber; //예약 번호
 	

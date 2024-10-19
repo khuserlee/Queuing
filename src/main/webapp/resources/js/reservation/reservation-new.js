@@ -1,3 +1,9 @@
+let selectedDate = null;
+
+let today = new Date();
+let currentMonth = today.getMonth();
+let currentYear = today.getFullYear();
+
 document.addEventListener('DOMContentLoaded', function() {
     const calendarElement = document.getElementById('calendar');
     const monthDisplay = document.getElementById('month-display');
@@ -58,10 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-    let today = new Date();
-    let currentMonth = today.getMonth();
-    let currentYear = today.getFullYear();
-    let selectedDate = null;
 
     function updateButtons() {
         // 이전 달과 다음 달 버튼 활성화/비활성화

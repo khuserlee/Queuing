@@ -1,6 +1,8 @@
 package com.pyeonrimium.queuing.reservation.daos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +21,19 @@ public class ReservationDao {
 	private JdbcTemplate jdbcTemplate;
 
 	public boolean addReservation(ReservationEntity reservationEntity) {
-		String sql = "INSERT INTO reservations (user_id, store_id, reservation_number, "
-				+ "reservation_date, reservation_time, party_size, request, status, created_at) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO reservations ("
+				+ "user_id, store_id, user_name, store_name, "
+				+ "reservation_number, reservation_date, reservation_time, party_size, "
+				+ "request, status, created_at) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 		final String status = "예약 생성"; // 고정된 문자열로 상태 설정
 		int result = -1;
 
 		try {
-			result = jdbcTemplate.update(sql, reservationEntity.getUserId(), reservationEntity.getStoreId(),
+			result = jdbcTemplate.update(sql,
+					reservationEntity.getUserId(), reservationEntity.getStoreId(),
+					reservationEntity.getUserName(), reservationEntity.getStoreName(),
 					reservationEntity.getReservationNumber(), reservationEntity.getReservationDate(),
 					reservationEntity.getReservationTime(), reservationEntity.getPartySize(),
 					reservationEntity.getRequest(), // 요청 내용
@@ -179,6 +185,30 @@ public class ReservationDao {
 		
 		boolean isSuccess = deletedCount > 0;
 		return isSuccess;
+	}
+
+	public boolean checkReservation(Long storeId, LocalDate reservationDate, LocalTime reservationTime) {
+
+		String sql = "SELECT COUNT(*) FROM reservations "
+				+ "WHERE store_id = ? AND reservation_date = ? AND reservation_time = ?";
+		
+		List<String> args = new ArrayList<>();
+		args.add(String.valueOf(storeId));
+		args.add(reservationDate.toString());
+		args.add(reservationTime.toString());
+		
+		int result = -1;
+		
+		try {
+			result = jdbcTemplate.queryForObject(sql, Integer.class, args.toArray());
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		boolean isExisted = result > 0;
+		return isExisted;
 	}
 }
 

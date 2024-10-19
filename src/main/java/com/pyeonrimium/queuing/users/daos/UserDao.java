@@ -118,6 +118,27 @@ public class UserDao {
 		return userEntity;
 	}
 
+
+	/**
+	 * 유저 이름 조회하기
+	 * @param userId 유저 고유 번호
+	 * @return 조회된 유저 이름
+	 */
+	public String findUserNameById(long userId) {
+		String sql = "SELECT name FROM users WHERE user_id = ?";
+		String userName = null;
+		
+		try {
+			userName = jdbcTemplate.queryForObject(sql, new Object[]{userId}, String.class);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return userName;
+	}
+
 	/**
 	 * 유저가 점주인지 확인
 	 * @param userId 유저 고유 ID
