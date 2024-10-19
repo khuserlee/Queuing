@@ -1,0 +1,92 @@
+h1 {
+	text-align: center;
+}
+
+reservation-list {
+	max-height: 400px;
+	overflow-y: auto;
+	margin-bottom: 20px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th, td {
+	padding: 10px;
+	text-align: center;
+	border: 1px solid #ddd;
+}
+
+th {
+	background-color: #f0f0f0;
+	height: 40px;
+}
+
+.td-btn {
+	display: flex;
+}
+
+.td-btn button {
+	margin: 0 5px;
+	padding: 10px 15px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#edit-btn {
+	background-color: #007BFF;
+	color: white;
+}
+
+#edit-btn:hover {
+	background-color: #0056b3;
+}
+
+#delete-btn {
+	background-color: #DC3545;
+	color: white;
+}
+
+#delete-btn:hover {
+	background-color: #C82333;
+}
+
+#page-controller {
+	margin: 20px 0;
+	display: flex;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+}
+
+#page-controller button {
+	box-sizing: border-box;
+	margin: 0 5px;
+	padding: 10px 20px;
+	width: 100px;
+	height: 40px;
+}
+
+#page-controller button:hover {
+	background-color: #007BFF;
+	color: white;
+}
+
+#pagination span {
+	box-sizing: border-box;
+	margin: 0 5px;
+	padding: 10px 20px;
+	width: 100px;
+	height: 40px;
+	border: 1px solid #ccc;
+	cursor: pointer;
+}
+
+#page-controller .active {
+	background-color: #f0f0f0;
+	border: 1px solid #007BFF;
+	font-weight: bold;
+}

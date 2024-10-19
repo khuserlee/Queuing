@@ -3,8 +3,7 @@ package com.pyeonrimium.queuing.reservation.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,8 @@ import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateResponse;
+import com.pyeonrimium.queuing.reservation.domains.dtos.MyReservation;
+import com.pyeonrimium.queuing.reservation.domains.dtos.MyReservationListResponse;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
 import com.pyeonrimium.queuing.users.services.UserService;
 
@@ -241,6 +242,55 @@ public class ReservationService {
 					.httpStatus(HttpStatus.OK)
 					.message("메뉴를 삭제했습니다.")
 					.redirectUrl("/queuing/reservations/pageNo=1")
+					.build();
+		}
+
+
+
+		public MyReservationListResponse getMyReservations(Long userId, Integer pageNo) {
+			
+			final int pageSize = 10;
+			
+			List<ReservationEntity> results = reservationDao.findAllByUserId(userId, pageSize, pageNo);
+			
+			if (results == null) {
+				return MyReservationListResponse.builder()
+						.httpStatus(HttpStatus.BAD_REQUEST)
+						.message("예약 목록을 조회할 수 없습니다.")
+						.build();
+			}
+			
+			List<MyReservation> reservations = new ArrayList<>();
+			
+			for (ReservationEntity entity : results) {
+				MyReservation reservation = MyReservation.builder()
+												.reservationId(entity.getReservationId())
+												.storeId(entity.getStoreId())
+												.userName(entity.getStoreName())
+												.storeName(entity.getStoreName())
+												.reservationNumber(entity.getReservationNumber())
+												.reservationDate(entity.getReservationDate())
+												.reservationTime(entity.getReservationTime())
+												.partySize(entity.getPartySize())
+												.request(entity.getRequest())
+												.status(entity.getStatus())
+												.build();
+				
+				reservations.add(reservation);
+			}
+			
+			int count = reservationDao.countMyReservations(userId);
+			int lastPageNo = (int) Math.ceil((double) count / (pageSize - 1));
+			int startPageNo = Math.max(1, pageNo - 2);
+			int endPageNo = Math.min(lastPageNo, pageNo + 2);
+
+			return MyReservationListResponse.builder()
+					.httpStatus(HttpStatus.OK)
+					.startPageNo(startPageNo)
+					.endPageNo(endPageNo)
+					.lastPageNo(lastPageNo)
+					.currentPageNo(pageNo)
+					.reservations(reservations)
 					.build();
 		}
 }

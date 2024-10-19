@@ -4,10 +4,10 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>프로필</title>
-<link href="<c:url value='/resources/css/profileStyles.css' />"
-	rel="stylesheet" type="text/css">
+	<meta charset="UTF-8">
+	<title>프로필</title>
+	<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/profileStyles.css' />">
+	<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/reservation/reservation-list.css' />">
 </head>
 <body>
 	<div class="container">
@@ -33,7 +33,15 @@
 			<div class="content">
 				<div id="reservation" class="section">
 					<h2>예약 내역 확인</h2>
-					<p>여기에 예약 내역을 표시합니다.</p>
+					<div>
+						<div class="reservation-list" id="reservation-list"></div>	<!-- 목록 동적 생성 -->
+						<div id="page-controller">
+							<button id="prev-page-btn">이전</button>
+							<div class="pagination" id="pagination">
+							</div>
+							<button id="next-page-btn">다음</button>
+						</div>
+					</div>
 				</div>
 				<div id="edit-info" class="section" style="display: none;">
 					<h2>회원정보 수정</h2>
@@ -79,6 +87,7 @@
 	</div>
 
 	<jsp:include page="/resources/js/profileScript_js.jsp" />
+	<script src="<c:url value='/resources/js/reservation/reservation-list.js'/>"></script>
 	<script>
 		// 회원정보 수정 버튼
 		const submitBtn = document.getElementById("submitBtn");

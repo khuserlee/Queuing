@@ -210,6 +210,53 @@ public class ReservationDao {
 		boolean isExisted = result > 0;
 		return isExisted;
 	}
+
+	public List<ReservationEntity> findAllByUserId(Long userId, int pageSize, Integer pageNo) {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT * FROM reservations ")
+			.append("WHERE user_id = ? ")
+			.append("ORDER BY reservation_number DESC ")
+			.append("LIMIT ? OFFSET ?;");
+		
+		final int offset = (pageNo - 1) * pageSize;
+		
+		List<String> args = new ArrayList<>();
+		args.add(String.valueOf(userId));
+		args.add(LocalDate.now().toString());
+		args.add(String.valueOf(pageSize));
+		args.add(String.valueOf(offset));
+		
+		List<ReservationEntity> results = null;
+		
+		try {
+			results = jdbcTemplate.query(sb.toString(),
+					BeanPropertyRowMapper.newInstance(ReservationEntity.class),
+					userId, pageSize, offset);
+		} catch (DataAccessException e) {
+			System.out.println("[ReservationDao] findAllByUserId() => Error:\n" + e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return results;
+	}
+
+	public Integer countMyReservations(Long userId) {
+		
+		String sql = "SELECT COUNT(*) FROM reservations WHERE user_id = ?;";
+		int count = 0;
+		
+		try {
+			count = jdbcTemplate.queryForObject(sql, Integer.class, userId);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return count;
+	}
 }
 
 

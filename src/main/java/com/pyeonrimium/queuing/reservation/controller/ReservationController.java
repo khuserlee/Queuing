@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pyeonrimium.queuing.reservation.Service.ReservationService;
@@ -24,6 +25,7 @@ import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateResponse;
+import com.pyeonrimium.queuing.reservation.domains.dtos.MyReservationListResponse;
 
 @Controller
 public class ReservationController {
@@ -34,7 +36,6 @@ public class ReservationController {
 
 	/**
 	 * 예약 신청 화면 불러오기
-	 * 
 	 * @param storeId 가게 고유 ID
 	 * @param model
 	 * @return 성공: 예약 페이지, 실패: 실패 안내 페이지
@@ -115,6 +116,30 @@ public class ReservationController {
 		}
 		
 		return "/reservation/reservation_success";
+	}
+	
+	@GetMapping("/reservations")
+	public ResponseEntity<?> getReservations(@RequestParam Integer pageNo, HttpSession session) {
+		
+		// 로그인 확인
+		Long userId = getUserId(session);
+
+		// 로그인이 안됐을 경우
+		if (userId == null) {
+			// 로그인 페이지로 이동
+			MyReservationListResponse error = MyReservationListResponse.builder()
+					.httpStatus(HttpStatus.UNAUTHORIZED)
+					.message("로그인이 필요한 서비스입니다.")
+					.redirectUrl("/queuing/login/form")
+					.build();
+			
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+		}
+		
+		MyReservationListResponse response
+			= reservationService.getMyReservations(userId, pageNo);
+		
+		return ResponseEntity.status(response.getHttpStatus()).body(response);
 	}
 
 	/**
