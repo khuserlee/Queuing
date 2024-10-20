@@ -44,8 +44,18 @@
 						</div>
 					</div>
 					<div class="input-group">
-						<label for="phone">전화번호</label>
-						<input type="text" id="phone" name="phone" placeholder="- 포함" required>
+						<label for="phone">휴대폰 번호</label>
+						<div class="addr-container">
+							<input type="text" id="phone" name="phone" placeholder="- 제외" required>
+							<button type="button" id="send-btn">인증번호 받기</button>
+						</div>
+					</div>
+					<div class="input-group" id="verification-section">
+						<label for="verification">인증번호</label>
+						<div class="addr-container">
+							<input type="text" id="verification" disabled="disabled">
+							<button type="button" id="confirm-btn">인증번호 확인</button>
+						</div>
 					</div>
 					<div class="buttons">
 						<button type="submit" id="submitBtn">회원가입</button>
@@ -56,6 +66,7 @@
 
 		<jsp:include page="../../globals/footer.jsp" />
 	</div>
+	<script src="<c:url value='/resources/js/auth/verification.js'/>"></script>
 	<script>
 		const submitBtn = document.getElementById("submitBtn");
 		submitBtn.addEventListener('click', submit);
@@ -63,12 +74,19 @@
 		function submit(event) {
 			event.preventDefault();
 			
+			if (!isVerified) {
+				alert("휴대폰 문자 인증을 해주세요.");
+				return;
+			}
+			
 			var formData = getFormData();
 			const isValid = validateFormData(formData);
 			
 			if (!isValid) {
 				return;
 			}
+			
+			formData.phone = phoneInput.value;
 			
 			fetch('/queuing/signup', {
 				method: 'POST',
@@ -113,13 +131,13 @@
 			}
 			
 			// 전화번호 검사
-			const phone = formData['phone'];
-			const phoneRegex = /^(01[016789]-\d{3,4}-\d{4}|02-\d{3,4}-\d{4}|\d{2,3}\d{3,4}\d{4})$/;
+// 			const phone = formData['phone'];
+// 			const phoneRegex = /^(01[016789]-\d{3,4}-\d{4}|02-\d{3,4}-\d{4}|\d{2,3}\d{3,4}\d{4})$/;
 			
-			if (!phoneRegex.test(phone)) {
-				alert("전화번호 양식을 확인해주세요.");
-				return false;
-			}
+// 			if (!phoneRegex.test(phone)) {
+// 				alert("전화번호 양식을 확인해주세요.");
+// 				return false;
+// 			}
 			
 			if (formData['password'] !== formData['confirmPassword']) {
 				alert("비밀번호가 일치하지 않습니다.");
