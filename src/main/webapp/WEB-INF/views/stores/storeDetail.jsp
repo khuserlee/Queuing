@@ -55,13 +55,16 @@
 						<div>
 							<h2>메뉴</h2>
 							<ul id="menus">
-								<li class="menuItem">
-									<div class="menuImg"></div>
-									<div class="menuInfo">
-										<h3>메뉴 이름</h3>
-										<p>3,500원</p>
-									</div>
-								</li>
+								<c:forEach var="menu" items="${storeFindResponse.menus}">
+									<li class="menuItem">
+										<div class="menuImg"></div>
+										<div class="menuInfo">
+											<h3>${menu.name}</h3>
+											<p>가격: ${menu.price}원</p>
+											<p>${menu.description}</p>
+										</div>
+									</li>
+								</c:forEach>
 							</ul>
 						</div>
 						<div id="buttons">
@@ -71,8 +74,8 @@
 									<button type="button" onclick="editMenu()">메뉴 수정</button>
 								</c:when>
 								<c:otherwise>
-									<button type="button" onclick="createReservation()">예약하기</button>
-									<button type="button" onclick="createWaiting()">웨이팅하기</button>
+									<button type="button" onclick="createReservation()" style="width: 100%;">예약하기</button>
+<!-- 									<button type="button" onclick="createWaiting()">웨이팅하기</button> -->
 								</c:otherwise>
 							</c:choose>
 						</div>

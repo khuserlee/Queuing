@@ -1,6 +1,9 @@
 package com.pyeonrimium.queuing.stores.domains.dtos;
 
 import java.time.LocalTime;
+import java.util.List;
+
+import com.pyeonrimium.queuing.menus.domains.entities.Menu;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +33,7 @@ public class StoreFindResponse {
 	private LocalTime endTime;
 	
 	private String closedDay;
+	
+	private List<Menu> menus;
 	
 }
