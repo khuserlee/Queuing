@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.pyeonrimium.queuing.reservation.daos.ReservationDao;
-import com.pyeonrimium.queuing.reservation.domains.MyReservationResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationDeleteResponse;
 import com.pyeonrimium.queuing.reservation.domains.ReservationEntity;
 import com.pyeonrimium.queuing.reservation.domains.ReservationRequest;
@@ -20,20 +19,25 @@ import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateRequest;
 import com.pyeonrimium.queuing.reservation.domains.ReservationUpdateResponse;
 import com.pyeonrimium.queuing.reservation.domains.dtos.MyReservation;
 import com.pyeonrimium.queuing.reservation.domains.dtos.MyReservationListResponse;
+import com.pyeonrimium.queuing.reservation.domains.dtos.ReservationEditFormResponse;
+import com.pyeonrimium.queuing.reservation.domains.dtos.ReservationEditRequest;
+import com.pyeonrimium.queuing.reservation.domains.dtos.ReservationEditResponse;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
 import com.pyeonrimium.queuing.users.services.UserService;
 
 @Service
 public class ReservationService {
+	
 	@Autowired
 	private ReservationDao reservationDao;
 
 	@Autowired
 	private UserService userService;
 	
-    @Autowired
-    private StoreDao storeDao;
-    
+	@Autowired
+	private StoreDao storeDao;
+
+
 	// 예약 신청 처리
 	public ReservationResponse createReservation(long userId, ReservationRequest reservationRequest) {
 		
@@ -49,6 +53,7 @@ public class ReservationService {
 					.build();
 		}
 		
+		// 유저 이름 확인
 		String userName = userService.getUserName(userId);
 		
 		if (userName == null) {
@@ -113,7 +118,6 @@ public class ReservationService {
 	}
 	
 	
-	
 	/**
 	 * 예약 번호 만들기
 	 * @param reservationRequest 예약 신청 양식
@@ -136,6 +140,7 @@ public class ReservationService {
 		return reservationNumber;
 	}
 
+	
 	// storeId를 통해서 storeName 가져오기
 	public String getStoreName(long storeId) {
 		return storeDao.getStoreName(storeId);
@@ -147,150 +152,215 @@ public class ReservationService {
 	public List<ReservationEntity> getmyReservation(long userId) {
 		return reservationDao.getReservationsByUserId(userId);
 	}
-	
-	// TODO :예약 정보 열람 신청 처리
-		public MyReservationResponse getMyReservation(Long userId) {
-			
-			// TODO: userId 확인
-//			 List<ReservationEntity> getReservations(Long userId) {
-//				return reservationDao.getReservationsByUserId(userId);
-//			System.out.println("[ReservationService] getMyReservation: " + "");
-//			    }
-			
-			if (userId == null) {
-				return MyReservationResponse.builder()
-						.isSuccess(false)
-						.message("예약을 찾지 못했습니다.")
-						.build();
-			}
-			
-			return null;
-		}
+
+
+	/**
+	 * 나의 예약 정보 불러오기(페이지네이션 적용)
+	 * @param userId 유저 고유 번호
+	 * @param pageNo 조회할 페이지 번호
+	 * @return 처리 결과
+	 */
+	public MyReservationListResponse getMyReservations(Long userId, Integer pageNo) {
 		
-		/**
-		 * 예약 정보 불러오기
-		 * @param userId 유저 고유 번호
-		 * @return 예약 정보 목록
-		 */
-		public List<ReservationEntity> getReservations(long userId) {
-			return reservationDao.getReservationsByUserId(userId);
-		}
+		// 한 페이지에 보여줄 예약 정보 개수
+		final int pageSize = 10;
 		
+		// 예약 정보 조회하기
+		List<ReservationEntity> results = reservationDao.findAllByUserId(userId, pageSize, pageNo);
 		
-		
-		
-		// TODO : 예약 수정 처리
-		public ReservationUpdateResponse updateReservations(ReservationUpdateRequest request){
-			String number = makeReservationNumber(request.getReservationDate(), request.getReservationTime());
-			ReservationEntity reservationEntity = reservationDao.findByReservationNumber(number);
-			
-			if (reservationEntity == null) {
-				return ReservationUpdateResponse.builder()
-						.isSuccess(false)
-						.message("예약 수정을 할 수 없습니다. 111")
-						.build();
-			}
-			
-			// 정보 업데이트
-			reservationEntity.setReservationNumber(number);
-			reservationEntity.setReservationDate(request.getReservationDate());
-			reservationEntity.setReservationTime(request.getReservationTime());
-			reservationEntity.setPartySize(request.getPartySize());
-			reservationEntity.setRequest(request.getRequest());
-			
-			// DAO에 업데이트 요청
-			boolean isSuccess = reservationDao.updateReservation(reservationEntity);
-			
-			if (!isSuccess) {
-				return ReservationUpdateResponse.builder()
-						.isSuccess(false)
-						.message("예약 수정을 할 수 없습니다.")
-						.build();
-			}
-			
-				return ReservationUpdateResponse.builder()
-					.isSuccess(true)
-					.build();
-			}
-
-
-
-		public ReservationEntity findReservation(Long reservationId) {
-		//DAO로 reservationId를 통해 예약 호출
-			return reservationDao.getReservationsByReservationId(reservationId);
-		}
-
-		// TODO: 예약 삭제(D)
-		
-//		public ReservationEntity deleteReservation(String reservationNumber) {
-//			return reservationDao.deleteReservationByNumber(reservationNumber);
-//		}
-		
-		public ReservationDeleteResponse deleteReservation(String reservationNumber) {
-			
-			// 메뉴 삭제
-			boolean isSuccess = reservationDao.deleteReservationByNumber(reservationNumber);
-			
-			if (!isSuccess) {
-				return ReservationDeleteResponse.builder()
-						.httpStatus(HttpStatus.BAD_REQUEST)
-						.message("메뉴를 삭제할 수 없습니다.")
-						.build();
-			}
-
-			return ReservationDeleteResponse.builder()
-					.httpStatus(HttpStatus.OK)
-					.message("메뉴를 삭제했습니다.")
-					.redirectUrl("/queuing/reservations/pageNo=1")
-					.build();
-		}
-
-
-
-		public MyReservationListResponse getMyReservations(Long userId, Integer pageNo) {
-			
-			final int pageSize = 10;
-			
-			List<ReservationEntity> results = reservationDao.findAllByUserId(userId, pageSize, pageNo);
-			
-			if (results == null) {
-				return MyReservationListResponse.builder()
-						.httpStatus(HttpStatus.BAD_REQUEST)
-						.message("예약 목록을 조회할 수 없습니다.")
-						.build();
-			}
-			
-			List<MyReservation> reservations = new ArrayList<>();
-			
-			for (ReservationEntity entity : results) {
-				MyReservation reservation = MyReservation.builder()
-												.reservationId(entity.getReservationId())
-												.storeId(entity.getStoreId())
-												.userName(entity.getStoreName())
-												.storeName(entity.getStoreName())
-												.reservationNumber(entity.getReservationNumber())
-												.reservationDate(entity.getReservationDate())
-												.reservationTime(entity.getReservationTime())
-												.partySize(entity.getPartySize())
-												.request(entity.getRequest())
-												.status(entity.getStatus())
-												.build();
-				
-				reservations.add(reservation);
-			}
-			
-			int count = reservationDao.countMyReservations(userId);
-			int lastPageNo = (int) Math.ceil((double) count / (pageSize - 1));
-			int startPageNo = Math.max(1, pageNo - 2);
-			int endPageNo = Math.min(lastPageNo, pageNo + 2);
-
+		if (results == null) {
 			return MyReservationListResponse.builder()
-					.httpStatus(HttpStatus.OK)
-					.startPageNo(startPageNo)
-					.endPageNo(endPageNo)
-					.lastPageNo(lastPageNo)
-					.currentPageNo(pageNo)
-					.reservations(reservations)
+					.httpStatus(HttpStatus.BAD_REQUEST)
+					.message("예약 목록을 조회할 수 없습니다.")
 					.build();
 		}
+		
+		List<MyReservation> reservations = new ArrayList<>();
+		
+		for (ReservationEntity entity : results) {
+			MyReservation reservation = MyReservation.builder()
+											.reservationId(entity.getReservationId())
+											.storeId(entity.getStoreId())
+											.userName(entity.getStoreName())
+											.storeName(entity.getStoreName())
+											.reservationNumber(entity.getReservationNumber())
+											.reservationDate(entity.getReservationDate())
+											.reservationTime(entity.getReservationTime())
+											.partySize(entity.getPartySize())
+											.request(entity.getRequest())
+											.status(entity.getStatus())
+											.build();
+			
+			reservations.add(reservation);
+		}
+		
+		int count = reservationDao.countMyReservations(userId);
+		
+		// 마지막 페이지 번호
+		int lastPageNo = (count == pageSize)
+							? 1
+							: (int) Math.ceil((double) count / (pageSize - 1));
+		
+		// 화면에 표시될 시작 페이지 번호
+		int startPageNo = Math.max(1, pageNo - 2);
+		
+		// 화면에 표시될 끝 페이지 번호
+		int endPageNo = Math.min(lastPageNo, pageNo + 2);
+
+		return MyReservationListResponse.builder()
+				.httpStatus(HttpStatus.OK)
+				.startPageNo(startPageNo)
+				.endPageNo(endPageNo)
+				.lastPageNo(lastPageNo)
+				.currentPageNo(pageNo)
+				.reservations(reservations)
+				.build();
+	}
+
+
+	/**
+	 * 예약 수정 화면에서 사용할 예약 정보 불러오기
+	 * @param reservationId 예약 고유 번호
+	 * @param userId 유저 고유 번호
+	 * @return 조회된 예약 정보
+	 */
+	public ReservationEditFormResponse getReservationForEdit(Long reservationId, Long userId) {
+		ReservationEntity reservationEntity = reservationDao.getReservationsByReservationId(reservationId);
+		
+		if (reservationEntity == null) {
+			return ReservationEditFormResponse.builder()
+					.isSuccess(false)
+					.message("예약 정보를 확인할 수 없습니다.")
+					.build();
+		}
+		
+		return ReservationEditFormResponse.builder()
+				.isSuccess(true)
+				.storeId(reservationEntity.getStoreId())
+				.storeName(reservationEntity.getStoreName())
+				.reservationId(reservationEntity.getReservationId())
+				.reservationDate(reservationEntity.getReservationDate())
+				.reservationTime(reservationEntity.getReservationTime())
+				.partySize(reservationEntity.getPartySize())
+				.request(reservationEntity.getRequest())
+				.build();
+	}
+
+	
+	/**
+	 * 예약 정보 불러오기
+	 * @param userId 유저 고유 번호
+	 * @return 예약 정보 목록
+	 */
+	public List<ReservationEntity> getReservations(long userId) {
+		return reservationDao.getReservationsByUserId(userId);
+	}
+	
+	
+	/**
+	 * 수정된 예약 정보 적용하기
+	 * @param request 수정된 예약 정보
+	 * @param userId 유저 고유 번호
+	 * @return 처리 결과
+	 */
+	public ReservationEditResponse updateMyReservation(ReservationEditRequest request, Long userId) {
+		
+		// 예약 정보 조회하기
+		ReservationEntity reservationEntity = reservationDao.findReservation(request.getReservationId(), userId);
+		
+		if (reservationEntity == null) {
+			return ReservationEditResponse.builder()
+					.isSuccess(false)
+					.message("예약을 수정할 수 없습니다.")
+					.build();
+		}
+
+		// 정보 업데이트
+		reservationEntity.setPartySize(request.getPartySize());
+		reservationEntity.setRequest(request.getRequest());
+		
+		
+		// DAO에 업데이트 요청
+		boolean isSuccess = reservationDao.updateReservation(reservationEntity);
+		
+		if (!isSuccess) {
+			return ReservationEditResponse.builder()
+					.isSuccess(false)
+					.message("예약 수정을 할 수 없습니다.")
+					.build();
+		}
+		
+			return ReservationEditResponse.builder()
+				.isSuccess(true)
+				.message("예약을 수정했습니다.")
+				.redirectUrl("/queuing/users/profile")
+				.build();
+	}
+	
+	
+	// 예약 수정 처리
+	public ReservationUpdateResponse updateReservations(ReservationUpdateRequest request){
+		String number = makeReservationNumber(request.getReservationDate(), request.getReservationTime());
+		ReservationEntity reservationEntity = reservationDao.findByReservationNumber(number);
+		
+		if (reservationEntity == null) {
+			return ReservationUpdateResponse.builder()
+					.isSuccess(false)
+					.message("예약 수정을 할 수 없습니다.")
+					.build();
+		}
+		
+		// 정보 업데이트
+		reservationEntity.setReservationNumber(number);
+		reservationEntity.setReservationDate(request.getReservationDate());
+		reservationEntity.setReservationTime(request.getReservationTime());
+		reservationEntity.setPartySize(request.getPartySize());
+		reservationEntity.setRequest(request.getRequest());
+		
+		// DAO에 업데이트 요청
+		boolean isSuccess = reservationDao.updateReservation(reservationEntity);
+		
+		if (!isSuccess) {
+			return ReservationUpdateResponse.builder()
+					.isSuccess(false)
+					.message("예약 수정을 할 수 없습니다.")
+					.build();
+		}
+		
+			return ReservationUpdateResponse.builder()
+				.isSuccess(true)
+				.build();
+	}
+
+
+
+	public ReservationEntity findReservation(Long reservationId) {
+		//DAO로 reservationId를 통해 예약 호출
+		return reservationDao.getReservationsByReservationId(reservationId);
+	}
+
+	
+	/**
+	 * 예약 정보 삭제하기
+	 * @param reservationNumber 예약번호
+	 * @return 처리 결과
+	 */
+	public ReservationDeleteResponse deleteReservation(String reservationNumber) {
+		
+		// 메뉴 삭제
+		boolean isSuccess = reservationDao.deleteReservationByNumber(reservationNumber);
+		
+		if (!isSuccess) {
+			return ReservationDeleteResponse.builder()
+					.httpStatus(HttpStatus.BAD_REQUEST)
+					.message("메뉴를 삭제할 수 없습니다.")
+					.build();
+		}
+
+		return ReservationDeleteResponse.builder()
+				.httpStatus(HttpStatus.OK)
+				.message("메뉴를 삭제했습니다.")
+				.redirectUrl("/queuing/reservations/pageNo=1")
+				.build();
+	}
 }

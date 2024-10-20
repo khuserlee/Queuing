@@ -34,24 +34,14 @@ th {
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
+	border: 1px solid #ccc;
+	background-color: #f0f0f0;
+	color: black;
 }
 
-#edit-btn {
-	background-color: #007BFF;
-	color: white;
-}
-
-#edit-btn:hover {
-	background-color: #0056b3;
-}
-
-#delete-btn {
-	background-color: #DC3545;
-	color: white;
-}
-
-#delete-btn:hover {
-	background-color: #C82333;
+.td-btn button:hover {
+	border: 1px solid #e0e0e0;
+	background-color: #e0e0e0;
 }
 
 #page-controller {

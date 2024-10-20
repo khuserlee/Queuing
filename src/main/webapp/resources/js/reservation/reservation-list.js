@@ -2,9 +2,10 @@ const listRoot = document.getElementById('reservation-list');
 const prevPageBtn = document.getElementById('prev-page-btn');
 const nextPageBtn = document.getElementById('next-page-btn');
 const paginationRoot = document.getElementById('pagination');
+var currentPage = 1;
 
 document.addEventListener('DOMContentLoaded', function() {
-	requestReservations(1);
+	requestReservations(currentPage);
 });
 
 async function requestReservations(pageNo) {
@@ -35,6 +36,7 @@ function fetchItems(page) {
 	});
 }
 
+// 예약 목록 보여주기
 function showReservations(reservations) {
 	let listHTML = '<table><thead><tr>';
 	
@@ -45,6 +47,7 @@ function showReservations(reservations) {
 	
 	listHTML += '</tr></thead><tbody>';
 	
+	// 예약 내용 표
 	reservations.forEach(reservation => {
 		var rowHTML = '<tr>';
 		
@@ -55,8 +58,8 @@ function showReservations(reservations) {
 		
 		rowHTML += '<td><div class="td-btn">';
 		
-		const editUrl = `/queuing/reservations/form/${reservation.reservationId}/update`;
-		rowHTML += `<button id="edit-btn" onclick="location.href='editUrl'">수정</button>`;
+		const editUrl = `/queuing/reservations/edit/${reservation.reservationId}`;
+		rowHTML += `<button id="edit-btn" onclick="location.href='${editUrl}'">수정</button>`;
 		
 		rowHTML += `<button id="delete-btn" onclick="deleteReservation(${reservation.reservationNumber})">삭제</button>`;
 		
@@ -71,8 +74,10 @@ function showReservations(reservations) {
 	listRoot.innerHTML = listHTML;
 }
 
+// 페이지 표시
 function showPagination(startNo, endNo, currentNo, lastPageNo) {
 	paginationRoot.innerHTML = '';
+	currentPage = currentNo;
 	
 	// 이전 버튼 설정
 	prevPageBtn.disabled = currentNo === 1;
@@ -110,7 +115,7 @@ function deleteReservation(reservationNumber) {
 	})
 	.then(data => {
 		alert(data.message);
-		window.location.href = data.redirectUrl;
+		fetchItems(currentPage);
 	})
 	.catch(error => {
 		alert(error);

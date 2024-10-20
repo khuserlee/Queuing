@@ -114,13 +114,39 @@ public class ReservationDao {
 		return result > 0;
 	}
 	
+	
+	/**
+	 * 예약 정보 조회하기
+	 * @param reservationId 예약 고유 번호
+	 * @return 조회된 정보
+	 */
 	public ReservationEntity getReservationsByReservationId(Long reservationId) {
-		String sql = "SELECT * FROM reservations WHERE reservation_id = ?";
+		String sql = "SELECT * FROM reservations WHERE reservation_id = ?;";
 		ReservationEntity reservations = null;
 
 		// 예외 처리
 		try {
 			reservations = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(ReservationEntity.class), reservationId);
+		} catch (DataAccessException e) {
+			System.out.println(e.getClass().getSimpleName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return reservations;
+	}
+	
+
+	public ReservationEntity findReservation(Long reservationId, Long userId) {
+		String sql = "SELECT * FROM reservations WHERE reservation_id = ? AND user_id = ?;";
+		ReservationEntity reservations = null;
+
+		// 예외 처리
+		try {
+			reservations = jdbcTemplate.queryForObject(sql,
+											BeanPropertyRowMapper.newInstance(ReservationEntity.class),
+											reservationId,
+											userId);
 		} catch (DataAccessException e) {
 			System.out.println(e.getClass().getSimpleName());
 		} catch (Exception e) {
