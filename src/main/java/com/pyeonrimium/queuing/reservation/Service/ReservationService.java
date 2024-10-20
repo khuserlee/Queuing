@@ -22,6 +22,8 @@ import com.pyeonrimium.queuing.reservation.domains.dtos.MyReservationListRespons
 import com.pyeonrimium.queuing.reservation.domains.dtos.ReservationEditFormResponse;
 import com.pyeonrimium.queuing.reservation.domains.dtos.ReservationEditRequest;
 import com.pyeonrimium.queuing.reservation.domains.dtos.ReservationEditResponse;
+import com.pyeonrimium.queuing.reservation.domains.dtos.StoreReservation;
+import com.pyeonrimium.queuing.reservation.domains.dtos.StoreReservationResponse;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
 import com.pyeonrimium.queuing.users.services.UserService;
 
@@ -361,6 +363,75 @@ public class ReservationService {
 				.httpStatus(HttpStatus.OK)
 				.message("메뉴를 삭제했습니다.")
 				.redirectUrl("/queuing/reservations/pageNo=1")
+				.build();
+	}
+
+
+	public StoreReservationResponse getStoreReservations(Long userId, Integer pageNo) {
+		
+		Long storeId = storeDao.findStoreIdByUserId(userId);
+		
+		if (storeId == null) {
+			return StoreReservationResponse.builder()
+					.isSuccess(false)
+					.message("예약 목록을 불러올 수 없습니다.")
+					.build();
+		}
+		
+		// 예약 목록 조회
+		final int pageSize = 10;
+		List<ReservationEntity> reservations = reservationDao.findAllReservationsOfStore(storeId, pageSize, pageNo);
+		
+		if (reservations == null) {
+			return StoreReservationResponse.builder()
+					.isSuccess(false)
+					.message("예약 목록을 불러올 수 없습니다.")
+					.build();
+		}
+		
+		// 데이터 옮기기
+		List<StoreReservation> results = new ArrayList<>();
+		for (ReservationEntity reservation : reservations) {
+			StoreReservation storeReservation = StoreReservation.builder()
+					.reservationId(reservation.getReservationId())
+					.userName(reservation.getUserName())
+					.reservationNumber(reservation.getReservationNumber())
+					.reservationDate(reservation.getReservationDate())
+					.reservationTime(reservation.getReservationTime())
+					.partySize(reservation.getPartySize())
+					.request(reservation.getRequest())
+					.status(reservation.getStatus())
+					.build();
+			
+			results.add(storeReservation);
+		}
+		
+		// 가게 이름 확인
+		String storeName = storeDao.getStoreName(storeId);
+		
+		// 가게의 전체 예약 개수 확인
+		int count = reservationDao.countStoreReservations(storeId);
+		
+		// 마지막 페이지 번호
+		int lastPageNo = (count == pageSize)
+							? 1
+							: (int) Math.ceil((double) count / (pageSize - 1));
+		
+		// 화면에 표시될 시작 페이지 번호
+		int startPageNo = Math.max(1, pageNo - 2);
+		
+		// 화면에 표시될 끝 페이지 번호
+		int endPageNo = Math.min(lastPageNo, pageNo + 2);
+		
+		return StoreReservationResponse.builder()
+				.isSuccess(true)
+				.message("예약 목록 조회에 성공했습니다.")
+				.storeName(storeName)
+				.reservations(results)
+				.startPageNo(startPageNo)
+				.endPageNo(endPageNo)
+				.currentPageNo(pageNo)
+				.lastPageNo(lastPageNo)
 				.build();
 	}
 }

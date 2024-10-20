@@ -247,12 +247,6 @@ public class ReservationDao {
 		
 		final int offset = (pageNo - 1) * pageSize;
 		
-		List<String> args = new ArrayList<>();
-		args.add(String.valueOf(userId));
-		args.add(LocalDate.now().toString());
-		args.add(String.valueOf(pageSize));
-		args.add(String.valueOf(offset));
-		
 		List<ReservationEntity> results = null;
 		
 		try {
@@ -268,6 +262,11 @@ public class ReservationDao {
 		return results;
 	}
 
+	/**
+	 * 내 예약 개수 확인하기
+	 * @param userId 유저 고유 번호
+	 * @return 유저 예약 개수
+	 */
 	public Integer countMyReservations(Long userId) {
 		
 		String sql = "SELECT COUNT(*) FROM reservations WHERE user_id = ?;";
@@ -282,6 +281,53 @@ public class ReservationDao {
 		}
 		
 		return count;
+	}
+
+	
+	/**
+	 * 가게의 예약 개수 확인하기
+	 * @param storeId 가게 고유 번호
+	 * @return 가게 예약 개수
+	 */
+	public Integer countStoreReservations(Long storeId) {
+		
+		String sql = "SELECT COUNT(*) FROM reservations WHERE store_id = ?;";
+		int count = 0;
+		
+		try {
+			count = jdbcTemplate.queryForObject(sql, Integer.class, storeId);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return count;
+	}
+
+	public List<ReservationEntity> findAllReservationsOfStore(Long storeId, int pageSize, Integer pageNo) {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT * FROM reservations ")
+			.append("WHERE store_id = ? ")
+			.append("ORDER BY reservation_date DESC ")
+			.append("LIMIT ? OFFSET ?;");
+		
+		final int offset = (pageNo - 1) * pageSize;
+
+		List<ReservationEntity> results = null;
+		
+		try {
+			results = jdbcTemplate.query(sb.toString(),
+					BeanPropertyRowMapper.newInstance(ReservationEntity.class),
+					storeId, pageSize, offset);
+		} catch (DataAccessException e) {
+			System.out.println("[ReservationDao] findAllReservationsOfStore() => Error:\n" + e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return results;
 	}
 }
 

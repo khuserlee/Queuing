@@ -29,6 +29,7 @@ import com.pyeonrimium.queuing.reservation.domains.dtos.MyReservationListRespons
 import com.pyeonrimium.queuing.reservation.domains.dtos.ReservationEditFormResponse;
 import com.pyeonrimium.queuing.reservation.domains.dtos.ReservationEditRequest;
 import com.pyeonrimium.queuing.reservation.domains.dtos.ReservationEditResponse;
+import com.pyeonrimium.queuing.reservation.domains.dtos.StoreReservationResponse;
 
 @Controller
 public class ReservationController {
@@ -114,6 +115,48 @@ public class ReservationController {
 		}
 		
 		return "/reservation/reservation_success";
+	}
+	
+	
+	@GetMapping("/reservations/manager/list")
+	public String getStoreReservationList(HttpSession session) {
+		
+		// 로그인 확인
+		Long userId = getUserId(session);
+
+		// 로그인이 안됐을 경우
+		if (userId == null) {
+			return "redirect:/login/form";
+		}
+		
+		String role = (String) session.getAttribute("role");
+		
+		if (role == null) {
+			return "redirect:/home";
+		}
+		
+		return "reservation/reservation_manager_list";
+	}
+	
+	
+	@GetMapping("/reservations/manager")
+	public ResponseEntity<?> getStoreReservationList(@RequestParam Integer pageNo, HttpSession session) {
+		
+		// 로그인 확인
+		Long userId = getUserId(session);
+
+		// 로그인이 안됐을 경우
+		if (userId == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
+		
+		StoreReservationResponse response = reservationService.getStoreReservations(userId, pageNo);
+		
+		if (!response.isSuccess()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+		
+		return ResponseEntity.ok(response);
 	}
 	
 	

@@ -34,7 +34,7 @@
 						<a class="header_nav_menu" href="<c:url value='/stores' />">
 							<span>내 매장 관리</span>
 						</a>
-						<a class="header_nav_menu" href="<c:url value='/reservations' />">
+						<a class="header_nav_menu" href="<c:url value='/reservations/manager/list' />">
 							<span>예약 관리</span>
 						</a>
 						<a class="header_nav_menu" href="<c:url value='/waitings' />">
