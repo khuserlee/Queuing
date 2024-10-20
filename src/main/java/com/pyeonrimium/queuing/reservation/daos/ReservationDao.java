@@ -1,6 +1,8 @@
 package com.pyeonrimium.queuing.reservation.daos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +21,19 @@ public class ReservationDao {
 	private JdbcTemplate jdbcTemplate;
 
 	public boolean addReservation(ReservationEntity reservationEntity) {
-		String sql = "INSERT INTO reservations (user_id, store_id, reservation_number, "
-				+ "reservation_date, reservation_time, party_size, request, status, created_at) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO reservations ("
+				+ "user_id, store_id, user_name, store_name, "
+				+ "reservation_number, reservation_date, reservation_time, party_size, "
+				+ "request, status, created_at) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 		final String status = "예약 생성"; // 고정된 문자열로 상태 설정
 		int result = -1;
 
 		try {
-			result = jdbcTemplate.update(sql, reservationEntity.getUserId(), reservationEntity.getStoreId(),
+			result = jdbcTemplate.update(sql,
+					reservationEntity.getUserId(), reservationEntity.getStoreId(),
+					reservationEntity.getUserName(), reservationEntity.getStoreName(),
 					reservationEntity.getReservationNumber(), reservationEntity.getReservationDate(),
 					reservationEntity.getReservationTime(), reservationEntity.getPartySize(),
 					reservationEntity.getRequest(), // 요청 내용
@@ -108,13 +114,39 @@ public class ReservationDao {
 		return result > 0;
 	}
 	
+	
+	/**
+	 * 예약 정보 조회하기
+	 * @param reservationId 예약 고유 번호
+	 * @return 조회된 정보
+	 */
 	public ReservationEntity getReservationsByReservationId(Long reservationId) {
-		String sql = "SELECT * FROM reservations WHERE reservation_id = ?";
+		String sql = "SELECT * FROM reservations WHERE reservation_id = ?;";
 		ReservationEntity reservations = null;
 
 		// 예외 처리
 		try {
 			reservations = jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(ReservationEntity.class), reservationId);
+		} catch (DataAccessException e) {
+			System.out.println(e.getClass().getSimpleName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return reservations;
+	}
+	
+
+	public ReservationEntity findReservation(Long reservationId, Long userId) {
+		String sql = "SELECT * FROM reservations WHERE reservation_id = ? AND user_id = ?;";
+		ReservationEntity reservations = null;
+
+		// 예외 처리
+		try {
+			reservations = jdbcTemplate.queryForObject(sql,
+											BeanPropertyRowMapper.newInstance(ReservationEntity.class),
+											reservationId,
+											userId);
 		} catch (DataAccessException e) {
 			System.out.println(e.getClass().getSimpleName());
 		} catch (Exception e) {
@@ -179,6 +211,123 @@ public class ReservationDao {
 		
 		boolean isSuccess = deletedCount > 0;
 		return isSuccess;
+	}
+
+	public boolean checkReservation(Long storeId, LocalDate reservationDate, LocalTime reservationTime) {
+
+		String sql = "SELECT COUNT(*) FROM reservations "
+				+ "WHERE store_id = ? AND reservation_date = ? AND reservation_time = ?";
+		
+		List<String> args = new ArrayList<>();
+		args.add(String.valueOf(storeId));
+		args.add(reservationDate.toString());
+		args.add(reservationTime.toString());
+		
+		int result = -1;
+		
+		try {
+			result = jdbcTemplate.queryForObject(sql, Integer.class, args.toArray());
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		boolean isExisted = result > 0;
+		return isExisted;
+	}
+
+	public List<ReservationEntity> findAllByUserId(Long userId, int pageSize, Integer pageNo) {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT * FROM reservations ")
+			.append("WHERE user_id = ? ")
+			.append("ORDER BY reservation_number DESC ")
+			.append("LIMIT ? OFFSET ?;");
+		
+		final int offset = (pageNo - 1) * pageSize;
+		
+		List<ReservationEntity> results = null;
+		
+		try {
+			results = jdbcTemplate.query(sb.toString(),
+					BeanPropertyRowMapper.newInstance(ReservationEntity.class),
+					userId, pageSize, offset);
+		} catch (DataAccessException e) {
+			System.out.println("[ReservationDao] findAllByUserId() => Error:\n" + e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return results;
+	}
+
+	/**
+	 * 내 예약 개수 확인하기
+	 * @param userId 유저 고유 번호
+	 * @return 유저 예약 개수
+	 */
+	public Integer countMyReservations(Long userId) {
+		
+		String sql = "SELECT COUNT(*) FROM reservations WHERE user_id = ?;";
+		int count = 0;
+		
+		try {
+			count = jdbcTemplate.queryForObject(sql, Integer.class, userId);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return count;
+	}
+
+	
+	/**
+	 * 가게의 예약 개수 확인하기
+	 * @param storeId 가게 고유 번호
+	 * @return 가게 예약 개수
+	 */
+	public Integer countStoreReservations(Long storeId) {
+		
+		String sql = "SELECT COUNT(*) FROM reservations WHERE store_id = ?;";
+		int count = 0;
+		
+		try {
+			count = jdbcTemplate.queryForObject(sql, Integer.class, storeId);
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return count;
+	}
+
+	public List<ReservationEntity> findAllReservationsOfStore(Long storeId, int pageSize, Integer pageNo) {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT * FROM reservations ")
+			.append("WHERE store_id = ? ")
+			.append("ORDER BY reservation_date DESC ")
+			.append("LIMIT ? OFFSET ?;");
+		
+		final int offset = (pageNo - 1) * pageSize;
+
+		List<ReservationEntity> results = null;
+		
+		try {
+			results = jdbcTemplate.query(sb.toString(),
+					BeanPropertyRowMapper.newInstance(ReservationEntity.class),
+					storeId, pageSize, offset);
+		} catch (DataAccessException e) {
+			System.out.println("[ReservationDao] findAllReservationsOfStore() => Error:\n" + e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return results;
 	}
 }
 

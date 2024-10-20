@@ -1,9 +1,11 @@
-package com.pyeonrimium.queuing.reservation.domains;
+package com.pyeonrimium.queuing.reservation.domains.dtos;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,22 +18,22 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationResponse {
-	private boolean isSuccess; //성공여부
-	private String message; //메세지
+public class StoreReservation {
+
+	private long reservationId;
 	
 	private String userName;
-
-	private Long storeId;
-	private String storeName; //식당이름
-	private String reservationNumber; //예약 번호
+	private String reservationNumber;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate reservationDate;
 
 	@DateTimeFormat(pattern = "HH:mm")
+	@JsonFormat(pattern = "HH:mm")
 	private LocalTime reservationTime;
 	
-	private int partySize; //인원 수
-	private String request; // 요청 사항
+	private int partySize;
+	private String request;
+	private String status;
 }

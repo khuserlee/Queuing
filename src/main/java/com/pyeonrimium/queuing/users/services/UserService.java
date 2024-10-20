@@ -298,4 +298,14 @@ public class UserService {
 				.message("탈퇴가 완료되었습니다.")
 				.build();
 	}
+
+
+	/**
+	 * 유저 이름 조회하기
+	 * @param userId 유저 고유 번호
+	 * @return 조회된 유저 이름
+	 */
+	public String getUserName(long userId) {
+		return userDao.findUserNameById(userId);
+	}
 }

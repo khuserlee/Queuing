@@ -1,4 +1,4 @@
-package com.pyeonrimium.queuing.reservation.domains;
+package com.pyeonrimium.queuing.reservation.domains.dtos;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -9,22 +9,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationResponse {
-	private boolean isSuccess; //성공여부
-	private String message; //메세지
-	
-	private String userName;
+public class ReservationEditFormResponse {
 
-	private Long storeId;
-	private String storeName; //식당이름
-	private String reservationNumber; //예약 번호
+	private boolean isSuccess;
+	private String message;
+	
+	private long storeId;
+	private String storeName;
+	
+	private long reservationId;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate reservationDate;
@@ -32,6 +30,7 @@ public class ReservationResponse {
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime reservationTime;
 	
-	private int partySize; //인원 수
-	private String request; // 요청 사항
+	private int partySize;
+	private String request;
+	
 }

@@ -18,10 +18,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationEntity {
+
+	private long reservationId;
 	private long userId;
 	private long storeId;
-	private long reservationId;
 	
+	private String userName;
 	private String storeName;
 	private String reservationNumber;
 	

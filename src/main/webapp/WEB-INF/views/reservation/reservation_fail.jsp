@@ -4,55 +4,30 @@
 <!Doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>예약 실패 페이지</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            background-color: #f8d7da; /* 부드러운 빨간색 배경 */
-        }
-
-        .error-message {
-            font-size: 24px;
-            font-weight: bold;
-            color: #721c24; /* 어두운 빨간색 */
-            margin-top: 20px;
-        }
-
-        .details {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #856404; /* 어두운 노란색 */
-        }
-
-        .button-container {
-            margin-top: 30px;
-        }
-
-        .button-container input {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style>
+	<meta charset="UTF-8">
+	<title>예약 실패</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/reservation/reservation-fail.css'/>">
 </head>
 <body>
-    <div class="title">
-        <h3>큐잉(Queuing) - 식당 예약/웨이팅 웹 서비스</h3>
-    </div>
-
-    <div class="error-message">예약이 실패했습니다!</div>
-
-    <div class="details">
-        <p>죄송합니다, 고객님의 예약이 처리되지 않았습니다.</p>
-        <p>Error-message : </p>
-    </div>
-
-    <div class="button-container">
-        <input type="button" value="메인 페이지로 돌아가기" onclick="location.href='index.html';" />
-    </div>
+	<div class="container">
+		<jsp:include page="../globals/header.jsp" />
+		
+		<main>
+			<div class="popup">
+				<h1 class="error-message">예약할 수 없습니다.</h1>
+				<div class="details">
+					<p>죄송합니다. 고객님의 예약이 처리되지 않았습니다.</p>
+					<p>${reservationResponse.getMessage()}</p>
+				</div>
+				<div class="button-container">
+					<button onclick="location.href='/queuing/reservations/form/${reservationResponse.getStoreId()}';">다시 예약하기</button>
+					<button onclick="location.href='/queuing/home';" id="btn">홈으로</button>
+				</div>
+			</div>
+		</main>
+		
+		<jsp:include page="../globals/footer.jsp" />
+	</div>
 </body>
 </html>
