@@ -42,8 +42,6 @@ function send() {
 		
 		alert("인증번호를 입력하신 번호로 보냈습니다.");
 		
-		console.log("성공: " + data);
-		
 		function verify() {
 			if (data == verificationInput.value) {
 				isVerified = true;

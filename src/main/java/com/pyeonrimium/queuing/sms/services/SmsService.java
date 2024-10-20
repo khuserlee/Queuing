@@ -6,17 +6,39 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.DefaultMessageService;
+
 @Service
 public class SmsService {
 	
-	@Value("#{coolsms_dev['api.key']}")
-	private String API_KEY;
-
-	@Value("#{coolsms_dev['secret.api.key']}")
-	private String SECRET_API_KEY;
+	// coolsms를 사용하기 위한 정보
+	private final String API_KEY;
+	private final String API_SECRET_KEY;
+	private final String DOMAIN;
+	private final String FROM;
+	
+	private final DefaultMessageService messageService;
 	
 	private final int VERIFICATION_CODE_LENGTH = 6;			// 인증코드 길이
 	private final String PHONE_REGEX = "^(01[0-9])\\d{8}$";	// 휴대폰 번호 유효성 평가를 위한 정규식
+
+	// 생성
+	public SmsService(@Value("#{coolsms_dev['api.key']}") String apiKey,
+						@Value("#{coolsms_dev['api.secret.key']}") String apiSecretKey,
+						@Value("#{coolsms_dev['domain']}") String domain,
+						@Value("#{coolsms_dev['from']}") String from) {
+		
+		API_KEY = apiKey;
+		API_SECRET_KEY = apiSecretKey;
+		DOMAIN = domain;
+		FROM = from;
+
+		messageService = NurigoApp.INSTANCE.initialize(API_KEY, API_SECRET_KEY, DOMAIN);
+	}
 	
 	
 	/**
@@ -34,7 +56,18 @@ public class SmsService {
 		// 인증코드 제작
 		String verificationCode = createRandomCode(VERIFICATION_CODE_LENGTH);
 		
+		if (verificationCode == null) {
+			return null;
+		}
+		
 		// TODO: 문자 메시지 전송
+		Message message = new Message();
+		message.setFrom(FROM);
+		message.setTo(to);
+		message.setText(String.format("[큐잉(Queuing)]\n회원가입을 위한 인증번호입니다.\n인증번호: %s", verificationCode));
+		
+		SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+		System.out.println(response);
 		
 		return verificationCode;
 	}
