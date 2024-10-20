@@ -42,7 +42,7 @@ main {
 .section {
 	width: 50%;
 	height: 650px;
-	margin: auto 40px;
+	margin: auto 10px;
 	padding: 20px;
 	min-height: 350px;
 	box-sizing: border-box;
@@ -108,16 +108,27 @@ table th {
 	padding: 0;
 }
 
+.menuInfo h3 {
+	margin: 0;
+	padding: 5px 0 5px;
+	font-size: 1.2rem;
+}
+
+.menuInfo p {
+	margin: 0;
+	padding: 10px 0 0;
+}
+
 #buttons {
 	padding: 10px 0;
 	height: 80px;
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 }
 
 button {
-	width: 45%;
-	margin: auto;
+	width: 48%;
+	margin: auto 0;
 	padding: 10px;
 	background-color: #007bff;
 	color: white;

@@ -1,8 +1,13 @@
 package com.pyeonrimium.queuing.stores.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pyeonrimium.queuing.menus.daos.MenuDao;
+import com.pyeonrimium.queuing.menus.domains.entities.Menu;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreDeleteResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditRequest;
@@ -11,7 +16,6 @@ import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
-import com.pyeonrimium.queuing.users.services.UserService;
 
 @Service
 public class StoreService {
@@ -20,7 +24,7 @@ public class StoreService {
 	private StoreDao storeDao;
 	
 	@Autowired
-	private UserService userService;
+	private MenuDao menuDao;
 	
 	/**
 	 * 신규 매장 정보 등록
@@ -85,6 +89,13 @@ public class StoreService {
 					.build();
 		}
 		
+		// 메뉴 조회
+		List<Menu> menus = menuDao.findMenusByStoreId(storeId);
+		
+		if (menus == null) {
+			menus = new ArrayList<>();
+		}
+		
 		// 조회 성공
 		return StoreFindResponse.builder()
 				.isSuccess(true)
@@ -99,6 +110,7 @@ public class StoreService {
 				.startTime(storeEntity.getStartTime())
 				.endTime(storeEntity.getEndTime())
 				.closedDay(storeEntity.getClosedDay())
+				.menus(menus)
 				.build();
 	}
 
