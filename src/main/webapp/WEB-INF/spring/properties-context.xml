@@ -13,4 +13,7 @@
 	<util:properties id="kakao_dev"
 		location="WEB-INF/spring/properties/secret/kakao_dev.properties" />
 
+	<util:properties id="coolsms_dev"
+		location="WEB-INF/spring/properties/secret/coolsms_dev.properties" />
+
 </beans>

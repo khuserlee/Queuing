@@ -157,6 +157,13 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>2.13.3</version>
 		</dependency>
+		
+		<!-- coolsms SDK(문자 메시지 발송용) -->
+		<dependency>
+			<groupId>net.nurigo</groupId>
+			<artifactId>sdk</artifactId>
+			<version>4.3.0</version>
+		</dependency>
 
 	</dependencies>
     <build>

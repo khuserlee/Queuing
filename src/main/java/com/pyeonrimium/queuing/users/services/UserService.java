@@ -308,4 +308,9 @@ public class UserService {
 	public String getUserName(long userId) {
 		return userDao.findUserNameById(userId);
 	}
+	
+	
+	public UserEntity findUser(Long userId) {
+		return userDao.findUserByUserId(userId);
+	}
 }
