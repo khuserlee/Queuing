@@ -62,7 +62,14 @@
 								<c:forEach var="menu" items="${storeFindResponse.menus}">
 									<li class="menuItem">
 										<div class="menuImg">
-											<img src="<c:url value='/uploadImg/${menu.menuFile}'/>" alt="" />
+											<c:choose>
+												<c:when test="${menu.menuFile != null}">
+													<img src="<c:url value='/uploadImg/${menu.menuFile}'/>" alt="" />
+												</c:when>
+												<c:otherwise>
+													<img src="" alt="" />
+												</c:otherwise>
+											</c:choose>
 										</div>
 										<div class="menuInfo">
 											<h3>${menu.name}</h3>
