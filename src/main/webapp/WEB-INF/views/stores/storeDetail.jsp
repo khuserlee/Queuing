@@ -61,7 +61,9 @@
 							<ul id="menus">
 								<c:forEach var="menu" items="${storeFindResponse.menus}">
 									<li class="menuItem">
-										<div class="menuImg"></div>
+										<div class="menuImg">
+											<img src="<c:url value='/uploadImg/${menu.menuFile}'/>" alt="" />
+										</div>
 										<div class="menuInfo">
 											<h3>${menu.name}</h3>
 											<p>가격: ${menu.price}원</p>

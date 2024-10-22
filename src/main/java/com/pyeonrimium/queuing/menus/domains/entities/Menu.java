@@ -21,4 +21,5 @@ public class Menu {
 	private String description;
 	private int menuOrder;
 
+	private String menuFile;
 }

@@ -53,12 +53,20 @@ td {
 }
 
 td img {
-	width: 100px;
-	height: 100px;
+	width: 150px;
+	height: 150px;
 }
 
 td:first-child {
 	width: 80px;
+}
+
+td:nth-child(2n) {
+	width: 200px;
+}
+
+td:last-child {
+	width: 380px;
 }
 
 .buttons {

@@ -1,7 +1,5 @@
 package com.pyeonrimium.queuing.stores.controllers;
 
-import java.io.File;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;

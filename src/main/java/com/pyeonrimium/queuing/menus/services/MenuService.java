@@ -3,6 +3,7 @@ package com.pyeonrimium.queuing.menus.services;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pyeonrimium.queuing.menus.daos.MenuDao;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuListResponse;
@@ -11,6 +12,7 @@ import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationResponse;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuUpdateFormResponse;
 import com.pyeonrimium.queuing.menus.domains.entities.Menu;
 import com.pyeonrimium.queuing.stores.daos.StoreDao;
+import com.pyeonrimium.queuing.utils.services.UploadFileService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +22,7 @@ public class MenuService {
 	
 	private final StoreDao storeDao;
 	private final MenuDao menuDao;
+	private final UploadFileService uploadFileService;
 
 	/**
 	 * 가게 메뉴 목록 불러오기
@@ -48,10 +51,12 @@ public class MenuService {
 	 * 신규 메뉴 등록하기
 	 * @param storeId 가게 고유 번호
 	 * @param userId 유저 고유 번호
-	 * @param menuRegistrationRequest 메뉴 정보
+	 * @param request 메뉴 정보
 	 * @return
 	 */
-	public MenuRegistrationResponse addNewMenu(Long storeId, Long userId, MenuRegistrationRequest menuRegistrationRequest) {
+	public MenuRegistrationResponse addNewMenu(Long storeId,
+												Long userId,
+												MenuRegistrationRequest request) {
 		
 		// 내 가게인지 확인(권한 확인)
 		Long id = storeDao.findStoreIdByUserId(userId);
@@ -59,29 +64,32 @@ public class MenuService {
 			return MenuRegistrationResponse.builder()
 					.isSuccess(false)
 					.message("메뉴를 등록할 수 없습니다.")
+					.redirectUrl("/queuing/menu/" + storeId)
 					.build();
 		}
 		
 		// 메뉴 엔터티 생성
 		Menu menu = Menu.builder()
 				.storeId(storeId)
-				.name(menuRegistrationRequest.getName())
-				.description(menuRegistrationRequest.getDescription())
-				.price(menuRegistrationRequest.getPrice())
+				.name(request.getName())
+				.description(request.getDescription())
+				.price(request.getPrice())
 				.menuOrder(0)
 				.build();
 		
-		boolean isSuccess = menuDao.insertNewMenu(menu);
+		Menu entity = menuDao.insertNewMenu(menu);
 		
-		if (!isSuccess) {
+		if (entity == null) {
 			return MenuRegistrationResponse.builder()
 					.isSuccess(false)
 					.message("메뉴를 등록할 수 없습니다.")
+					.redirectUrl("/queuing/menu/" + storeId)
 					.build();
 		}
 		
 		return MenuRegistrationResponse.builder()
 				.isSuccess(true)
+				.menuId(entity.getMenuId())
 				.build();
 	}
 
@@ -124,6 +132,30 @@ public class MenuService {
 				.price(menu.getPrice())
 				.description(menu.getDescription())
 				.build();
+	}
+
+	public boolean uploadImage(Long storeId, Long menuId, MultipartFile file) {
+		
+		if (file == null) {
+			return false;
+		}
+		
+		Menu menu = this.menuDao.findMenuByMenuId(menuId);
+		
+		if (menu == null) {
+			return false;
+		}
+
+		// 이미지 저장
+		String savedFile = uploadFileService.upload(file);
+		
+		if (savedFile == null) {
+			return false;
+		}
+		
+		menu.setMenuFile(savedFile);
+		
+		return this.menuDao.updateMenu(menu);
 	}
 
 	

@@ -119,7 +119,10 @@ table th {
 .menuImg {
 	width: 110px;
 	height: 110px;
-	background-color: blue;
+}
+
+.menuImg img {
+	width: 100%;
 }
 
 .menuInfo {

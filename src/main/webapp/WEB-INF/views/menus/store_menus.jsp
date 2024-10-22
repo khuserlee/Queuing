@@ -30,7 +30,7 @@
 						<c:forEach var="menu" items="${menuListResponse.menus}">
 							<tr>
 								<td><input type="checkbox" name="selectedMenuId" value="${menu.menuId}" /></td>
-								<td><img src="" alt="" /></td>
+								<td><img src="<c:url value='/uploadImg/${menu.menuFile}'/>" alt="" /></td>
 								<td>${menu.name}</td>
 								<td>${menu.price}</td>
 								<td>${menu.description}</td>

@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pyeonrimium.queuing.menus.domains.WillBeUpdatedMenu;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuDeleteResponse;
+import com.pyeonrimium.queuing.menus.domains.dtos.MenuImageUploadResponse;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuListResponse;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationRequest;
 import com.pyeonrimium.queuing.menus.domains.dtos.MenuRegistrationResponse;
@@ -107,31 +110,60 @@ public class MenuController {
 	 * @return
 	 */
 	@PostMapping("/menu/register/{storeId}")
-	public String registerMenu(@PathVariable Long storeId, MenuRegistrationRequest menuRegistrationRequest,
-			HttpSession session) {
+	@ResponseBody
+	public ResponseEntity<?> registerMenu(@PathVariable Long storeId,
+									@RequestBody MenuRegistrationRequest menuRegistrationRequest,
+									HttpSession session) {
 		
 		if (!verifyLogin(session)) {
-			return "redirect:/login/form";
+			MenuRegistrationResponse error = MenuRegistrationResponse.builder()
+					.isSuccess(false)
+					.message("메뉴를 등록할 수 없습니다.")
+					.redirectUrl("/queuing/login/form")
+					.build();
+
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
 		}
 		
 		if (!verifyManager(session)) {
-			return "redirect:/stores/" + storeId;
+			MenuRegistrationResponse error = MenuRegistrationResponse.builder()
+					.isSuccess(false)
+					.message("메뉴를 등록할 수 없습니다.")
+					.redirectUrl("/queuing/stores/" + storeId)
+					.build();
+			
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
 		}
 
 		Long userId = (Long) session.getAttribute("user_id");
 		
 		// 메뉴 정보 저장
-		MenuRegistrationResponse menuRegistrationResponse = menuService.addNewMenu(storeId, userId, menuRegistrationRequest);
+		MenuRegistrationResponse response
+				= menuService.addNewMenu(storeId, userId, menuRegistrationRequest);
 		
-		if (!menuRegistrationResponse.isSuccess()) {
-			// 실패
-			System.out.println("Error: " + menuRegistrationResponse.getMessage());
-			
-			// 목록 화면으로 돌아가기
-			return "redirect:/menu/" + storeId;
+		if (!response.isSuccess()) {
+			response.setRedirectUrl("/queuing/menu/" + storeId);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 		
-		return "redirect:/menu/" + storeId;
+		return ResponseEntity.ok(response);
+	}
+	
+	
+	@PostMapping("menu/image/{storeId}/{menuId}")
+	@ResponseBody
+	public ResponseEntity<?> uploadMenuImage(@PathVariable Long storeId,
+												@PathVariable Long menuId,
+												@RequestParam MultipartFile file) {
+		
+		this.menuService.uploadImage(storeId, menuId, file);
+		
+		MenuImageUploadResponse response = MenuImageUploadResponse.builder()
+											.isSuccess(true)
+											.redirectUrl("/queuing/menu/" + storeId)
+											.build();
+		
+		return ResponseEntity.ok(response);
 	}
 
 	
