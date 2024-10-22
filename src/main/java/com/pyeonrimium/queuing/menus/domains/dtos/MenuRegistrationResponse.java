@@ -15,4 +15,7 @@ public class MenuRegistrationResponse {
 
 	private boolean isSuccess;
 	private String message;
+	private String redirectUrl;
+	
+	private long menuId;
 }

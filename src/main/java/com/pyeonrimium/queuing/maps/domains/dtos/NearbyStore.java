@@ -18,5 +18,7 @@ public class NearbyStore {
 	private String address;
 	private BigDecimal longitude;
 	private BigDecimal latitude;
+	
+	private String storeFile;
 
 }

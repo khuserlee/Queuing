@@ -16,15 +16,15 @@
 		<jsp:include page="../globals/header.jsp" />
 		
 		<main>
-			<form id="storeForm" action="<c:url value='/stores' />" method="POST">
+			<form id="storeForm" action="<c:url value='/stores' />" method="POST" enctype="multipart/form-data">
 				<div>
 					<div class="formGroup">
 						<label for="name">가게 이름</label>
 						<input type="text" id="storeName" name="name" required="required">
 					</div>
 					<div class="formGroup">
-						<label for="img">가게 사진</label>
-						<input type="file" id="img" name="img" accept="image/*">
+						<label for="file">가게 사진</label>
+						<input type="file" id="file" name="file" accept="image/*">
 					</div>
 					<div class="formGroup">
 						<label for="description">가게 소개</label>
@@ -101,19 +101,32 @@
 						body: JSON.stringify(formData)
 					})
 					.then(response => {
-						// 응답 확인
-						if (response.ok) {
-							return response.text();
-						}
+						return response.json();
 					})
-					.then(html => {
-						document.open();
-						document.write(html);
-						document.close();
+					.then(data => {
+						if (!data.success) {
+							alert(data.message);
+							window.location.href = data.redirectUrl;
+							return;
+						}
+						const imageFormData = new FormData();
+						imageFormData.append('file', formData['file']);
+						
+						const url = '/queuing/stores/image/' + data.storeId;
+						return fetch(url, {
+							method: 'POST',
+							body: imageFormData
+						});
+					})
+					.then(response => {
+						return response.json()
+					})
+					.then(data => {
+						window.location.href = data.redirectUrl;
 					})
 					.catch(error => {
 						alert(error);
-					})
+					});
 				})
 				.catch(error => {
 					alert(error);
@@ -122,7 +135,6 @@
 		
 		// 주소로 위도, 경도 확인
 		function getLatLng(address) {
-			console.log(address);
 			return new Promise((resolve, reject) => {
 				var geocoder = new kakao.maps.services.Geocoder();
 
@@ -143,7 +155,7 @@
 		function validateFormData(formData) {
 			// required 속성 검사
 			for (const key of Object.keys(formData)) {
-				if (key === 'img' || key === 'detailAddress' || key === 'closedDay') {
+				if (key === 'file' || key === 'detailAddress' || key === 'closedDay') {
 					continue;
 				}
 				

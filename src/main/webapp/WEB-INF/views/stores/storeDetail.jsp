@@ -26,30 +26,34 @@
 				<c:otherwise>
 					<div class="section" id="storeInfo">
 						<h1>${storeFindResponse.name}</h1>
-						<img class="storeImg" src="">
-						<h2>가게 소개</h2>
-						<p class="description">
-							${storeFindResponse.description}
-						</p>
-						<h2>가게 정보</h2>
-						<table class="details">
-							<tr>
-								<th>주소</th>
-								<td>${storeFindResponse.address}</td>
-							</tr>
-							<tr>
-								<th>연락처</th>
-								<td>${storeFindResponse.phone}</td>
-							</tr>
-							<tr>
-								<th>영업시간</th>
-								<td>${storeFindResponse.startTime} ~ ${storeFindResponse.endTime}</td>
-							</tr>
-							<tr>
-								<th>휴무일</th>
-								<td>${storeFindResponse.closedDay}</td>
-							</tr>
-						</table>
+						<div id="left-section">
+							<div id="storeImg-container">
+								<img class="storeImg" src="<c:url value='/uploadImg/${storeFindResponse.storeFile}'/>">
+							</div>
+							<h2>가게 소개</h2>
+							<p class="description">
+								${storeFindResponse.description}
+							</p>
+							<h2>가게 정보</h2>
+							<table class="details">
+								<tr>
+									<th>주소</th>
+									<td>${storeFindResponse.address}</td>
+								</tr>
+								<tr>
+									<th>연락처</th>
+									<td>${storeFindResponse.phone}</td>
+								</tr>
+								<tr>
+									<th>영업시간</th>
+									<td>${storeFindResponse.startTime} ~ ${storeFindResponse.endTime}</td>
+								</tr>
+								<tr>
+									<th>휴무일</th>
+									<td>${storeFindResponse.closedDay}</td>
+								</tr>
+							</table>
+						</div>
 					</div>
 					<div class="section">
 						<div>
@@ -57,7 +61,16 @@
 							<ul id="menus">
 								<c:forEach var="menu" items="${storeFindResponse.menus}">
 									<li class="menuItem">
-										<div class="menuImg"></div>
+										<div class="menuImg">
+											<c:choose>
+												<c:when test="${menu.menuFile != null}">
+													<img src="<c:url value='/uploadImg/${menu.menuFile}'/>" alt="" />
+												</c:when>
+												<c:otherwise>
+													<img src="" alt="" />
+												</c:otherwise>
+											</c:choose>
+										</div>
 										<div class="menuInfo">
 											<h3>${menu.name}</h3>
 											<p>가격: ${menu.price}원</p>

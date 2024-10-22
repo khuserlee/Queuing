@@ -40,6 +40,7 @@ public class MapService {
 		List<NearbyStore> nearbyStores = stores.stream()
 				.map(store -> NearbyStore.builder()
 							.storeId(store.getStoreId())
+							.storeFile(store.getStoreFile())
 							.name(store.getName())
 							.address(store.getAddress())
 							.longitude(store.getLongitude())

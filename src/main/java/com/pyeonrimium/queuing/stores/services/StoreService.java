@@ -1,10 +1,13 @@
 package com.pyeonrimium.queuing.stores.services;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pyeonrimium.queuing.menus.daos.MenuDao;
 import com.pyeonrimium.queuing.menus.domains.entities.Menu;
@@ -16,15 +19,44 @@ import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
 import com.pyeonrimium.queuing.stores.domains.entities.StoreEntity;
+import com.pyeonrimium.queuing.utils.services.UploadFileService;
 
 @Service
 public class StoreService {
+	
+	@Autowired
+	private UploadFileService uploadFileService;
 	
 	@Autowired
 	private StoreDao storeDao;
 	
 	@Autowired
 	private MenuDao menuDao;
+	
+	
+	public boolean uploadImage(Long storeId, MultipartFile file) {
+		
+		if (file == null) {
+			return false;
+		}
+		
+		StoreEntity storeEntity = this.storeDao.findStoreByStoreId(storeId);
+		
+		if (storeEntity == null) {
+			return false;
+		}
+
+		// 이미지 저장
+		String savedFile = uploadFileService.upload(file);
+		
+		if (savedFile == null) {
+			return false;
+		}
+		
+		storeEntity.setStoreFile(savedFile);
+		
+		return this.storeDao.update(storeEntity);
+	}
 	
 	/**
 	 * 신규 매장 정보 등록
@@ -33,7 +65,7 @@ public class StoreService {
 	 * @return 결과
 	 */
 	public StoreRegistrationResponse addStore(StoreRegisterationRequest storeRegisterationRequest, Long userId) {
-
+		
 		// 1. StoreEntity 생성
 		StoreEntity storeEntity = StoreEntity.builder()
 				.userId(userId)
@@ -101,6 +133,7 @@ public class StoreService {
 				.isSuccess(true)
 				.storeId(storeEntity.getStoreId())
 				.userId(storeEntity.getUserId())
+				.storeFile(storeEntity.getStoreFile())
 				.name(storeEntity.getName())
 				.address(storeEntity.getAddress())
 				.roadAddress(storeEntity.getRoadAddress())
@@ -232,6 +265,10 @@ public class StoreService {
 				.isSuccess(true)
 				.message("매장을 삭제했습니다.")
 				.build();
+	}
+
+	public FileSystemResource getImage(String path) {
+		return this.uploadFileService.getFile(path);
 	}
 
 }

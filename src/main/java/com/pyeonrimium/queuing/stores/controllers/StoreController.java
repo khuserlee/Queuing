@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,12 +15,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreDeleteResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreEditResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreFindResponse;
+import com.pyeonrimium.queuing.stores.domains.dtos.StoreImageUploadResponse;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegisterationRequest;
 import com.pyeonrimium.queuing.stores.domains.dtos.StoreRegistrationResponse;
 import com.pyeonrimium.queuing.stores.services.StoreService;
@@ -88,29 +92,61 @@ public class StoreController {
 	 * @return 성공: 상세 페이지, 실패: 에러 메시지 페이지
 	 */
 	@PostMapping("/stores")
-	public String addStore(@RequestBody StoreRegisterationRequest storeRegisterationRequest, HttpSession session, Model model) {
+	public ResponseEntity<?> addStore(@RequestBody StoreRegisterationRequest storeRegisterationRequest,
+							HttpSession session,
+							Model model) {
 
 		// 로그인이 안 된 경우
 		if (session == null) {
-			return "redirect:/login/form";
+			StoreRegistrationResponse error = StoreRegistrationResponse.builder()
+					.isSuccess(false)
+					.message("로그인이 필요합니다.")
+					.redirectUrl("/queuing/login/form")
+					.build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 		}
 		
 		// 일반 유저인 경우
 		if (!session.getAttribute(ROLE).equals(ROLE_MANAGER)) {
-			return "redirect:/home";
+			StoreRegistrationResponse error = StoreRegistrationResponse.builder()
+					.isSuccess(false)
+					.message("로그인이 필요합니다.")
+					.redirectUrl("/queuing/home")
+					.build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 		}
 
 		Long userId = (Long) session.getAttribute(USER_ID);
 		StoreRegistrationResponse storeRegistrationResponse = storeService.addStore(storeRegisterationRequest, userId);
 
 		if (!storeRegistrationResponse.isSuccess()) {
-			// 등록 실패 페이지
-			model.addAttribute("errorMessage", storeRegistrationResponse.getMessage());
-			return "store/storefail";
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(storeRegistrationResponse);
 		}
 		
-		return "redirect:/stores/" + storeRegistrationResponse.getStoreId();
+		return ResponseEntity.ok(storeRegistrationResponse);
 	}
+	
+	@GetMapping("/stores/image/{path}")
+	public ResponseEntity<FileSystemResource> getStoreImage(@PathVariable String path) {
+		
+		FileSystemResource file = this.storeService.getImage(path);
+		
+		return ResponseEntity.ok(file);
+	}
+	
+	@PostMapping("/stores/image/{storeId}")
+	public ResponseEntity<?> addStoreImage(@PathVariable Long storeId, @RequestParam MultipartFile file) {
+		
+		this.storeService.uploadImage(storeId, file);
+		
+		StoreImageUploadResponse response = StoreImageUploadResponse.builder()
+				.isSuccess(true)
+				.redirectUrl("/queuing/stores/" + storeId)
+				.build();
+		
+		return ResponseEntity.ok(response);
+	}
+	
 
 	/**
 	 * 가게 상세 페이지 불러오기

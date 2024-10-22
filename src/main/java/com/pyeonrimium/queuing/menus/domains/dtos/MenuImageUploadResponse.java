@@ -1,22 +1,20 @@
-package com.pyeonrimium.queuing.stores.domains.dtos;
+package com.pyeonrimium.queuing.menus.domains.dtos;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.Builder;
+
+import lombok.Getter;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoreRegistrationResponse {
-	
+public class MenuImageUploadResponse {
+
 	private boolean isSuccess;
 	private String message;
 	private String redirectUrl;
-	
-	private Long storeId;
-	
 }

@@ -72,7 +72,7 @@ public class MenuDao {
 	 * @param menu 메뉴 정보
 	 * @return 성공 여부
 	 */
-	public boolean insertNewMenu(Menu menu) {
+	public Menu insertNewMenu(Menu menu) {
 
 		String sql = "INSERT INTO menus (store_id, name, description, price, menu_order) VALUES (?, ?, ?, ?, ?);";
 		
@@ -83,18 +83,25 @@ public class MenuDao {
 		args.add(String.valueOf(menu.getPrice()));
 		args.add(String.valueOf(menu.getMenuOrder()));
 
-		int result = -1;
+		int count = -1;
+		Menu result = null;
 		
 		try {
-			result = jdbcTemplate.update(sql, args.toArray());
+			count = jdbcTemplate.update(sql, args.toArray());
 			
+			if (count > 0) {
+				sql = "SELECT * FROM menus WHERE store_id = ? AND name = ? AND price = ?;";
+				result = jdbcTemplate.queryForObject(sql,
+						BeanPropertyRowMapper.newInstance(Menu.class),
+						menu.getStoreId(), menu.getName(), menu.getPrice());
+			}
 		} catch (DataAccessException e) {
 			System.out.println(e);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return result > 0;
+		return result;
 	}
 	
 	
@@ -117,5 +124,22 @@ public class MenuDao {
 		}
 		
 		return rowsAffected > 0;
+	}
+
+
+	public boolean updateMenu(Menu menu) {
+
+		String sql = "UPDATE menus SET menu_file = ? WHERE menu_id = ?";
+		int result = -1;
+		
+		try {
+			result = jdbcTemplate.update(sql, menu.getMenuFile(), menu.getMenuId());
+		} catch (DataAccessException e) {
+			System.out.println(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result > 0;
 	}
 }
