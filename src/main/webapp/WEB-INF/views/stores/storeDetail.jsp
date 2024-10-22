@@ -26,30 +26,34 @@
 				<c:otherwise>
 					<div class="section" id="storeInfo">
 						<h1>${storeFindResponse.name}</h1>
-						<img class="storeImg" src="">
-						<h2>가게 소개</h2>
-						<p class="description">
-							${storeFindResponse.description}
-						</p>
-						<h2>가게 정보</h2>
-						<table class="details">
-							<tr>
-								<th>주소</th>
-								<td>${storeFindResponse.address}</td>
-							</tr>
-							<tr>
-								<th>연락처</th>
-								<td>${storeFindResponse.phone}</td>
-							</tr>
-							<tr>
-								<th>영업시간</th>
-								<td>${storeFindResponse.startTime} ~ ${storeFindResponse.endTime}</td>
-							</tr>
-							<tr>
-								<th>휴무일</th>
-								<td>${storeFindResponse.closedDay}</td>
-							</tr>
-						</table>
+						<div id="left-section">
+							<div id="storeImg-container">
+								<img class="storeImg" src="<c:url value='/uploadImg/${storeFindResponse.storeFile}'/>">
+							</div>
+							<h2>가게 소개</h2>
+							<p class="description">
+								${storeFindResponse.description}
+							</p>
+							<h2>가게 정보</h2>
+							<table class="details">
+								<tr>
+									<th>주소</th>
+									<td>${storeFindResponse.address}</td>
+								</tr>
+								<tr>
+									<th>연락처</th>
+									<td>${storeFindResponse.phone}</td>
+								</tr>
+								<tr>
+									<th>영업시간</th>
+									<td>${storeFindResponse.startTime} ~ ${storeFindResponse.endTime}</td>
+								</tr>
+								<tr>
+									<th>휴무일</th>
+									<td>${storeFindResponse.closedDay}</td>
+								</tr>
+							</table>
+						</div>
 					</div>
 					<div class="section">
 						<div>

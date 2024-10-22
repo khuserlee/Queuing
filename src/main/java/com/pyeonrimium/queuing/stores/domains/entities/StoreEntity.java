@@ -24,6 +24,8 @@ public class StoreEntity {
 	private Long storeId;
 	private Long userId;
 	
+	private String storeFile;
+	
 	private String name;
 	private String roadAddress;
 	private String detailAddress;

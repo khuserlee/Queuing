@@ -51,6 +51,16 @@ main {
 	border-radius: 8px;
 }
 
+.section h1 {
+	margin-top: 0;
+	margin-bottom: 25px;
+}
+
+#left-section {
+	max-height: 525px;
+	overflow-y: auto;
+}
+
 #storeInfo h1 {
 	text-align: center;
 }
@@ -62,6 +72,15 @@ main {
 #storeInfo p {
 	margin-top: 15px;
 	padding: 0 10px;
+}
+
+#storeImg-container {
+	display: flex;
+	justify-content: center;
+}
+
+.storeImg {
+	width: 400px;
 }
 
 table {

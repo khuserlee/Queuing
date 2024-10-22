@@ -22,6 +22,8 @@ public class StoreFindResponse {
 	private long storeId;
 	private long userId;
 	
+	private String storeFile;
+	
 	private String name;
 	private String address;
 	private String roadAddress;

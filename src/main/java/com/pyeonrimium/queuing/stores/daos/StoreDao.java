@@ -170,7 +170,8 @@ public class StoreDao {
 			.append("end_time = ?, ")
 			.append("closed_day = ?, ")
 			.append("longitude = ?, ")
-			.append("latitude = ? ")
+			.append("latitude = ?, ")
+			.append("store_file = ? ")
 			.append("WHERE store_id = ?;");
 		
 		List<String> args = new ArrayList<String>();
@@ -184,6 +185,7 @@ public class StoreDao {
 		args.add(storeEntity.getClosedDay());
 		args.add(String.valueOf(storeEntity.getLongitude()));
 		args.add(String.valueOf(storeEntity.getLatitude()));
+		args.add(storeEntity.getStoreFile());
 		args.add(String.valueOf(storeEntity.getStoreId()));
 		
 		int result = -1;

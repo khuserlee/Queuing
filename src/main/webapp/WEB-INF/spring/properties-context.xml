@@ -16,4 +16,7 @@
 	<util:properties id="coolsms_dev"
 		location="WEB-INF/spring/properties/secret/coolsms_dev.properties" />
 
+	<util:properties id="upload_dev"
+		location="WEB-INF/spring/properties/secret/upload_dev.properties" />
+
 </beans>
